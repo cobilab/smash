@@ -16,11 +16,43 @@
 
 void *Compress(void *data)
   {
-  Data        *d = (Data *) data;
+  //Data        *d = (Data *) data;
   FILE        *f;
   char        name[1024];
 
   return NULL;
+  }
+
+
+//////////////////////////////////////////////////////////////////////////////
+// - - - - - - - - - - - - - - - - - R A N D O M - - - - - - - - - - - - - - -
+
+char *RandomNonAlphabet(char *fName, uint32_t seed)
+  {
+  FILE      *Reader = NULL, *Writter = NULL;
+  uint32_t  maxIdx, idx;
+  char      readerBuffer[BUFFER_SIZE], writterBuffer[BUFFER_SIZE],
+            *alphabet = "ATCG", *p, *fNameOut;
+
+  srand(time(NULL) + seed);
+
+  Reader   = Fopen(fName, "r");
+  fNameOut = concatenate(fName, ".sys");
+  Writter  = Fopen(fNameOut, "w");
+  
+  while((maxIdx = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
+    {
+    for(idx = 0 ; idx != maxIdx ; ++idx)
+      {
+      if((p = strchr(alphabet, toupper(readerBuffer[idx]))))
+        writterBuffer[idx] = p - alphabet;
+      else
+        writterBuffer[idx] = alphabet[rand() % 4];
+      }
+    fwrite(writterBuffer, 1, idx, Writter);
+    }
+
+  return fNameOut;
   }
 
 
@@ -31,12 +63,11 @@ void *Compress(void *data)
 
 int32_t main(int argc, char *argv[])
   {
-  char        **p;
+  char        **p = *&argv, *sRef, *sTar;
   uint32_t    n;
-  Data        P;
+  Parameters  P;
 
-  P.help = ArgsState (0, p = *&argv, argc, "-h" );
-  if(argc < 2 || Par.F.help == 1)
+  if((P.help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
     {
     fprintf(stderr, "                                          \n");
     fprintf(stderr, "Usage: smash [OPTIONS]... [FILE] [FILE]   \n");
@@ -51,6 +82,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, " -t <threshold>     threshold [0.0,2.0]   \n");
     fprintf(stderr, " -a <alpha>         alpha estimator       \n");
     fprintf(stderr, " -w <wSize>         window size           \n");
+    fprintf(stderr, " -d <dSize>         drop size             \n");
     fprintf(stderr, " -m <mSize>         minimum block size    \n");
     fprintf(stderr, "                                          \n");
     fprintf(stderr, " <refFile>          reference file        \n");
@@ -58,16 +90,17 @@ int32_t main(int argc, char *argv[])
     return EXIT_SUCCESS;
     }
 
-  P.verbose   = ArgsState (0,          p, argc, "-v");
-  P.force     = ArgsState (0,          p, argc, "-f");
-  P.context   = ArgsNumber(25,         p, argc, "-c");
-  P.alpha     = ArgsNumber(1000,       p, argc, "-a");
-  P.threshold = ArgsNumber(1.5,        p, argc, "-t");
-  P.window    = ArgsNumber(10000,      p, argc, "-w");
-  P.minimum   = ArgsNumber(1000000,    p, argc, "-m");
+  P.verbose   = ArgsState (DEFAULT_VERBOSE,   p, argc, "-v");
+  P.force     = ArgsState (DEFAULT_FORCE,     p, argc, "-f");
+  P.context   = ArgsNumber(DEFAULT_CONTEXT,   p, argc, "-c");
+  P.alpha     = ArgsNumber(DEFAULT_ALPHA,     p, argc, "-a");
+  P.threshold = ArgsNumber(DEFAULT_THRESHOLD, p, argc, "-t");
+  P.window    = ArgsNumber(DEFAULT_WINDOW,    p, argc, "-w");
+  P.drop      = ArgsNumber(DEFAULT_DROP,      p, argc, "-d");
+  P.minimum   = ArgsNumber(DEFAULT_MINIMUM,   p, argc, "-m");
 
-  InRef = Fopen(argv[arvc-2], "r");
-  InTar = Fopen(argv[arvc-1], "r");
+  sRef = RandomNonAlphabet(argv[argc-2], 42 );
+  sTar = RandomNonAlphabet(argv[argc-1], 101);
 
   //LoadReference();
 

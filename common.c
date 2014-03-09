@@ -160,6 +160,18 @@ char *CloneString(char *str)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+char *concatenate(char *a, char *b)
+  {
+  char *base;
+
+  base = (char *) Malloc(strlen(a) + strlen(b) + 1);
+  strcpy(base, a);
+  strcat(base, b);
+  return base;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 char *RepString(const char *str, const char *old, const char *new)
   {
   size_t sLen = strlen(str) + 1;
@@ -213,7 +225,7 @@ char *ArgsString(char *def, char *arg[], uint32_t n, char *str)
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+/*
 void CreaDecFNames(void)
   {
   uint32_t  n;
@@ -232,7 +244,7 @@ void CreaDecFNames(void)
       sprintf(Par.dFileName[n], "%s.%s", Par.dFileName[n], DEXT);
     }
   }
-
+*/
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void FAccessWPerm(char *fn)
@@ -249,7 +261,7 @@ void FAccessWPerm(char *fn)
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+/*
 uint32_t ReadFNames(char *def, char *arg[], uint32_t n)
   {
   uint32_t nFiles = 1, k = 0, argLen;
@@ -265,141 +277,9 @@ uint32_t ReadFNames(char *def, char *arg[], uint32_t n)
 
   return nFiles;
   }
-
+*/
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-void PrintArgs(void)
-  {
-  uint32_t n = 0;
-  fprintf(stderr, "Verbose mode ......................... yes\n");
-  fprintf(stderr, "Force mode ........................... %s\n", Par.F.force 
-  == 0 ? "no" : "yes");
-  fprintf(stderr, "Target model:\n");
-  fprintf(stderr, "    [+] Context order ................ %u\n", Par.tc);
-  fprintf(stderr, "    [+] Max counter .................. %u\n", Par.tm);
-  fprintf(stderr, "    [+] Inverted repeats ............. %s\n", Par.ti == 0 
-  ? "no" : "yes");
-  fprintf(stderr, "Reference model:\n");
-  fprintf(stderr, "    [+] Context order ................ %u\n", Par.rc);
-  fprintf(stderr, "    [+] Max counter .................. %u\n", Par.rm);
-  fprintf(stderr, "    [+] Inverted repeats ............. %s\n", Par.ri == 0 
-  ? "no" : "yes");
-  fprintf(stderr, "    [+] Alpha denominator ............ %u\n", Par.ra);
-  fprintf(stderr, "Block size ........................... %u\n", Par.b);
-  fprintf(stderr, "Reference filename ................... %s\n", 
-  Par.rFileName);
-  fprintf(stderr, "Target files:\n");
-  fprintf(stderr, "    [+] Number ....................... %u\n", Par.nTFiles);
-  for( ; n != Par.nTFiles ; ++n)
-      fprintf(stderr, "    [+] Filename %-2u .................. %s\n", n + 
-      1, Par.tFileName[n]);
-  }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-uint64_t CheckAlphabet(char *fName)
-  {
-  FILE       *f = NULL;
-  uint32_t   k, n, idxPos, nSym;
-  uint64_t   fileSize = 0;
-  char       tmp1[MAX_FNAME_SIZE], tmp2[MAX_FNAME_SIZE], buf[BUF_SIZE],
-             norAlp[NSIGNF], alp[NSIGNF], mask[NSIGNF];
- 
-  (void) alp; 
-  f = Fopen(fName, "r");
-  while((k = fread(buf, 1, BUF_SIZE, f)))
-    for(idxPos = 0 ; idxPos < k ; ++idxPos)
-      {
-      mask[(uint8_t) *(buf+idxPos)] = 1;
-      ++fileSize;
-      }
-  nSym = 0;
-  for(n = MAXSIZEA ; --n ; )                                 // Build alphabet
-    if(mask[n] == 1)
-      {
-      norAlp[nSym] = n;
-      alp[n] = nSym++;                       // Don't change to pre-increment!
-      }
-    else
-      alp[n] = INVALID_S;
-  fclose(f);
-  
-  for(n = 0 ; n != nSym ; ++n)
-    tmp1[n] = norAlp[n];
-  tmp1[n] = '\0';
-
-  for(n = nSym ; n-- ; )
-    tmp2[n] = norAlp[n];
-  tmp2[nSym] = '\0';
-
-  if(strcmp(tmp1,tmp2))
-    {
-    fprintf(stderr, "Error: alphabets from reference (%s) and target (%s) "
-    "differ!\nFiltering in Linux example: cat targetFile | grep -v \">\""
-    " | tr -d -c \"%s\" > newFile\n", tmp1, tmp2, tmp2);
-    exit(1);
-    }
-
-  return fileSize;
-  }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-void BuildAlphabet(void)
-  {
-  FILE      *f = NULL;
-  uint32_t  k, n, idxPos;
-  uint8_t   *buf, c;
-
-  buf          = (uint8_t *) Calloc(BUF_SIZE, sizeof(uint8_t)); 
-  Alpha.norAlp = (uint8_t *) Calloc(NSIGNF,   sizeof(uint8_t));
-  Alpha.alp    = (uint8_t *) Calloc(NSIGNF,   sizeof(uint8_t));
-  Alpha.mask   = (uint8_t *) Calloc(NSIGNF,   sizeof(uint8_t));
-
-  Alpha.rCheckSum = 0;
-  Alpha.rFileSize = 0;
-  f = Fopen(Par.rFileName, "r");
-  while((k = fread(buf, 1, BUF_SIZE, f)))
-    for(idxPos = 0 ; idxPos != k ; ++idxPos)
-      {
-      c = (uint8_t) buf[idxPos];
-      Alpha.mask[c]    = 1;
-      Alpha.rCheckSum += c;
-      ++Alpha.rFileSize;
-      }
-
-  Alpha.nSym = 0;
-  for(n = MAXSIZEA ; --n ; )                                 // Build alphabet
-    if(Alpha.mask[n] == 1)
-      {
-      Alpha.norAlp[Alpha.nSym] = n;
-      Alpha.alp[n] = Alpha.nSym++;           // Don't change to pre-increment!
-      }
-    else
-      Alpha.alp[n] = INVALID_S; 
-
-  if(Par.F.verbose == 1)
-    {
-    fprintf(stderr, "Reference sequence properties:\n");
-    fprintf(stderr, "    [+] Size ......................... %"PRIu64"\n", 
-    Alpha.rFileSize);
-    fprintf(stderr, "    [+] Alphabet number .............. %u\n", 
-    Alpha.nSym);
-    fprintf(stderr, "    [+] Symbols ...................... ");
-    for(n = 0 ; n != Alpha.nSym ; ++n)
-      Alpha.norAlp[n] != '\n' ? fprintf(stderr, "%c", Alpha.norAlp[n]) :
-      fprintf(stderr, "\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "    [+] Checksum ..................... %"PRIu64"\n", 
-    Alpha.rCheckSum);
-    }
-
-  Free(buf);
-  fclose(f);
-  }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+/*
 void LoadReference(void)
   {
   FILE      *f = NULL;
@@ -451,101 +331,13 @@ void LoadReference(void)
   Free(seqBuf);
   fclose(f);
   }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-void CmpCheckSum(uint64_t cs)
-  {
-  if(Alpha.rCheckSum != cs)
-    { 
-    fprintf(stderr, "Error: invalid reference file!\n"
-    "Compression reference checksum ................. %"PRIu64"\n"
-    "Decompression reference checksum ............... %"PRIu64"\n",
-    cs, Alpha.rCheckSum);
-    fprintf(stderr, "Tip: rerun with correct reference file\n");
-    exit(1);
-    }
-  }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-void CmpInputError(uint32_t n)
-  {
-  fprintf(stderr, "%s: unmatching compression/decompression parameters in "
-  "reference file (%s)!\n", Par.F.force == 1 ? "Warning" : "Error", 
-  Par.rFileName);
-  if(Par.F.verbose == 1)
-    fprintf(stderr, "Tip: perhaps file \"%s\" has been used in other "
-    "compression setup.\n", Par.tFileName[n]);
-  if(Par.F.force == 1)
-    fprintf(stderr, "Action: file \"%s\" will be ignored from decompression."
-    "\n", Par.tFileName[n]);
-  }
-
+*/
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 inline void CalcProgress(uint64_t size, uint64_t i)
   {
   if(i % (size / 100) == 0 && size > PROGRESS_MIN)
     fprintf(stderr, "Progress:%3d %%\r", (uint8_t) (i / (size / 100)));
-  }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-uint8_t *CheckReference(void)
-  {
-  ac_decoder acd;
-  ac_model   acm;
-  uint64_t   markC;
-  uint32_t   n, rc, rm, ri, ra;
-  uint8_t    *run, ok = 0;
-
-  if(Par.F.verbose == 1)
-    fprintf(stderr, "Checking reference integrity ... \n");
-  BuildAlphabet();
-  run = (uint8_t *) Calloc(Par.nTFiles, sizeof(uint8_t));
-  ac_decoder_init(&acd, Par.tFileName[0]);
-  ac_model_init(&acm, 2);
-  if((markC = readNBits(64, &acd, &acm)) != MARK)
-    {
-    fprintf(stderr, "Error: unmatching compressed file!\n"
-    "%s is not a compressed file by smash!\n", Par.tFileName[0]);
-    exit(1);
-    }
-  CmpCheckSum(readNBits(64, &acd, &acm));
-  Par.rc = readNBits(32, &acd, &acm);
-  Par.rm = readNBits(32, &acd, &acm);
-  Par.ri = readNBits( 1, &acd, &acm);
-  Par.ra = readNBits(32, &acd, &acm);
-  ac_model_done(&acm);
-  ac_decoder_done(&acd);
-  for(n = 1 ; n < Par.nTFiles ; ++n)
-    {
-    ac_decoder_init(&acd, Par.tFileName[n]);
-    if((markC  = readNBits(64, &acd, &acm)) != MARK)
-      {
-      fprintf(stderr, "Error: unmatching compressed file!\n%s is not a "
-      "compressed file by smash!\n", Par.tFileName[n]);
-      exit(1);
-      }
-    ac_model_init(&acm, 2);
-    CmpCheckSum(readNBits(64, &acd, &acm));
-    rc = readNBits(32, &acd, &acm);
-    rm = readNBits(32, &acd, &acm);
-    ri = readNBits( 1, &acd, &acm);
-    ra = readNBits(32, &acd, &acm);
-    ac_model_done(&acm);
-    ac_decoder_done(&acd);
-    if(rc != Par.rc) ok = 1;
-    if(rm != Par.rm) ok = 1;
-    if(ri != Par.ri) ok = 1;
-    if(ra != Par.ra) ok = 1;
-    run[n] = (ok == 0 ? 0 : 1);
-    if(run[n] == 1)
-      CmpInputError(n);
-    ok = 0;
-    }
-  return run;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
