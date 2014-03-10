@@ -150,26 +150,26 @@ static HCCounters auxCounters;
 
 static void InitHashTable(CModel *cModel)
   { 
-  cModel->hTable.entries = (Entry **)Calloc(cModel->hTable.size, 
-    sizeof(Entry *));
-  cModel->hTable.counters = (HCCounters **)Calloc(cModel->hTable.size,
-    sizeof(HCCounters *));
-  cModel->hTable.entrySize = (unsigned short *)Calloc(cModel->hTable.size,
-    sizeof(unsigned short));
+  cModel->hTable.entries = (Entry **) Calloc(cModel->hTable.size, 
+  sizeof(Entry *));
+  cModel->hTable.counters = (HCCounters **)Calloc(cModel->hTable.size, 
+  sizeof(HCCounters *));
+  cModel->hTable.entrySize = (unsigned short *)Calloc(cModel->hTable.size, 
+  sizeof(unsigned short));
 
   cModel->hTable.nUsedEntries = 0;
   cModel->hTable.nUsedKeys = 0;
   }
 
-/*----------------------------------------------------------------------------*/
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 static void InitArray(CModel *cModel)
   {
-  cModel->array.counters = (ACCounter *)Calloc(cModel->nPModels *
-    cModel->nSymbols, sizeof(ACCounter));
+  cModel->array.counters = (ACCounter *) Calloc(cModel->nPModels << 2, 
+  sizeof(ACCounter));
   }
 
-/*----------------------------------------------------------------------------*/
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 static void InsertKey(HashTable *hTable, unsigned hIndex, uint64_t key)
   {
@@ -184,7 +184,7 @@ static void InsertKey(HashTable *hTable, unsigned hIndex, uint64_t key)
   hTable->entrySize[hIndex]++;
   }
 
-/*----------------------------------------------------------------------------*/
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 static void InsertCounters(HashTable *hTable, unsigned hIndex, unsigned 
 nHCCounters, unsigned k, unsigned smallCounters)
@@ -202,7 +202,7 @@ nHCCounters, unsigned k, unsigned smallCounters)
   hTable->counters[hIndex][k][3] = (smallCounters & (0x03 << 6)) >> 6;
   }
 
-/*----------------------------------------------------------------------------*/
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 static HCCounter *GetHCCounters(HashTable *hTable, uint64_t key)
   {
@@ -234,7 +234,7 @@ static HCCounter *GetHCCounters(HashTable *hTable, uint64_t key)
   return NULL;
   }
 
-/*----------------------------------------------------------------------------*/
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 PModel *CreatePModel(unsigned nSymbols)
   {
@@ -245,12 +245,13 @@ PModel *CreatePModel(unsigned nSymbols)
   return pModel;
   }
 
-/*----------------------------------------------------------------------------*/
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void UpdateCModelCounter(CModel *cModel, uint64_t pModelIdx, unsigned symbol)
+void UpdateCModelCounter(CModel *cModel, unsigned symbol)
   {
   unsigned n;
   ACCounter *aCounters;
+  uint64_t pModelIdx = cModel->pModelIdx;
 
   if(cModel->mode == HASH_TABLE_MODE)
     {
@@ -324,53 +325,66 @@ void UpdateCModelCounter(CModel *cModel, uint64_t pModelIdx, unsigned symbol)
     }
   }
 
-/*----------------------------------------------------------------------------*/
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-CModel *CreateCModel(unsigned maxCtxSize, unsigned nSymbols, unsigned
-nCtxSymbols, unsigned deltaNum, unsigned deltaDen, unsigned maxCount,
-unsigned hSize)
+CModel *CreateCModel(uint32_t ctx, uint32_t a,  uint32_t hs, uint32_t mc) 
   {
-  CModel *cModel;
-  cModel = (CModel *)Calloc(1, sizeof(CModel));
+  CModel    *cModel = (CModel *)Calloc(1, sizeof(CModel));
+  uint64_t  n, prod = 1;
 
-  if(maxCtxSize > 31)
+  if(ctx > 31)
     {
     fprintf(stderr, "Error: context size cannot be greater than 31\n");
     exit(1);
     }
 
-  cModel->nPModels    = (uint64_t) pow (nCtxSymbols, maxCtxSize);
-  cModel->maxCtxSize  = maxCtxSize;
-  cModel->ctxSize     = maxCtxSize;
-  cModel->nSymbols    = nSymbols;
-  cModel->nCtxSymbols = nCtxSymbols;
-  cModel->deltaNum    = deltaNum;
-  cModel->deltaDen    = deltaDen;
-  cModel->hTable.size = hSize;
+  cModel->nPModels      = (uint64_t) pow(4, ctx);
+  cModel->multipliers   = (uint64_t *) Calloc(ctx, sizeof(uint64_t));
+  cModel->ctx           = ctx;
+  cModel->nSymbols      = 4;
+  cModel->deltaNum      = 1;
+  cModel->deltaDen      = a;
+  cModel->hTable.size   = hs;
+  cModel->pModelIdx     = 0;
+  cModel->kMinusOneMask = (0x01 << 2 * (ctx - 1)) - 1;
 
-  if(maxCtxSize >= HASH_TABLE_BEGIN_CTX)
+  if(ctx >= HASH_TABLE_BEGIN_CTX)
     {
     cModel->mode     = HASH_TABLE_MODE;
-    cModel->maxCount = maxCount >> 8;
+    cModel->maxCount = mc >> 8;
     InitHashTable(cModel);
     }
   else
     {
     cModel->mode     = ARRAY_MODE;
-    cModel->maxCount = maxCount;
+    cModel->maxCount = mc;
     InitArray(cModel);
+    }
+
+  for(n = 0 ; n != ctx ; ++n)
+    {
+    cModel->multipliers[n] = prod;
+    prod <<= 2;
     }
 
   return cModel;
   }
 
-/*----------------------------------------------------------------------------*/
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void ComputePModel(CModel *cModel, PModel *pModel, uint64_t pModelIdx)
+inline void GetPModelIdx(uint8_t *p, CModel *M)
+  {
+  M->pModelIdx = ((M->pModelIdx & M->kMinusOneMask) << 2) + (*(p - 1) & 0x03);
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+void ComputePModel(CModel *cModel, PModel *pModel)
   {
   int symbol;
   ACCounter *aCounters;
   HCCounter *hCounters;
+  uint64_t pModelIdx = cModel->pModelIdx;
 
   pModel->sum = 0;
   if(cModel->mode == HASH_TABLE_MODE)
@@ -380,8 +394,7 @@ void ComputePModel(CModel *cModel, PModel *pModel, uint64_t pModelIdx)
 
     for(symbol = 0 ; symbol < cModel->nSymbols ; symbol++)
       {
-      pModel->freqs[symbol] = cModel->deltaNum + cModel->deltaDen *
-        hCounters[symbol];
+      pModel->freqs[symbol] = 1 + cModel->deltaDen * hCounters[symbol];
       pModel->sum += pModel->freqs[symbol];
       }
     }
@@ -390,8 +403,7 @@ void ComputePModel(CModel *cModel, PModel *pModel, uint64_t pModelIdx)
     aCounters = &cModel->array.counters[pModelIdx * cModel->nSymbols];
     for(symbol = 0 ; symbol < cModel->nSymbols ; symbol++)
       {
-      pModel->freqs[symbol] = cModel->deltaNum + cModel->deltaDen *
-        aCounters[symbol];
+      pModel->freqs[symbol] = 1 + cModel->deltaDen * aCounters[symbol];
       pModel->sum += pModel->freqs[symbol];
       }
     }

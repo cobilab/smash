@@ -70,6 +70,20 @@ double SearchLog(uint32_t idx)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+uint8_t DNASymToNum(uint8_t symbol)
+  {
+  switch(symbol)
+    {
+    case 'A': return 0;
+    case 'C': return 1;
+    case 'G': return 2;
+    case 'T': return 3;
+    default: fprintf(stderr, "Error: unknown numerical symbols\n"); exit(1);
+    }
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 uint8_t GetComp2(uint8_t symbol)
   {
   switch(symbol)

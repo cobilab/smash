@@ -44,14 +44,15 @@ PModel;
 
 typedef struct
   {
-  unsigned   maxCtxSize;  /* Maximum depth of context template */
-  unsigned   ctxSize;  /* Current depth of context template */
+  unsigned   ctx;       /* Current depth of context template */
   unsigned   nSymbols;  /* Number of coding symbols */
-  unsigned   nCtxSymbols;/* Number of symbols used for context computation */
   ULL        nPModels;  /* Maximum number of probability models */
   unsigned   deltaNum;  /* Numerator of delta */
   unsigned   deltaDen;  /* Denominator of delta */
   unsigned   maxCount;  /* Counters /= 2 if one counter >= maxCount */
+  uint64_t   *multipliers;
+  uint64_t   pModelIdx;
+  uint64_t   kMinusOneMask;           // e.g. ...0001111111111, if ctxSize = 6
   unsigned   mode;
   HashTable  hTable;
   Array      array;
@@ -68,16 +69,16 @@ void       UpdateHashCounter(CModel *, uint64_t, uint8_t);
 HCCounter  *GetHCCounters   (HashTable *, uint64_t);
 */
 
-PModel *CreatePModel(unsigned nSymbols);
-void UpdateCModelCounter(CModel *cModel, uint64_t pModelIdx, unsigned symbol);
-CModel *CreateCModel(unsigned maxCtxSize, unsigned nSymbols, unsigned 
-nCtxSymbols, unsigned deltaNum, unsigned deltaDen, unsigned maxCount,
-unsigned hSize);
-double FractionOfPModelsUsed(CModel *cModel);
-double FractionOfPModelsUsedOnce(CModel *cModel);
-void ComputePModel(CModel *cModel, PModel *pModel, uint64_t pModelIdx);
-double PModelSymbolNats(PModel *pModel, unsigned symbol);
-void HashingStats(CModel *cModel);
+inline void  GetPModelIdx(uint8_t *, CModel *);
+PModel       *CreatePModel(unsigned nSymbols);
+void         UpdateCModelCounter(CModel *cModel, unsigned);
+CModel       *CreateCModel(uint32_t, uint32_t, uint32_t, uint32_t);
+double       FractionOfPModelsUsed(CModel *cModel);
+double       FractionOfPModelsUsedOnce(CModel *cModel);
+void         ComputePModel(CModel *cModel, PModel *pModel);
+double       PModelSymbolNats(PModel *pModel, unsigned symbol);
+void         HashingStats(CModel *cModel);
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #endif
