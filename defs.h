@@ -30,6 +30,7 @@ Parameters;
 #define HASH_TABLE_BEGIN_CTX   14
 #define MAX_STRING_SIZE        1024
 #define LEFT_BUFFER_GUARD      32
+#define PRECISION              2
 
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0

@@ -14,26 +14,27 @@
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - C O M P R E S S O R - - - - - - - - - - - - -
 
-void Compress(char *sTar, CModel *cModel, Parameters *P)
+char *Compress(char *sTar, CModel *cModel, Parameters *P)
   {
-  FILE     *Reader = Fopen(sTar, "r");
-  uint32_t k, idxPos;
-  int32_t  idx = 0;
-  uint8_t   *readerBuffer, *symbolBuffer, *tmp, sym;
+  FILE      *Reader  = Fopen(sTar, "r");
+  char      *name    = concatenate(sTar, ".inf");
+  FILE      *Writter = Fopen(name, "w");
+  uint32_t  k, idxPos;
+  int32_t   idx = 0;
+  uint8_t   *readerBuffer, *symbolBuffer, sym;
+  PModel    *pModel;
   #ifdef PROGRESS
   uint64_t  i = 0;
   #endif
-  PModel *pModel;
 
-  pModel = CreatePModel(4);
-
+  pModel        = CreatePModel(4);
   readerBuffer  = (uint8_t *) Calloc(BUFFER_SIZE, sizeof(uint8_t));
   symbolBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + LEFT_BUFFER_GUARD,
   sizeof(uint8_t));
   symbolBuffer += LEFT_BUFFER_GUARD;
 
   if(P->verbose == 1)
-    fprintf(stderr, "Loading target sequence ... \n"); 
+    fprintf(stderr, "Compressing target sequence ... \n"); 
 
   while((k = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
     for(idxPos = 0 ; idxPos != k ; ++idxPos)
@@ -41,22 +42,28 @@ void Compress(char *sTar, CModel *cModel, Parameters *P)
       symbolBuffer[idx] = sym = DNASymToNum(readerBuffer[idxPos]);
       GetPModelIdx(symbolBuffer+idx, cModel);
       ComputePModel(cModel, pModel);
-//    UpdateCModelCounter(cModel, sym);
       if(++idx == BUFFER_SIZE)
         {
         memcpy(symbolBuffer - LEFT_BUFFER_GUARD, symbolBuffer +
         idx - LEFT_BUFFER_GUARD, LEFT_BUFFER_GUARD);
         idx = 0;
         }
+      fprintf(Writter, "%.*f\n", PRECISION, PModelSymbolNats(pModel, sym));
       #ifdef PROGRESS
-      CalcProgress(P->refSize, ++i);
+      CalcProgress(P->tarSize, ++i);
       #endif
       }
 
   if(P->verbose == 1)
     fprintf(stderr, "Done!                  \n");          // Spaces are valid
 
-  return;
+  // FREE
+  //FreeCModel();
+  Free(pModel->freqs);
+  Free(pModel);
+  Free(readerBuffer);
+
+  return name;
   }
 
 
@@ -68,7 +75,7 @@ CModel *LoadReference(char *sRef, Parameters *P)
   FILE      *Reader = Fopen(sRef, "r");
   uint32_t  k, idxPos;
   int32_t   idx = 0;
-  uint8_t   *readerBuffer, *symbolBuffer, *tmp, sym;
+  uint8_t   *readerBuffer, *symbolBuffer, sym;
   CModel    *cModel;
   #ifdef PROGRESS
   uint64_t  i = 0;
@@ -128,7 +135,10 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
   Reader   = Fopen(fName, "r");
   fNameOut = concatenate(fName, timeMark);
   Writter  = Fopen(fNameOut, "w");
-  
+
+  if(P->verbose == 1)
+    fprintf(stderr, "Randomizing 'N' chars ...\n"); 
+ 
   while((maxIdx = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
     {
     i = 0;
@@ -146,6 +156,9 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
     if(type == 0) P->refSize += i; else P->tarSize += i; 
     }
 
+  if(P->verbose == 1)
+    fprintf(stderr, "Done!\n");
+
   fclose(Reader);
   fclose(Writter);
   return fNameOut;
@@ -159,8 +172,7 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
 
 int32_t main(int argc, char *argv[])
   {
-  char        **p = *&argv, *sRef, *sTar;
-  uint32_t    n;
+  char        **p = *&argv, *sRef, *sTar, *nameInf;
   Parameters  Par;
   clock_t     tic, tac, start;
   double      cpuTimeUsed;
@@ -202,30 +214,25 @@ int32_t main(int argc, char *argv[])
 
   // 1. RANDOMIZE N CHARS
   if(P->verbose == 1)
-    printf("Randomizing 'N' chars ...\n");
+    start = clock();
 
-  start      = clock();
   P->refSize = 0;
   P->tarSize = 0;
   sRef       = RandomNChars(argv[argc-2], 0  , P, 0);
   sTar       = RandomNChars(argv[argc-1], 101, P, 1);
-  tic        = clock();
-
-  if(P->verbose == 1)
-    {
-    cpuTimeUsed = ((double) (tic-start)) / CLOCKS_PER_SEC;
-    printf("Needed %g s for randomizing 'N' chars.\n", cpuTimeUsed);
-    }
-
 
   // 2. EXCLUSIVE CONDITIONAL COMPRESSION
   refModel = LoadReference(sRef, P);
-  Compress(sTar, refModel, P);
+  nameInf  = Compress(sTar, refModel, P);
 
-  //LoadReference();
-  //Compress(&P);
+  if(P->verbose == 1)
+    {
+    tic = clock();
+    cpuTimeUsed = ((double) (tic-start)) / CLOCKS_PER_SEC;
+    fprintf(stderr, "Needed %g s for compression.\n", cpuTimeUsed);
+    }
 
-
+//  unlink(nameInf);
 //  unlink(sRef);
 //  unlink(sTar);
 
