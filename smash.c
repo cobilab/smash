@@ -19,7 +19,8 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
   FILE      *Reader  = Fopen(sTar, "r");
   char      *name    = concatenate(sTar, ".inf");
   FILE      *Writter = Fopen(name, "w");
-  uint32_t  k, idxPos;
+  uint32_t  k, idxPos, instance;
+  uint64_t  bits = 0;
   int32_t   idx = 0;
   uint8_t   *readerBuffer, *symbolBuffer, sym;
   PModel    *pModel;
@@ -40,28 +41,35 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
     for(idxPos = 0 ; idxPos != k ; ++idxPos)
       {
       symbolBuffer[idx] = sym = DNASymToNum(readerBuffer[idxPos]);
-      GetPModelIdx(symbolBuffer+idx, cModel);
+      GetPModelIdx(symbolBuffer+idx-1, cModel);
       ComputePModel(cModel, pModel);
+      bits += (instance = FLog2(pModel->sum / pModel->freqs[sym]));
+      fprintf(Writter, "%.*f\n", PRECISION, (float) instance);
       if(++idx == BUFFER_SIZE)
         {
         memcpy(symbolBuffer - LEFT_BUFFER_GUARD, symbolBuffer +
         idx - LEFT_BUFFER_GUARD, LEFT_BUFFER_GUARD);
         idx = 0;
         }
-      fprintf(Writter, "%.*f\n", PRECISION, PModelSymbolNats(pModel, sym));
       #ifdef PROGRESS
       CalcProgress(P->tarSize, ++i);
       #endif
       }
 
   if(P->verbose == 1)
+    {
     fprintf(stderr, "Done!                  \n");          // Spaces are valid
+    fprintf(stderr, "Used %"PRIu64" bytes.\n", bits / 8);
+    }
 
   // FREE
-  //FreeCModel();
+  FreeCModel(cModel);
   Free(pModel->freqs);
   Free(pModel);
   Free(readerBuffer);
+
+  fprintf(stderr, "Sleeping....");
+  sleep(5);
 
   return name;
   }
@@ -95,7 +103,7 @@ CModel *LoadReference(char *sRef, Parameters *P)
     for(idxPos = 0 ; idxPos != k ; ++idxPos)
       {
       symbolBuffer[idx] = sym = DNASymToNum(readerBuffer[idxPos]);
-      GetPModelIdx(symbolBuffer+idx, cModel);
+      GetPModelIdx(symbolBuffer+idx-1, cModel);
       UpdateCModelCounter(cModel, sym);
       if(++idx == BUFFER_SIZE)
         {

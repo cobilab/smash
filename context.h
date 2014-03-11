@@ -47,12 +47,11 @@ typedef struct
   unsigned        ctx;                    // Current depth of context template
   unsigned        nSymbols;                        // Number of coding symbols
   ULL             nPModels;            // Maximum number of probability models
-  unsigned        deltaNum;                              // Numerator of delta
-  unsigned        deltaDen;                            // Denominator of delta
+  unsigned        alphaDen;                            // Denominator of alpha
   unsigned        maxCount;        // Counters /= 2 if one counter >= maxCount
-  uint64_t        *multipliers;
+  uint64_t        multiplier;
   uint64_t        pModelIdx;
-  uint64_t        kMinusOneMask;      // e.g. ...0001111111111, if ctxSize = 6
+//  uint64_t        kMinusOneMask;      // e.g. ...0001111111111, if ctxSize = 6
   unsigned        mode;
   HashTable       hTable;
   Array           array;
@@ -61,12 +60,13 @@ CModel;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+void         FreeCModel          (CModel *);
 inline void  GetPModelIdx        (uint8_t *, CModel *);
-PModel       *CreatePModel       (unsigned nSymbols);
-void         UpdateCModelCounter (CModel *cModel, unsigned);
+PModel       *CreatePModel       (unsigned);
+void         UpdateCModelCounter (CModel *, unsigned);
 CModel       *CreateCModel       (uint32_t, uint32_t, uint32_t, uint32_t);
-void         ComputePModel       (CModel *cModel, PModel *pModel);
-double       PModelSymbolNats    (PModel *pModel, unsigned symbol);
+void         ComputePModel       (CModel *, PModel *);
+double       PModelSymbolNats    (PModel *, unsigned);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

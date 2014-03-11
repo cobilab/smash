@@ -61,7 +61,7 @@ void *Realloc(void *ptr, size_t size, size_t additionalSize)
 void Free(void *ptr)
   {
   free(ptr);
-  ptr = NULL;                                           // prevent double free
+//  ptr = NULL;                                           // prevent double free
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

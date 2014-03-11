@@ -69,23 +69,28 @@ void FreeCModel(CModel *cModel)
   {
   uint32_t n, k;
 
-  for(k = 0 ; k < cModel->hTable.size ; ++k)
+  if(cModel->mode == HASH_TABLE_MODE)
     {
-    for(n = 0 ; n < cModel->hTable.entrySize[k] ; ++n)
-      Free(&cModel->hTable.entries[k][n].counters);
-    Free(cModel->hTable.entries[k]);
+    for(k = 0 ; k < cModel->hTable.size ; ++k)
+      {
+      //for(n = 0 ; n < cModel->hTable.entrySize[k] ; ++n)
+        //cModel->hTable.entries[k][n] = NULL;
+      Free(cModel->hTable.entries[k]);
+      }
+    free(cModel->hTable.entries);
+
+    for(k = 0 ; k < cModel->nSymbols ; ++k)
+      Free(cModel->hTable.counters[k]);
+    Free(cModel->hTable.counters);
+    
+    Free(cModel->hTable.entrySize);
+
+    //Free(cModel->hTable);
     }
+  else // TABLE_MODE
+    ; //Free(cModel->counters);
 
-//  Free(cModel->hTable.zeroCounters[0]);
-//  Free(cModel->hTable.zeroCounters[1]);
-//  Free(cModel->hTable.zeroCounters[2]);
-//  Free(cModel->hTable.zeroCounters[3]);
-
-//  Free(cModel->hTable.zeroCounters);
-  Free(cModel->hTable.entries);
-  Free(cModel->hTable.entrySize);
-//  Free(cModel->counters);
-  Free(cModel);
+ // Free(cModel);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,7 +196,6 @@ void UpdateCModelCounter(CModel *cModel, unsigned symbol)
       {
       if(cModel->hTable.entries[hIndex][n].key == pModelIdx)
         {
-
         // If "counters" is zero, then update the "large" counters.
         if(cModel->hTable.entries[hIndex][n].counters == 0)
           {
@@ -263,8 +267,11 @@ void UpdateCModelCounter(CModel *cModel, unsigned symbol)
 
 CModel *CreateCModel(uint32_t ctx, uint32_t a,  uint32_t hs, uint32_t mc) 
   {
-  CModel    *cModel = (CModel *)Calloc(1, sizeof(CModel));
-  uint64_t  n, prod = 1;
+  CModel    *cModel;
+  uint64_t  prod = 1, *multipliers;
+  uint32_t  n;
+
+  cModel = (CModel *) Calloc(1, sizeof(CModel));
 
   if(ctx > 31)
     {
@@ -272,15 +279,14 @@ CModel *CreateCModel(uint32_t ctx, uint32_t a,  uint32_t hs, uint32_t mc)
     exit(1);
     }
 
+  multipliers           = (uint64_t *) Calloc(ctx, sizeof(uint64_t));
   cModel->nPModels      = (uint64_t) pow(4, ctx);
-  cModel->multipliers   = (uint64_t *) Calloc(ctx, sizeof(uint64_t));
   cModel->ctx           = ctx;
   cModel->nSymbols      = 4;
-  cModel->deltaNum      = 1;
-  cModel->deltaDen      = a;
+  cModel->alphaDen      = a;
   cModel->hTable.size   = hs;
   cModel->pModelIdx     = 0;
-  cModel->kMinusOneMask = (0x01 << 2 * (ctx - 1)) - 1;
+  //cModel->kMinusOneMask = (0x01 << 2 * (ctx - 1)) - 1;
 
   if(ctx >= HASH_TABLE_BEGIN_CTX)
     {
@@ -297,9 +303,11 @@ CModel *CreateCModel(uint32_t ctx, uint32_t a,  uint32_t hs, uint32_t mc)
 
   for(n = 0 ; n != ctx ; ++n)
     {
-    cModel->multipliers[n] = prod;
+    multipliers[n] = prod;
     prod <<= 2;
     }
+
+  cModel->multiplier = multipliers[cModel->ctx-1];
 
   return cModel;
   }
@@ -307,45 +315,37 @@ CModel *CreateCModel(uint32_t ctx, uint32_t a,  uint32_t hs, uint32_t mc)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 inline void GetPModelIdx(uint8_t *p, CModel *M)
-  {
-  M->pModelIdx = ((M->pModelIdx & M->kMinusOneMask) << 2) + (*(p - 1) & 0x03);
-  }
+ {
+ M->pModelIdx = ((M->pModelIdx - *(p - M->ctx) * M->multiplier) << 2) + *p;
+// M->pModelIdx = ((M->pModelIdx & M->kMinusOneMask) << 2) + (*(p - 1) & 0x03);
+ }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void ComputePModel(CModel *cModel, PModel *pModel)
   {
-  ACCounter  *aCounters;
-  HCCounter  *hCounters;
-  uint64_t   pModelIdx = cModel->pModelIdx;
-
-  pModel->sum = 0;
   if(cModel->mode == HASH_TABLE_MODE)
     {
-    if(!(hCounters = GetHCCounters(&cModel->hTable, pModelIdx)))
+    HCCounter *hCounters;
+    if(!(hCounters = GetHCCounters(&cModel->hTable, cModel->pModelIdx)))
       hCounters = zeroCounters;
-
-    pModel->freqs[0] = 1 + cModel->deltaDen * hCounters[0];
-    pModel->sum     += pModel->freqs[0];
-    pModel->freqs[1] = 1 + cModel->deltaDen * hCounters[1];
-    pModel->sum     += pModel->freqs[1];
-    pModel->freqs[2] = 1 + cModel->deltaDen * hCounters[2];
-    pModel->sum     += pModel->freqs[2];
-    pModel->freqs[3] = 1 + cModel->deltaDen * hCounters[3];
-    pModel->sum     += pModel->freqs[3];
+    pModel->freqs[0] = 1 + cModel->alphaDen * hCounters[0];
+    pModel->freqs[1] = 1 + cModel->alphaDen * hCounters[1];
+    pModel->freqs[2] = 1 + cModel->alphaDen * hCounters[2];
+    pModel->freqs[3] = 1 + cModel->alphaDen * hCounters[3];
     }
   else
     {
-    aCounters        = &cModel->array.counters[pModelIdx << 2];
-    pModel->freqs[0] = 1 + cModel->deltaDen * aCounters[0];
-    pModel->sum     += pModel->freqs[0];
-    pModel->freqs[1] = 1 + cModel->deltaDen * aCounters[1];
-    pModel->sum     += pModel->freqs[1];
-    pModel->freqs[2] = 1 + cModel->deltaDen * aCounters[2];
-    pModel->sum     += pModel->freqs[2];
-    pModel->freqs[3] = 1 + cModel->deltaDen * aCounters[3];
-    pModel->sum     += pModel->freqs[3];
+    ACCounter *aCounters;
+    aCounters = &cModel->array.counters[cModel->pModelIdx << 2];
+    pModel->freqs[0] = 1 + cModel->alphaDen * aCounters[0];
+    pModel->freqs[1] = 1 + cModel->alphaDen * aCounters[1];
+    pModel->freqs[2] = 1 + cModel->alphaDen * aCounters[2];
+    pModel->freqs[3] = 1 + cModel->alphaDen * aCounters[3];
     }
+
+  pModel->sum = pModel->freqs[0] + pModel->freqs[1] + pModel->freqs[2] + 
+  pModel->freqs[3];
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

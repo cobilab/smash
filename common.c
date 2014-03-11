@@ -75,9 +75,9 @@ uint8_t DNASymToNum(uint8_t symbol)
   switch(symbol)
     {
     case 'A': return 0;
+    case 'T': return 3;
     case 'C': return 1;
     case 'G': return 2;
-    case 'T': return 3;
     default: fprintf(stderr, "Error: unknown numerical symbols\n"); exit(1);
     }
   }
