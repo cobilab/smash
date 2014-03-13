@@ -51,7 +51,6 @@ typedef struct
   unsigned        maxCount;        // Counters /= 2 if one counter >= maxCount
   uint64_t        multiplier;
   uint64_t        pModelIdx;
-//  uint64_t        kMinusOneMask;      // e.g. ...0001111111111, if ctxSize = 6
   unsigned        mode;
   HashTable       hTable;
   Array           array;
@@ -61,8 +60,10 @@ CModel;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void         FreeCModel          (CModel *);
+//inline void  GetPModelIdx3       (uint8_t *, CModel *);
 inline void  GetPModelIdx        (uint8_t *, CModel *);
 PModel       *CreatePModel       (unsigned);
+void         ResetCModel         (CModel *);
 void         UpdateCModelCounter (CModel *, unsigned);
 CModel       *CreateCModel       (uint32_t, uint32_t, uint32_t, uint32_t);
 void         ComputePModel       (CModel *, PModel *);

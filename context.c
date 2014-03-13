@@ -54,9 +54,9 @@ static void InitHashTable(CModel *cModel)
   { 
   cModel->hTable.entries = (Entry **) Calloc(cModel->hTable.size, 
   sizeof(Entry *));
-  cModel->hTable.counters = (HCCounters **)Calloc(cModel->hTable.size, 
+  cModel->hTable.counters = (HCCounters **) Calloc(cModel->hTable.size, 
   sizeof(HCCounters *));
-  cModel->hTable.entrySize = (unsigned short *)Calloc(cModel->hTable.size, 
+  cModel->hTable.entrySize = (unsigned short *) Calloc(cModel->hTable.size, 
   sizeof(unsigned short));
 
   cModel->hTable.nUsedEntries = 0;
@@ -73,24 +73,26 @@ void FreeCModel(CModel *cModel)
     {
     for(k = 0 ; k < cModel->hTable.size ; ++k)
       {
-      //for(n = 0 ; n < cModel->hTable.entrySize[k] ; ++n)
-        //cModel->hTable.entries[k][n] = NULL;
-      Free(cModel->hTable.entries[k]);
+      if(cModel->hTable.entrySize[k] != 0)
+        free(cModel->hTable.entries[k]);
+      if(cModel->hTable.counters[k] != NULL)
+        {
+//        for(n = 0 ; n < 4 ; ++n )
+//          Free(cModel->hTable.counters[k][n]);
+          // WHAT ABOUT THE HCCounters?
+        free(cModel->hTable.counters[k]);
+        }
       }
     free(cModel->hTable.entries);
-
-    for(k = 0 ; k < cModel->nSymbols ; ++k)
-      Free(cModel->hTable.counters[k]);
-    Free(cModel->hTable.counters);
-    
-    Free(cModel->hTable.entrySize);
-
-    //Free(cModel->hTable);
+    free(cModel->hTable.counters);
+    free(cModel->hTable.entrySize);
     }
   else // TABLE_MODE
-    ; //Free(cModel->counters);
+    {
+    free(cModel->array.counters);
+    }
 
- // Free(cModel);
+  free(cModel);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -286,7 +288,6 @@ CModel *CreateCModel(uint32_t ctx, uint32_t a,  uint32_t hs, uint32_t mc)
   cModel->alphaDen      = a;
   cModel->hTable.size   = hs;
   cModel->pModelIdx     = 0;
-  //cModel->kMinusOneMask = (0x01 << 2 * (ctx - 1)) - 1;
 
   if(ctx >= HASH_TABLE_BEGIN_CTX)
     {
@@ -314,11 +315,32 @@ CModel *CreateCModel(uint32_t ctx, uint32_t a,  uint32_t hs, uint32_t mc)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+void ResetCModel(CModel *cModel)
+  {
+  cModel->pModelIdx = 0;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 inline void GetPModelIdx(uint8_t *p, CModel *M)
- {
- M->pModelIdx = ((M->pModelIdx - *(p - M->ctx) * M->multiplier) << 2) + *p;
-// M->pModelIdx = ((M->pModelIdx & M->kMinusOneMask) << 2) + (*(p - 1) & 0x03);
- }
+  {
+  M->pModelIdx = ((M->pModelIdx - *(p - M->ctx) * M->multiplier) << 2) + *p;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+/*
+inline void GetPModelIdx3(uint8_t *symbolPtr, CModel *cModel)
+  {
+  uint64_t idx = 0;
+  uint32_t n;
+
+  for(n = 1 ; n <= cModel->ctx ; ++n)
+    idx += *--symbolPtr * cModel->multipliers[n-1];
+
+  cModel->pModelIdx = idx;
+  }
+*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

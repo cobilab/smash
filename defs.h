@@ -13,6 +13,7 @@ typedef struct
   uint32_t context;
   uint32_t alpha;
   uint32_t hash;
+  uint32_t seed;
   double   threshold;
   uint32_t window;
   uint32_t drop;
@@ -25,12 +26,13 @@ Parameters;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // SYSTEM VALUES:
-#define BUFFER_SIZE            1000000                                    //1M
+#define BUFFER_SIZE            50             // DO NOT INCREASE THIS VALUE!
 #define PROGRESS_MIN           1000
-#define HASH_TABLE_BEGIN_CTX   14
+#define HASH_TABLE_BEGIN_CTX   15
 #define MAX_STRING_SIZE        1024
 #define LEFT_BUFFER_GUARD      32
 #define PRECISION              2
+#define SEED_JUMP              101
 
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0
@@ -40,6 +42,7 @@ Parameters;
 #define DEFAULT_ALPHA          1000
 #define DEFAULT_MAX_COUNT      65535
 #define DEFAULT_HASH_SIZE      29999999
+#define DEFAULT_SEED           -1
 #define DEFAULT_THRESHOLD      1.5
 #define DEFAULT_WINDOW         100001
 #define DEFAULT_DROP           50000
