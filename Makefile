@@ -3,7 +3,7 @@
 #============================================================================#
 BIN    = .
 CC     = gcc
-CPLP   = -fstrict-aliasing -ffast-math -msse2 -g
+CPLP   = -fstrict-aliasing -ffast-math -msse2 #-g
 #-----------------------------------------------------------------------------
 P1     = -DPROGRESS                           #GIVES PROGRESS STATUS (EX: 54%)
 #-----------------------------------------------------------------------------
@@ -12,7 +12,7 @@ CFLAGS = -Wall $(CPLP) $(P1)
 LIBS   = -lm 
 DEPS   = defs.h
 PROGS  = $(BIN)/smash 
-OBJS   = mem.o common.o context.o filters.o
+OBJS   = mem.o common.o context.o filters.o segment.o reverse.o
 #-----------------------------------------------------------------------------
 all:
 	$(MAKE) progs
@@ -27,6 +27,10 @@ context.o: context.c context.h $(DEPS)
 	$(CC) -c $(CFLAGS) context.c
 filters.o: filters.c filters.h $(DEPS)
 	$(CC) -c $(CFLAGS) filters.c
+segment.o: segment.c segment.h $(DEPS)
+	$(CC) -c $(CFLAGS) segment.c
+reverse.o: reverse.c reverse.h $(DEPS)
+	$(CC) -c $(CFLAGS) reverse.c
 clean:
 	/bin/rm -f *.o
 cleanall:

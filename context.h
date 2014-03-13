@@ -8,7 +8,6 @@
 
 typedef unsigned short ACCounter;       // Size of context counters for arrays
 typedef unsigned char  HCCounter;  // Size of context counters for hash tables
-typedef unsigned long long ULL;
 typedef HCCounter HCCounters[4];
 
 typedef struct

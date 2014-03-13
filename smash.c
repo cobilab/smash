@@ -11,6 +11,8 @@
 #include "common.h"
 #include "context.h"
 #include "filters.h"
+#include "segment.h"
+#include "reverse.h"
 
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - C O M P R E S S O R - - - - - - - - - - - - -
@@ -28,40 +30,38 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
   #ifdef PROGRESS
   uint64_t  i = 0;
   #endif
+  clock_t   start, stop;
+
+  if(P->verbose == 1)
+    {
+    start = clock();
+    fprintf(stderr, "Compressing target sequence ...\n");
+    }
 
   pModel        = CreatePModel(4);
   readerBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + 1, sizeof(uint8_t));
   symbolBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + LEFT_BUFFER_GUARD + 1, sizeof(uint8_t));
   symbolBuffer += LEFT_BUFFER_GUARD;
-
-  if(P->verbose == 1)
-    fprintf(stderr, "Compressing target sequence ... \n"); 
-
   while((k = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
     {
     for(idxPos = 0 ; idxPos < k ; ++idxPos)
       {
       symbolBuffer[idx] = sym = DNASymToNum(readerBuffer[idxPos]);
-
       GetPModelIdx(symbolBuffer+idx-1, cModel);
-/*
-      printf("Sym: %d, idx: %d, idxPos: %u\n"
+/*    printf("Sym: %d, idx: %d, idxPos: %u\n"
       "readerBuffer: %s\nsymbolBuffer:%s\n", sym, idx, idxPos, readerBuffer, symbolBuffer);
-     
       if(cModel->pModelIdx > pow(4, cModel->ctx))
         {
         printf("%llu, %llu\n", (ULL)cModel->pModelIdx, (ULL) pow(4, cModel->ctx));
 	exit(1);        
-        }
-*/
-
+        }     */
       ComputePModel(cModel, pModel);
       bits += (instance = FLog2(pModel->sum / pModel->freqs[sym]));
       fprintf(Writter, "%.*f\n", PRECISION, (float) instance);
       if(++idx == BUFFER_SIZE)
         {
-        memcpy(symbolBuffer - LEFT_BUFFER_GUARD, symbolBuffer +
-        idx - LEFT_BUFFER_GUARD, LEFT_BUFFER_GUARD);
+        memcpy(symbolBuffer - LEFT_BUFFER_GUARD, symbolBuffer + idx - 
+        LEFT_BUFFER_GUARD, LEFT_BUFFER_GUARD);
         idx = 0;
         }
       #ifdef PROGRESS
@@ -69,21 +69,20 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
       #endif
       }
     }
-
-  if(P->verbose == 1)
-    {
-    fprintf(stderr, "Done!                  \n");          // Spaces are valid
-    fprintf(stderr, "Used %"PRIu64" bytes.\n", bits / 8);
-    }
-
-  // FREE
   FreeCModel(cModel);
   Free(pModel->freqs);
   Free(pModel);
   Free(readerBuffer);
-
   fclose(Reader);
   fclose(Writter);
+
+  if(P->verbose == 1)
+    {
+    fprintf(stderr, "Done!                          \n");  // Spaces are valid
+    stop = clock();
+    fprintf(stderr, "Needed %g s and %"PRIu64" bytes for compressing target."
+    "\n", ((double) (stop - start)) / CLOCKS_PER_SEC, bits / 8);
+    }
 
   return name;
   }
@@ -102,17 +101,19 @@ CModel *LoadReference(char *sRef, Parameters *P)
   #ifdef PROGRESS
   uint64_t  i = 0;
   #endif
-
-  readerBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + 1, sizeof(uint8_t));
-  symbolBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + LEFT_BUFFER_GUARD + 1, 
-  sizeof(uint8_t));
-  symbolBuffer += LEFT_BUFFER_GUARD;
-
-  cModel = CreateCModel(P->context, P->alpha, P->hash, DEFAULT_MAX_COUNT); 
+  clock_t   start, stop;
 
   if(P->verbose == 1)
-    fprintf(stderr, "Loading reference sequence ... \n");
+    {
+    start = clock();
+    fprintf(stderr, "Building reference model ...\n");
+    }
 
+  readerBuffer = (uint8_t *) Calloc(BUFFER_SIZE + 1, sizeof(uint8_t));
+  symbolBuffer = (uint8_t *) Calloc(BUFFER_SIZE + LEFT_BUFFER_GUARD + 1, 
+  sizeof(uint8_t));
+  symbolBuffer += LEFT_BUFFER_GUARD;
+  cModel = CreateCModel(P->context, P->alpha, P->hash, DEFAULT_MAX_COUNT); 
   while((k = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
     for(idxPos = 0 ; idxPos != k ; ++idxPos)
       {
@@ -129,14 +130,18 @@ CModel *LoadReference(char *sRef, Parameters *P)
       CalcProgress(P->refSize, ++i);
       #endif
       }
-
-  if(P->verbose == 1)
-    fprintf(stderr, "Done!                  \n");          // Spaces are valid
-
   ResetCModel(cModel);
   Free(readerBuffer);
- // Free(symbolBuffer); //<< WHY CAN'T FREE?
+  // Free(symbolBuffer); //XXX: WHY CAN'T FREE?
   fclose(Reader);
+
+  if(P->verbose == 1)
+    {
+    fprintf(stderr, "Done!                          \n");  // Spaces are valid
+    stop = clock();
+    fprintf(stderr, "Needed %g s for building model.\n", ((double) (stop -
+    start)) / CLOCKS_PER_SEC);
+    }
 
   return cModel;
   }
@@ -151,17 +156,20 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
   uint32_t maxIdx, idx, i;
   char     *fNameOut, gf[] = "ACGT", timeMark[MAX_STRING_SIZE];
   uint8_t  readerBuffer[BUFFER_SIZE+1], writterBuffer[BUFFER_SIZE+1];
+  clock_t  start, stop;
+
+  if(P->verbose == 1)
+    {
+    start = clock();
+    fprintf(stderr, "Randomizing 'N' %s chars ...\n", type == 0 ? "reference"
+    : "target");
+    }
 
   srand(seed);
   sprintf(timeMark, ".sys%ux", seed);
-
   Reader   = Fopen(fName, "r");
   fNameOut = concatenate(fName, timeMark);
   Writter  = Fopen(fNameOut, "w");
-
-  if(P->verbose == 1)
-    fprintf(stderr, "Randomizing 'N' chars ...\n"); 
- 
   while((maxIdx = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
     {
     i = 0;
@@ -178,12 +186,17 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
     fwrite(writterBuffer, 1, i, Writter);
     if(type == 0) P->refSize += i; else P->tarSize += i; 
     }
-
-  if(P->verbose == 1)
-    fprintf(stderr, "Done!\n");
-
   fclose(Reader);
   fclose(Writter);
+
+  if(P->verbose == 1)
+    {
+    fprintf(stderr, "Done!\n");
+    stop = clock();
+    fprintf(stderr, "Needed %g s for randomizing %s.\n", ((double) (stop -
+    start)) / CLOCKS_PER_SEC, type == 0 ? "reference" : "target");
+    }
+
   return fNameOut;
   }
 
@@ -195,10 +208,11 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
 
 int32_t main(int argc, char *argv[])
   {
-  char        **p = *&argv, *sRef, *sTar, *nameInf, *nameFil;
+  char        **p = *&argv, *sRef, *sTar, *RevRef, *RevTar, *nameInf, 
+              *nameFil, *nameSeg;
   Parameters  Par;
-  clock_t     tic, tac, start;
-  double      cpuTimeUsed;
+  // clock_t     tic, tac, start;
+  // double      cpuTimeUsed;
   CModel      *refModel, *tarModel;
   int64_t     seed;
 
@@ -244,38 +258,36 @@ int32_t main(int argc, char *argv[])
   seed = (P->seed == DEFAULT_SEED) ? time(NULL) : P->seed;
   if(P->verbose)
     fprintf(stderr, "Using seed: %u.\n", (uint32_t) seed);
-
-  // 1. RANDOMIZE N CHARS
-  if(P->verbose == 1)
-    start = clock();
-
   P->refSize = 0;
   P->tarSize = 0;
-  sRef       = RandomNChars(argv[argc-2], seed,              P, 0);
-  sTar       = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, 1);
 
-  // 2. EXCLUSIVE CONDITIONAL COMPRESSION
+  // 1. RANDOMIZE N CHARS
+  sRef     = RandomNChars(argv[argc-2], seed,              P, 0);
+  sTar     = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, 1);
+
+  // 2. REVERSE SEQUENCES
+  RevRef   = ReverseSequence(sRef, P); //TODO 
+  RevTar   = ReverseSequence(sTar, P); //TODO
+
+  // 3. EXCLUSIVE CONDITIONAL COMPRESSION
   refModel = LoadReference(sRef, P);
   nameInf  = Compress(sTar, refModel, P);
 
-  if(P->verbose == 1)
-    {
-    tic = clock();
-    cpuTimeUsed = ((double) (tic-start)) / CLOCKS_PER_SEC;
-    fprintf(stderr, "Needed %g s for compression.\n", cpuTimeUsed);
-    }
-
-  // 3. FILTER SEQUENCE
+  // 4. FILTER SEQUENCE
   nameFil  = FilterSequence(nameInf, P);
-  fprintf(stderr, "NameFil: %s\n", nameFil);
+  unlink(nameInf);
+  
+  // 5. SEGMENT SEQUENCE
+  nameSeg  = SegmentSequence(nameFil, P);   
+  unlink(nameFil);
+
+  //unlink(nameSeg);
+  unlink(sRef);
+  unlink(sTar);
 
 fprintf(stderr, "Sleep 10s in the end...\n");
 sleep(10);
 fprintf(stderr, "Done!\n");
-
-  //unlink(nameInf);
-  unlink(sRef);
-  unlink(sTar);
 
   return EXIT_SUCCESS;
   }

@@ -1,5 +1,5 @@
-#ifndef FILTER_H_INCLUDED
-#define FILTER_H_INCLUDED
+#ifndef FILTERS_H_INCLUDED
+#define FILTERS_H_INCLUDED
 
 #include "defs.h"
 

@@ -5,6 +5,8 @@
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
+typedef unsigned long long ULL;
+
 typedef struct
   {
   uint8_t  help;

@@ -32,21 +32,21 @@ char *FilterSequence(char *fName, Parameters *P)
   FILE     *Reader  = NULL, *Writter = NULL;
   WEntry   *entries = NULL;
   int32_t  wType;
-  double   cpuTimeUsed, value, *w;
+  double   value, *w;
   clock_t  stop, start;
   int64_t  nEntries, n, k, M, drop;
   char     *fNameOut;
 
   if(P->verbose == 1)
+    {
     start = clock();
+    fprintf(stderr, "Filtering ...\n");
+    }
 
   M        = P->window;
   drop     = P->drop;
   wType    = P->wType;
   w        = (double *) Malloc((2 * M + 1) * sizeof(double));
-  
-  fprintf(stderr, "Filtering ...\n");
-
   Reader   = Fopen(fName, "r");
   nEntries = 0;
   while(fscanf(Reader, "%lf", &value) == 1)
@@ -84,13 +84,13 @@ char *FilterSequence(char *fName, Parameters *P)
   Free(w);
   Free(entries);
   fclose(Writter);
-  fprintf(stderr, "Done!\n");
 
   if(P->verbose == 1)
     {
+    fprintf(stderr, "Done!\n");
     stop = clock();
-    cpuTimeUsed = ((double) (stop-start)) / CLOCKS_PER_SEC;
-    fprintf(stderr, "Needed %g s for filtering.\n", cpuTimeUsed);
+    fprintf(stderr, "Needed %g s for filtering.\n", ((double) (stop-start)) / 
+    CLOCKS_PER_SEC);
     }
 
   return fNameOut;
