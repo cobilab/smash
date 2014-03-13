@@ -67,32 +67,25 @@ static void InitHashTable(CModel *cModel)
 
 void FreeCModel(CModel *cModel)
   {
-  uint32_t n, k;
+  uint32_t k;
 
   if(cModel->mode == HASH_TABLE_MODE)
     {
     for(k = 0 ; k < cModel->hTable.size ; ++k)
       {
       if(cModel->hTable.entrySize[k] != 0)
-        free(cModel->hTable.entries[k]);
+        Free(cModel->hTable.entries[k]);
       if(cModel->hTable.counters[k] != NULL)
-        {
-//        for(n = 0 ; n < 4 ; ++n )
-//          Free(cModel->hTable.counters[k][n]);
-          // WHAT ABOUT THE HCCounters?
-        free(cModel->hTable.counters[k]);
-        }
+        Free(cModel->hTable.counters[k]);
       }
-    free(cModel->hTable.entries);
-    free(cModel->hTable.counters);
-    free(cModel->hTable.entrySize);
+    Free(cModel->hTable.entries);
+    Free(cModel->hTable.counters);
+    Free(cModel->hTable.entrySize);
     }
   else // TABLE_MODE
-    {
-    free(cModel->array.counters);
-    }
+    Free(cModel->array.counters);
 
-  free(cModel);
+  Free(cModel);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

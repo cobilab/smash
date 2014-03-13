@@ -10,7 +10,7 @@
 #include "defs.h"
 #include "common.h"
 #include "context.h"
-#include <errno.h>
+#include "filters.h"
 
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - C O M P R E S S O R - - - - - - - - - - - - -
@@ -195,7 +195,7 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
 
 int32_t main(int argc, char *argv[])
   {
-  char        **p = *&argv, *sRef, *sTar, *nameInf;
+  char        **p = *&argv, *sRef, *sTar, *nameInf, *nameFil;
   Parameters  Par;
   clock_t     tic, tac, start;
   double      cpuTimeUsed;
@@ -205,39 +205,41 @@ int32_t main(int argc, char *argv[])
   Parameters  *P = &Par;
   if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
     {
-    fprintf(stderr, "                                          \n");
-    fprintf(stderr, "Usage: smash [OPTIONS]... [FILE] [FILE]   \n");
-    fprintf(stderr, "                                          \n");
-    fprintf(stderr, " -v                 verbose mode          \n");
-    fprintf(stderr, " -f                 force (be sure!)      \n");
-    fprintf(stderr, "                                          \n");
-    fprintf(stderr, " -c <context>       context order         \n");
-    fprintf(stderr, " -i                 inverted repeats      \n");
-    fprintf(stderr, " -a <alpha>         alpha estimator       \n");
-    fprintf(stderr, " -h <hSize>         hash size             \n");
-    fprintf(stderr, "                                          \n");
-    fprintf(stderr, " -s <seed>          seed for random 'N'   \n");
-    fprintf(stderr, "                                          \n");
-    fprintf(stderr, " -t <threshold>     threshold [0.0,2.0]   \n");
-    fprintf(stderr, " -w <wSize>         window size           \n");
-    fprintf(stderr, " -d <dSize>         drop size             \n");
-    fprintf(stderr, " -m <mSize>         minimum block size    \n");
-    fprintf(stderr, "                                          \n");
-    fprintf(stderr, " <refFile>          reference file        \n");
-    fprintf(stderr, " <tarFile>          target file         \n\n");
+    fprintf(stderr, "                                           \n");
+    fprintf(stderr, "Usage: smash [OPTIONS]... [FILE] [FILE]    \n");
+    fprintf(stderr, "                                           \n");
+    fprintf(stderr, " -v                  verbose mode          \n");
+    fprintf(stderr, " -f                  force (be sure!)      \n");
+    fprintf(stderr, "                                           \n");
+    fprintf(stderr, " -c  <context>       context order         \n");
+    fprintf(stderr, " -i                  inverted repeats      \n");
+    fprintf(stderr, " -a  <alpha>         alpha estimator       \n");
+    fprintf(stderr, " -h  <hSize>         hash size             \n");
+    fprintf(stderr, "                                           \n");
+    fprintf(stderr, " -s  <seed>          seed for random 'N'   \n");
+    fprintf(stderr, "                                           \n");
+    fprintf(stderr, " -t  <threshold>     threshold [0.0,2.0]   \n");
+    fprintf(stderr, " -w  <wSize>         window size           \n");
+    fprintf(stderr, " -wt <wType>         window type [0|1|2|3] \n");
+    fprintf(stderr, " -d  <dSize>         drop size             \n");
+    fprintf(stderr, " -m  <mSize>         minimum block size    \n");
+    fprintf(stderr, "                                           \n");
+    fprintf(stderr, " <refFile>           reference file        \n");
+    fprintf(stderr, " <tarFile>           target file         \n\n");
     return EXIT_SUCCESS;
     }
 
-  P->verbose   = ArgsState (DEFAULT_VERBOSE,   p, argc, "-v");
-  P->force     = ArgsState (DEFAULT_FORCE,     p, argc, "-f");
-  P->context   = ArgsNumber(DEFAULT_CONTEXT,   p, argc, "-c");
-  P->alpha     = ArgsNumber(DEFAULT_ALPHA,     p, argc, "-a");
-  P->hash      = ArgsNumber(DEFAULT_HASH_SIZE, p, argc, "-h");
-  P->seed      = ArgsNumber(DEFAULT_SEED,      p, argc, "-s");
-  P->threshold = ArgsNumber(DEFAULT_THRESHOLD, p, argc, "-t");
-  P->window    = ArgsNumber(DEFAULT_WINDOW,    p, argc, "-w");
-  P->drop      = ArgsNumber(DEFAULT_DROP,      p, argc, "-d");
-  P->minimum   = ArgsNumber(DEFAULT_MINIMUM,   p, argc, "-m");
+  P->verbose   = ArgsState (DEFAULT_VERBOSE,   p, argc, "-v" );
+  P->force     = ArgsState (DEFAULT_FORCE,     p, argc, "-f" );
+  P->context   = ArgsNumber(DEFAULT_CONTEXT,   p, argc, "-c" );
+  P->alpha     = ArgsNumber(DEFAULT_ALPHA,     p, argc, "-a" );
+  P->hash      = ArgsNumber(DEFAULT_HASH_SIZE, p, argc, "-h" );
+  P->seed      = ArgsNumber(DEFAULT_SEED,      p, argc, "-s" );
+  P->threshold = ArgsNumber(DEFAULT_THRESHOLD, p, argc, "-t" );
+  P->window    = ArgsNumber(DEFAULT_WINDOW,    p, argc, "-w" );
+  P->wType     = ArgsNumber(DEFAULT_WIN_TYPE,  p, argc, "-wt");
+  P->drop      = ArgsNumber(DEFAULT_DROP,      p, argc, "-d" );
+  P->minimum   = ArgsNumber(DEFAULT_MINIMUM,   p, argc, "-m" );
 
   seed = (P->seed == DEFAULT_SEED) ? time(NULL) : P->seed;
   if(P->verbose)
@@ -256,18 +258,16 @@ int32_t main(int argc, char *argv[])
   refModel = LoadReference(sRef, P);
   nameInf  = Compress(sTar, refModel, P);
 
-fprintf(stderr, "Sleep 10s in the end...\n");
-sleep(10);
-
-  refModel = LoadReference(sRef, P);
-  nameInf  = Compress(sTar, refModel, P);
-
   if(P->verbose == 1)
     {
     tic = clock();
     cpuTimeUsed = ((double) (tic-start)) / CLOCKS_PER_SEC;
     fprintf(stderr, "Needed %g s for compression.\n", cpuTimeUsed);
     }
+
+  // 3. FILTER SEQUENCE
+  nameFil  = FilterSequence(nameInf, P);
+  fprintf(stderr, "NameFil: %s\n", nameFil);
 
 fprintf(stderr, "Sleep 10s in the end...\n");
 sleep(10);

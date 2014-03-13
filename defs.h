@@ -15,8 +15,9 @@ typedef struct
   uint32_t hash;
   uint32_t seed;
   double   threshold;
-  uint32_t window;
-  uint32_t drop;
+  uint64_t window;
+  uint64_t drop;
+  uint8_t  wType;
   uint64_t minimum;
   uint64_t refSize;
   uint64_t tarSize;
@@ -26,13 +27,18 @@ Parameters;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // SYSTEM VALUES:
-#define BUFFER_SIZE            50             // DO NOT INCREASE THIS VALUE!
+#define BUFFER_SIZE            65535      
 #define PROGRESS_MIN           1000
 #define HASH_TABLE_BEGIN_CTX   15
 #define MAX_STRING_SIZE        1024
 #define LEFT_BUFFER_GUARD      32
 #define PRECISION              2
 #define SEED_JUMP              101
+#define W_TYPE                 0                        // DEFAULT WINDOW TYPE
+#define W_HAMMING              0
+#define W_HANN                 1
+#define W_BLACKMAN             2
+#define W_RECTANGULAR          3
 
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0
@@ -45,6 +51,7 @@ Parameters;
 #define DEFAULT_SEED           -1
 #define DEFAULT_THRESHOLD      1.5
 #define DEFAULT_WINDOW         100001
+#define DEFAULT_WIN_TYPE       0
 #define DEFAULT_DROP           50000
 #define DEFAULT_MINIMUM        1000000
 
