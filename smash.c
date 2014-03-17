@@ -208,12 +208,14 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
 
 int32_t main(int argc, char *argv[])
   {
-  char        **p = *&argv, *sRef, *sTar, *RevRef, *RevTar, *nameInf, 
-              *nameFil, *nameSeg;
+  char        **p = *&argv, *sRef, *sTar, *revRef, *revTar, *nameInf, 
+              *nameInfIR, *nameFil, *nameFilIR, *nameSeg, *nameSegIR;
   Parameters  Par;
+  Patterns    *patterns, *patternsIR, *patternsLB, *patternsLBIR;
   // clock_t     tic, tac, start;
   // double      cpuTimeUsed;
-  CModel      *refModel, *tarModel;
+  CModel      *refModel, *refModelIR;
+  uint32_t    k;
   int64_t     seed;
 
   Parameters  *P = &Par;
@@ -261,33 +263,82 @@ int32_t main(int argc, char *argv[])
   P->refSize = 0;
   P->tarSize = 0;
 
-  // 1. RANDOMIZE N CHARS
-  sRef     = RandomNChars(argv[argc-2], seed,              P, 0);
-  sTar     = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, 1);
-
-  // 2. REVERSE SEQUENCES
-  RevRef   = IRSequence(sRef, P, 0); 
-  RevTar   = IRSequence(sTar, P, 1);
-
-  // 3. EXCLUSIVE CONDITIONAL COMPRESSION
-  refModel = LoadReference(sRef, P);
-  nameInf  = Compress(sTar, refModel, P);
-
-  // 4. FILTER SEQUENCE
-  nameFil  = FilterSequence(nameInf, P);
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // BUILD TARGET MAP  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //
+  sRef       = RandomNChars(argv[argc-2], seed,              P, REF);
+  sTar       = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, TAR);
+  refModel   = LoadReference(sRef, P);
+  nameInf    = Compress(sTar, refModel, P);
+  nameFil    = FilterSequence(nameInf, P);
   unlink(nameInf);
-  
-  // 5. SEGMENT SEQUENCE
-  nameSeg  = SegmentSequence(nameFil, P);   
+  nameSeg    = SegmentSequence(nameFil, P);   
   unlink(nameFil);
+  patterns   = GetPatterns(nameSeg);
+  unlink(nameSeg);
+  //
+  // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  if(P->verbose)
+    {
+    fprintf(stderr, "---------------------------------------------------\n");
+    fprintf(stderr, "Mode: re-running with inverted repeats\n");
+    }
+  revRef     = IRSequence(sRef, P, REF);
+  revTar     = IRSequence(sTar, P, TAR);
+  refModelIR = LoadReference(revRef, P);
+  nameInfIR  = Compress(sTar, refModelIR, P);    // sTar gives the name to the
+  nameFilIR  = FilterSequence(nameInfIR, P);       // and erase previous files
+  unlink(nameInfIR);
+  nameSegIR  = SegmentSequence(nameFilIR, P);
+  unlink(nameFilIR);
+  patternsIR = GetPatterns(nameSegIR);
+  unlink(nameSegIR);
+  if(P->verbose)
+    fprintf(stderr, "===================================================\n");
+  //
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // BUILD REFERENCE MAP FOR EACH TARGET PATTERN - - - - - - - - - - - - - - -
+  //
+  if(P->verbose && patterns->nPatterns != 0)
+    fprintf(stderr, "Running %u patterns ...\n", patterns->nPatterns);
+  for(k = 0 ; k != patterns->nPatterns ; ++k)
+    {
+    if(patterns->p[k].end - patterns->p[k].init > P->minimum)
+      {
+      if(P->verbose)
+        fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k, 
+        patterns->p[k].end - patterns->p[k].init);
+      //
+      // TODO: Extract corresponding target pattern sub-sequence 
+      //
+      //refModel   = LoadReference( /* SUB-SEQUENCE */, P);
+      nameInf    = Compress(sRef, refModel, P);
+      nameFil    = FilterSequence(nameInf, P);
+      unlink(nameInf);
+      nameSeg    = SegmentSequence(nameFil, P);
+      unlink(nameFil);
+      patternsLB = GetPatterns(nameSeg);
+      unlink(nameSeg);
+      }
+    }
+  // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  if(P->verbose && patternsIR->nPatterns != 0)
+    fprintf(stderr, "Running %u inverted repeats patterns ...\n", 
+    patternsIR->nPatterns);
+  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
+    {
+    ;
+    }
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  //unlink(nameSeg);
   unlink(sRef);
   unlink(sTar);
+  unlink(revRef);
+  unlink(revTar);
 
-fprintf(stderr, "Sleep 10s in the end...\n");
-sleep(10);
-fprintf(stderr, "Done!\n");
+  fprintf(stderr, "Done smash algorithmic information map! Enjoy it :)\n");
 
   return EXIT_SUCCESS;
   }

@@ -42,6 +42,8 @@ Parameters;
 #define W_HANN                 1
 #define W_BLACKMAN             2
 #define W_RECTANGULAR          3
+#define REF                    0
+#define TAR                    1
 
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0

@@ -6,6 +6,22 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+typedef struct
+  {
+  uint64_t  init;                                  // Initial pattern position 
+  uint64_t  end;                                       // End pattern position 
+  }
+PatEntry;
+
+typedef struct
+  {
+  uint32_t  nPatterns;                                   // Number of patterns
+  PatEntry  *p;
+  }
+Patterns;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 FILE        *Fopen           (const char *, const char *);
 void        FillLogTable     (uint32_t    , uint32_t    , uint32_t);
 double      SearchLog        (uint32_t );
@@ -27,6 +43,7 @@ void        PrintArgs        (void     );
 void        CmpInputError    (uint32_t );
 inline void CalcProgress     (uint64_t , uint64_t);
 char        *concatenate     (char *   , char *);
+Patterns    *GetPatterns     (char *);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

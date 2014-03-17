@@ -364,3 +364,29 @@ inline void CalcProgress(uint64_t size, uint64_t i)
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Patterns *GetPatterns(char *name)
+  {
+  FILE      *Reader = Fopen(name, "r");
+  Patterns  *Pat;
+  ULL       v1, v2; 
+
+  Pat    = (Patterns *) Malloc(sizeof(Patterns)); 
+  Pat->p = (PatEntry *) Malloc(sizeof(PatEntry)); 
+  Pat->nPatterns = 0; 
+
+  while(fscanf(Reader, "%llu:%llu", &v1, &v2) == 2)
+    {
+    Pat->p = (PatEntry *) Realloc(Pat->p, (Pat->nPatterns + 1) * 
+    sizeof(PatEntry), sizeof(PatEntry)); 
+    Pat->p[Pat->nPatterns].init = v1;
+    Pat->p[Pat->nPatterns].end  = v2;
+    ++Pat->nPatterns; 
+    }
+  fclose(Reader); 
+
+  return Pat;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
