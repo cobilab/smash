@@ -5,7 +5,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *ReverseSequence(char *, Parameters *);
+char *IRSequence    (char *, Parameters *);
+char *IRMemSequence (char *, Parameters *);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

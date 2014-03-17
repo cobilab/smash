@@ -33,18 +33,27 @@ uint32_t FLog2(uint64_t i)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint64_t NBytesInFile(const char *fn)
+uint64_t NBytesInFile(FILE *file)
   {
   uint64_t size = 0;
-  FILE *file = Fopen(fn, "r");
-
   fseek(file, 0, SEEK_END);
   if((size = ftell(file)) < 1000)
     {
     fprintf(stderr, "Error: input file is very small!\n");
     exit(1);
     }
-    
+  rewind(file);
+  return size;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+uint64_t FopenBytesInFile(const char *fn)
+  {
+  uint64_t size = 0;
+  FILE *file = Fopen(fn, "r");
+  
+  size = NBytesInFile(file);  
   fclose(file);
 
   return size;
@@ -84,7 +93,7 @@ uint8_t DNASymToNum(uint8_t symbol)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t GetComp2(uint8_t symbol)
+uint8_t GetCompSym(uint8_t symbol)
   {
   switch(symbol)
     {
@@ -98,7 +107,7 @@ uint8_t GetComp2(uint8_t symbol)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t GetComp(uint8_t symbol)
+uint8_t GetCompNum(uint8_t symbol)
   {
   switch(symbol)
     {

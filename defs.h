@@ -30,6 +30,7 @@ Parameters;
 
 // SYSTEM VALUES:
 #define BUFFER_SIZE            65535      
+#define BUFFER_REV_SIZE        16384
 #define PROGRESS_MIN           1000
 #define HASH_TABLE_BEGIN_CTX   15
 #define MAX_STRING_SIZE        1024

@@ -266,8 +266,8 @@ int32_t main(int argc, char *argv[])
   sTar     = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, 1);
 
   // 2. REVERSE SEQUENCES
-  RevRef   = ReverseSequence(sRef, P); //TODO 
-  RevTar   = ReverseSequence(sTar, P); //TODO
+  RevRef   = IRSequence(sRef, P); 
+  RevTar   = IRSequence(sTar, P);
 
   // 3. EXCLUSIVE CONDITIONAL COMPRESSION
   refModel = LoadReference(sRef, P);
