@@ -5,8 +5,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *IRSequence    (char *, Parameters *);
-char *IRMemSequence (char *, Parameters *);
+char *IRSequence (char *, Parameters *, uint8_t);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
