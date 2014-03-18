@@ -13,6 +13,7 @@
 #include "filters.h"
 #include "segment.h"
 #include "reverse.h"
+#include "paint.h"
 
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - C O M P R E S S O R - - - - - - - - - - - - -
@@ -295,8 +296,19 @@ int32_t main(int argc, char *argv[])
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // BUILD REFERENCE MAP FOR EACH TARGET PATTERN - - - - - - - - - - - - - - -
   //
+  // OUTPUT HEADER
+  // TODO: THIS SHALL BE USED IN A STRUCTURE...
+  double    width   = 23.0;
+  double    refSize = GetPoint(FopenBytesInFile(argv[argc-2]));
+  double    tarSize = GetPoint(FopenBytesInFile(argv[argc-1]));
+  double    uH      = refSize > tarSize ? refSize : tarSize;
+  FILE      *PLOT   = Fopen("plot.svg", "w"); //TODO: NAME: REF-TAR-$RAND.svg
+  PrintHead(PLOT, width, uH);
+  Rect(PLOT, 5000.0, 5000.0, 0, 0, "#fff");   //TODO: DON'T USE FIXED SIZES...
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   if(P->verbose && patterns->nPatterns != 0)
-    fprintf(stderr, "Running %u patterns ...\n", patterns->nPatterns);
+    fprintf(stderr, "Found %u patterns.\n", patterns->nPatterns);
   for(k = 0 ; k != patterns->nPatterns ; ++k)
     {
     if(patterns->p[k].end - patterns->p[k].init > P->minimum)
@@ -327,6 +339,8 @@ int32_t main(int argc, char *argv[])
     {
     ;
     }
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   unlink(sRef);

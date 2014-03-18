@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
+#include <ctype.h>
 #include "paint.h"
 #include "common.h"
 #include "mem.h"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectOval(double w, double h, double x, double y, char *color)
+void RectOval(FILE *F, double w, double h, double x, double y, char *color)
   {
-  printf("<rect "
+  fprintf(F, "<rect "
               "style=\"fill:%s;fill-opacity:1;stroke-width:2;"
               "stroke-miterlimit:4;stroke-dasharray:none\" "
               "id=\"rectx\" "
@@ -23,10 +25,10 @@ void RectOval(double w, double h, double x, double y, char *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectOvalIR(double w, double h, double x, double y, char *color)
+void RectOvalIR(FILE *F, double w, double h, double x, double y, char *color)
   {
-  RectOval(w, h, x, y, color);
-  printf("<rect "
+  RectOval(F, w, h, x, y, color);
+  fprintf(F, "<rect "
               "style=\"fill-opacity:1;stroke-width:2;"
               "stroke-miterlimit:4;stroke-dasharray:none"
               "stroke-dasharray:none;fill:url(#xtrace);"
@@ -42,9 +44,9 @@ void RectOvalIR(double w, double h, double x, double y, char *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Rect(double w, double h, double x, double y, char *color)
+void Rect(FILE *F, double w, double h, double x, double y, char *color)
   {
-  printf("<rect style=\"fill:%s;fill-opacity:1;stroke-width:2;"
+  fprintf(F, "<rect style=\"fill:%s;fill-opacity:1;stroke-width:2;"
               "stroke-miterlimit:4;stroke-dasharray:none\" "
               "id=\"rect3777\" "
               "width=\"%.2lf\" " 
@@ -57,10 +59,10 @@ void Rect(double w, double h, double x, double y, char *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectIR(double w, double h, double x, double y, char *color)
+void RectIR(FILE *F, double w, double h, double x, double y, char *color)
   {
-  Rect(w, h, x, y, color);
-  printf("<rect "
+  Rect(F, w, h, x, y, color);
+  fprintf(F, "<rect "
               "style=\"fill-opacity:1;stroke-width:2;stroke-miterlimit:4;"
               "stroke-dasharray:none;fill:url(#Wavy);fill-rule:"
               "nonzero;opacity:1\" "
@@ -75,12 +77,12 @@ void RectIR(double w, double h, double x, double y, char *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Chromosome(double w, double h, double x, double y)
+void Chromosome(FILE *F, double w, double h, double x, double y)
   {
   char borderColor[] = "#000000";
   double wk = w / 2 + 0.5;
 
-  printf("<path "
+  fprintf(F, "<path "
          "d=\"m %.2lf,"
          "%.2lf 0,"
          "%.2lf c 0, -8.31 6.69, -%.2lf %.2lf, -%.2lf l -%.2lf,0 z m %.2lf,"
@@ -89,7 +91,7 @@ void Chromosome(double w, double h, double x, double y)
          "nonzero;stroke:none\" />", x-0.5, y-0.5, 
          wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
 
-  printf("<path "
+  fprintf(F, "<path "
          "d=\"m %.2lf,"
          "%.2lf 0,"
          "-%.2lf c 0,8.31 -6.69, %.2lf -%.2lf, %.2lf l %.2lf,0 z m -%.2lf,"
@@ -98,7 +100,7 @@ void Chromosome(double w, double h, double x, double y)
          "nonzero;stroke:none\" />", x+0.5+w, y+0.5+h, 
          wk, wk, wk, wk, wk, wk, wk, wk, wk, wk, wk);
 
-  printf("<rect style=\"fill:none;stroke:%s;stroke-width:2;"
+  fprintf(F, "<rect style=\"fill:none;stroke:%s;stroke-width:2;"
             "stroke-linecap:butt;stroke-linejoin:miter;"
             "stroke-miterlimit:4;stroke-opacity:1;"
             "stroke-dasharray:none\" "
@@ -113,9 +115,9 @@ void Chromosome(double w, double h, double x, double y)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Text(double x, double y, char *name)
+void Text(FILE *F, double x, double y, char *name)
   {
-  printf("<text xml:space=\"preserve\" "
+  fprintf(F, "<text xml:space=\"preserve\" "
             "style=\"font-size:40px;font-style:normal;"
             "font-weight:normal;line-height:125%%;"
             "letter-spacing:0px;word-spacing:0px;fill:#000000;"
@@ -138,9 +140,9 @@ void Text(double x, double y, char *name)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void TextFloat(double x, double y, double name)
+void TextFloat(FILE *F, double x, double y, double name)
   {
-  printf("<text xml:space=\"preserve\" "
+  fprintf(F, "<text xml:space=\"preserve\" "
              "style=\"font-size:40px;font-style:normal;"
              "font-weight:normal;line-height:125%%;"
              "letter-spacing:0px;word-spacing:0px;fill:#000000;"
@@ -170,9 +172,9 @@ double GetPoint(ULL p)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void PrintHead(double w, double u)
+void PrintHead(FILE *F, double w, double u)
   {
-  printf("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+  fprintf(F, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
   "<!-- IEETA 2014 using Inkscape -->\n""<svg\n"
   "xmlns:osb=\"http://www.openswatchbook.org/uri/2009/osb\"\n"
   "xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
@@ -217,7 +219,7 @@ void PrintHead(double w, double u)
   "<g inkscape:label=\"Camada 1\" inkscape:groupmode=\"layer\" id=\"layer1\" "
   ">\n", w*7, u+150);
   
-  printf("<defs id=\"defs6211\"><pattern inkscape:stockid=\"Polka dots, "
+  fprintf(F, "<defs id=\"defs6211\"><pattern inkscape:stockid=\"Polka dots, "
   "large\" id=\"Polkadots-large\" patternTransform=\"translate(0,0)" 
   "scale(10,10)\" height=\"10\" width=\"10\" patternUnits=\"userSpa"
   "ceOnUse\" inkscape:collect=\"always\"> "
@@ -311,8 +313,8 @@ void PrintHead(double w, double u)
   "style=\"fill:black;stroke:none\" />"
   "</pattern></defs>");
 
-  printf("<defs id=\"ffff\"><pattern inkscape:stockid=\"Wavy\" id=\"Wavy\" " 
-  "height=\"5.1805778\" width=\"30.0\" patternUnits=\"userSpaceOnUse\" "
+  fprintf(F, "<defs id=\"ffff\"><pattern inkscape:stockid=\"Wavy\" id=\"Wavy\""
+  " height=\"5.1805778\" width=\"30.0\" patternUnits=\"userSpaceOnUse\" "
   "inkscape:collect=\"always\"><path id=\"path5114\" d=\"M 7.597,0.061 C "
   "5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 5.173,"
   "1.052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 C 18.820,4.931" 
@@ -320,7 +322,7 @@ void PrintHead(double w, double u)
   "14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z \" style=\"fill:"
   "black;stroke:none;\" /></pattern></defs>");
 
-  printf("<defs id=\"defs6219\"><pattern inkscape:stockid=\"xtrace\" "
+  fprintf(F, "<defs id=\"defs6219\"><pattern inkscape:stockid=\"xtrace\" "
   "id=\"xtrace\" height=\"20.0\" width=\"20.0\" patternUnits=\"userSpace"
   "OnUse\" inkscape:collect=\"always\"><path style=\"fill:#000000;stroke:"
   "#000000;stroke-width:0.30;stroke-linecap:butt;stroke-linejoin:miter;"
@@ -348,29 +350,37 @@ void PrintHead(double w, double u)
   "m 0.0,110.0 25.00000,-25.0 0,05 -25.00000,25.00000 z\" id=\"path7213-12\" "
   "inkscape:connector-curvature=\"0\" /></pattern></defs>");
 
-  printf("<defs id=\"defs4\"><pattern id=\"dallas\" patternTransform=\"transl"
-  "ate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" patternUnits=\"u"
-  "serSpaceOnUse\"> <path style=\"fill:none;stroke:#000000;stroke-width:1;str"
-  "oke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:"
-  "1;stroke-dasharray:none\" d=\"m -0.00788,2.37557 4.76251,0\" id=\"path2985"
-  "\" /><path style=\"fill:none;stroke:#000000;stroke-width:1;stroke-linecap:"
-  "butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke-das"
-  "harray:none\" d=\"m 2.37338,-0.00568 0,4.76251\" id=\"path2985-1\" /></pat"
-  "tern></defs>");
+  fprintf(F, "<defs id=\"defs4\"><pattern id=\"dallas\" patternTransform=\"tr"
+  "anslate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" patternUnits"
+  "=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:#000000;stroke-width:1"
+  ";stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opac"
+  "ity:1;stroke-dasharray:none\" d=\"m -0.00788,2.37557 4.76251,0\" id=\"path"
+  "2985\" /><path style=\"fill:none;stroke:#000000;stroke-width:1;stroke-line"
+  "cap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;stroke"
+  "-dasharray:none\" d=\"m 2.37338,-0.00568 0,4.76251\" id=\"path2985-1\" /><"
+  "/pattern></defs>");
 
-  printf("<defs id=\"defs4\"><pattern id=\"lineX\" patternTransform=\"transla"
-  "te(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" patternUnits=\"us"
-  "erSpaceOnUse\"> <path style=\"fill:none;stroke:#000000;stroke-width:1;stro"
-  "ke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1"
-  ";stroke-dasharray:none\" d=\"m -0.00788,2.37557 4.76251,0\" id=\"path2985"
-  "\" /></pattern></defs>");
+  fprintf(F, "<defs id=\"defs4\"><pattern id=\"lineX\" patternTransform=\"tra"
+  "nslate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" patternUnits="
+  "\"userSpaceOnUse\"> <path style=\"fill:none;stroke:#000000;stroke-width:1;"
+  "stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opaci"
+  "ty:1;stroke-dasharray:none\" d=\"m -0.00788,2.37557 4.76251,0\" id=\"path2"
+  "985\" /></pattern></defs>");
 
-  printf("<defs id=\"defs4\"><pattern id=\"stripeX\" patternTransform=\"trans"
-  "late(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" patternUnits=\""
-  "userSpaceOnUse\"> <path style=\"fill:none;stroke:#000000;stroke-width:1;st"
-  "roke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity"
-  ":1;stroke-dasharray:none\" d=\"m 2.37338,-0.00568 0,4.76251\" id=\"path298"
-  "5-1\" /></pattern></defs>");
+  fprintf(F, "<defs id=\"defs4\"><pattern id=\"stripeX\" patternTransform=\"t"
+  "ranslate(106.59375,206.90625)\" height=\"4.75\" width=\"4.75\" patternUnit"
+  "s=\"userSpaceOnUse\"> <path style=\"fill:none;stroke:#000000;stroke-width:"
+  "1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opa"
+  "city:1;stroke-dasharray:none\" d=\"m 2.37338,-0.00568 0,4.76251\" id=\"pat"
+  "h2985-1\" /></pattern></defs>");
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+void PrintFinal(FILE *F)
+  {
+  fprintf(F, "</g>\n</svg>");
+  fclose(F);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
