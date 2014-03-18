@@ -5,6 +5,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+void      PrintHead    (double, double);
 void      RecOval      (double, double, double, double, char *);
 void      RecOvalIR    (double, double, double, double, char *);
 void      Rect         (double, double, double, double, char *);
