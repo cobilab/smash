@@ -390,3 +390,27 @@ Patterns *GetPatterns(char *name)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+char *ExtractSubSeq(char *name, Parameters *P, uint64_t init, uint64_t end)
+  {
+  FILE      *Reader = Fopen(name, "r"), *Writter = NULL;
+  uint64_t  x;
+  char      *fNameOut;
+
+  fNameOut = concatenate(name, ".ext");
+  Writter  = Fopen(fNameOut, "w");
+
+ if(P->verbose)
+    fprintf(stderr, "Extracting pattern (%"PRIu64";%"PRIu64")\n", init, end);
+  
+  fseek(Reader, init, SEEK_SET);
+  for(x = init ; x != end ; ++x)
+    fprintf(Writter, "%c", fgetc(Reader));
+
+  fclose(Reader);
+  fclose(Writter);
+
+  return fNameOut;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+

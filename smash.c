@@ -28,7 +28,7 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
   uint8_t   *readerBuffer, *symbolBuffer, sym;
   PModel    *pModel;
   #ifdef PROGRESS
-  uint64_t  i = 0;
+  uint64_t  i = 0, size = NBytesInFile(Reader);
   #endif
   clock_t   start, stop;
 
@@ -48,13 +48,6 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
       {
       symbolBuffer[idx] = sym = DNASymToNum(readerBuffer[idxPos]);
       GetPModelIdx(symbolBuffer+idx-1, cModel);
-/*    printf("Sym: %d, idx: %d, idxPos: %u\n"
-      "readerBuffer: %s\nsymbolBuffer:%s\n", sym, idx, idxPos, readerBuffer, symbolBuffer);
-      if(cModel->pModelIdx > pow(4, cModel->ctx))
-        {
-        printf("%llu, %llu\n", (ULL)cModel->pModelIdx, (ULL) pow(4, cModel->ctx));
-	exit(1);        
-        }     */
       ComputePModel(cModel, pModel);
       bits += (instance = FLog2(pModel->sum / pModel->freqs[sym]));
       fprintf(Writter, "%.*f\n", PRECISION, (float) instance);
@@ -65,7 +58,7 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
         idx = 0;
         }
       #ifdef PROGRESS
-      CalcProgress(P->tarSize, ++i);
+      CalcProgress(size, ++i);
       #endif
       }
     }
@@ -99,7 +92,7 @@ CModel *LoadReference(char *sRef, Parameters *P)
   uint8_t   *readerBuffer, *symbolBuffer, sym;
   CModel    *cModel;
   #ifdef PROGRESS
-  uint64_t  i = 0;
+  uint64_t  i = 0, size = NBytesInFile(Reader);
   #endif
   clock_t   start, stop;
 
@@ -127,7 +120,7 @@ CModel *LoadReference(char *sRef, Parameters *P)
         idx = 0;
         }
       #ifdef PROGRESS
-      CalcProgress(P->refSize, ++i);
+      CalcProgress(size, ++i);
       #endif
       }
   ResetCModel(cModel);
@@ -209,7 +202,8 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
 int32_t main(int argc, char *argv[])
   {
   char        **p = *&argv, *sRef, *sTar, *revRef, *revTar, *nameInf, 
-              *nameInfIR, *nameFil, *nameFilIR, *nameSeg, *nameSegIR;
+              *nameInfIR, *nameFil, *nameFilIR, *nameSeg, *nameSegIR, 
+              *nameExt;
   Parameters  Par;
   Patterns    *patterns, *patternsIR, *patternsLB, *patternsLBIR;
   // clock_t     tic, tac, start;
@@ -310,10 +304,10 @@ int32_t main(int argc, char *argv[])
       if(P->verbose)
         fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k, 
         patterns->p[k].end - patterns->p[k].init);
-      //
-      // TODO: Extract corresponding target pattern sub-sequence 
-      //
-      //refModel   = LoadReference( /* SUB-SEQUENCE */, P);
+      nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
+                   patterns->p[k].end);
+      refModel   = LoadReference(nameExt, P);
+      unlink(nameExt);
       nameInf    = Compress(sRef, refModel, P);
       nameFil    = FilterSequence(nameInf, P);
       unlink(nameInf);
@@ -321,6 +315,8 @@ int32_t main(int argc, char *argv[])
       unlink(nameFil);
       patternsLB = GetPatterns(nameSeg);
       unlink(nameSeg);
+      fprintf(stderr, "---------------------------------------------------"
+      "\n");
       }
     }
   // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

@@ -12,7 +12,7 @@ CFLAGS = -Wall $(CPLP) $(P1)
 LIBS   = -lm 
 DEPS   = defs.h
 PROGS  = $(BIN)/smash 
-OBJS   = mem.o common.o context.o filters.o segment.o reverse.o
+OBJS   = mem.o common.o context.o filters.o segment.o reverse.o paint.o
 #-----------------------------------------------------------------------------
 all:
 	$(MAKE) progs
@@ -31,6 +31,8 @@ segment.o: segment.c segment.h $(DEPS)
 	$(CC) -c $(CFLAGS) segment.c
 reverse.o: reverse.c reverse.h $(DEPS)
 	$(CC) -c $(CFLAGS) reverse.c
+paint.o: paint.c paint.h $(DEPS)
+	$(CC) -c $(CFLAGS) paint.c
 clean:
 	/bin/rm -f *.o
 cleanall:
