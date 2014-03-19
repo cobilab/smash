@@ -298,6 +298,8 @@ int32_t main(int argc, char *argv[])
   //
   // OUTPUT HEADER
   // TODO: THIS SHALL BE USED IN A STRUCTURE...
+  uint64_t  distance;
+  uint32_t  n, z = 0;
   double    width   = 23.0;
   double    cx      = 50.0;
   double    cy      = 90.0;
@@ -315,17 +317,38 @@ int32_t main(int argc, char *argv[])
   cx += 40.0;
   //PT:
   RectOval(PLOT, width, tarSize, cx, cy, "#fff");
+
+  // TODO: HSV variation
+  char Colors[17][8] = {"#005075", //BLUE                   [TOP]
+                        "#219691", //GREEN +- BLUE          [TOP]
+                        "#CB3A33", //RED DARK               -
+                        "#00803E", //GREEN DARK             -
+                        "#5DACEC", //BLUE BABY              [1/2 TOP]
+                        "#EFDE83", //YELLOW BABY            [1/2 TOP]
+                        "#D5D5D3", //SILVER                 [TOP] 
+                        "#8F7BB1", //PURPLE BABY            [1/2 TOP]
+                        "#3570BB", //BLUE LI                [TOP]
+                        "#72417A", //PURPLE ROSE DARK       [TOP]
+                        "#B0DDCE", //GREEN GREY BABY        [1/2 TOP]
+                        "#BF3F70", //ROSE DARK              [1/3 TOP]
+                        "#86A377", //GREEN OLIVER           [1/3 TOP]
+                        "#FF7300", //ORANGE                 -
+                        "#807068", //BROWN GREY             (SMALL PATTERNS!)
+                        "#91B5A8", //GREEN BLUE OLIVER      
+                        "#000000"}; //THE REST IS DARK... 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   if(P->verbose && patterns->nPatterns != 0)
     fprintf(stderr, "Found %u patterns.\n", patterns->nPatterns);
   for(k = 0 ; k != patterns->nPatterns ; ++k)
     {
-    if(patterns->p[k].end - patterns->p[k].init > P->minimum)
+    if((distance = patterns->p[k].end - patterns->p[k].init) > P->minimum)
       {
       if(P->verbose)
-        fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k, 
+        fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1, 
         patterns->p[k].end - patterns->p[k].init);
+      Rect(PLOT, width, GetPoint(distance), cx, cy + 
+      GetPoint(patterns->p[k].init), Colors[z]);
       nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
                    patterns->p[k].end);
       refModel   = LoadReference(nameExt, P);
@@ -337,6 +360,15 @@ int32_t main(int argc, char *argv[])
       unlink(nameFil);
       patternsLB = GetPatterns(nameSeg);
       unlink(nameSeg);
+      // LOOP
+      for(n = 0 ; n != patternsLB->nPatterns ; ++n)
+        {
+        Rect(PLOT, width, GetPoint(patternsLB->p[n].end - 
+        patternsLB->p[n].init), cx-40.0, cy + GetPoint(patternsLB->p[n].init), 
+        Colors[z]);
+        // rightShift
+        }
+      ++z;
       fprintf(stderr, "---------------------------------------------------"
       "\n");
       }

@@ -55,7 +55,7 @@ Parameters;
 #define DEFAULT_HASH_SIZE      29999999
 #define DEFAULT_SEED           -1
 #define DEFAULT_THRESHOLD      1.5
-#define DEFAULT_WINDOW         100001
+#define DEFAULT_WINDOW         150001
 #define DEFAULT_WIN_TYPE       0
 #define DEFAULT_DROP           50000
 #define DEFAULT_MINIMUM        1000000
