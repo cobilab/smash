@@ -5,15 +5,6 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-typedef struct
-  {
-  uint64_t  pos;
-  double    value;
-  }
-WEntry;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 char *FilterSequence(char *, Parameters *);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

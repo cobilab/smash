@@ -9,6 +9,26 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+Painter *CreatePainter(double refSize, double tarSize, char *fName)
+  {
+  Painter *P = (Painter *) Malloc(sizeof(Painter));  
+
+  P->backColor  = fName;
+  P->refSize    = refSize; 
+  P->tarSize    = tarSize; 
+  P->cx         = DEFAULT_CX;
+  P->cy         = DEFAULT_CY;
+  P->tx         = DEFAULT_TX;
+  P->ty         = DEFAULT_TY;
+  P->width      = DEFAULT_WIDTH; 
+  P->rightShift = DEFAULT_RIGHTSHIFT;
+  P->maxSize    = refSize > tarSize ? refSize : tarSize;
+
+  return P;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 void RectOval(FILE *F, double w, double h, double x, double y, char *color)
   {
   fprintf(F, "<rect "

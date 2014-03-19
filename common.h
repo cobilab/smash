@@ -37,6 +37,7 @@ char        *RepString       (const char *, const char *, const char *);
 uint32_t    ArgsNumber       (uint32_t , char *[], uint32_t, char *);
 double      ArgsDouble       (double, char *[], uint32_t, char *);
 uint8_t     ArgsState        (uint8_t  , char *[], uint32_t, char *);
+uint8_t     Args3State       (uint8_t  , char *[], uint32_t, char *);
 char        *ArgsString      (char    *, char *[], uint32_t, char *);
 //uint32_t    ReadFNames       (char    *, char *[], uint32_t);
 void        FAccessWPerm     (char    *);

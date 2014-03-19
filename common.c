@@ -249,6 +249,16 @@ uint8_t ArgsState(uint8_t def, char *arg[], uint32_t n, char *str)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+uint8_t Args3State(uint8_t def, char *arg[], uint32_t n, char *str)
+  {
+  for( ; --n ; )
+    if(!strcmp(str, arg[n]))
+      return def == 0 ? 2 : 0;
+  return def;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 char *ArgsString(char *def, char *arg[], uint32_t n, char *str)
   {
   for( ; --n ; )

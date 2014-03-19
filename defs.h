@@ -17,6 +17,7 @@ typedef struct
   uint32_t hash;
   uint32_t seed;
   double   threshold;
+  double   width;
   uint64_t window;
   uint64_t drop;
   uint8_t  wType;
@@ -59,6 +60,12 @@ Parameters;
 #define DEFAULT_WIN_TYPE       0
 #define DEFAULT_DROP           50000
 #define DEFAULT_MINIMUM        1000000
+#define DEFAULT_CX             50.0
+#define DEFAULT_CY             90.0
+#define DEFAULT_TX             50.0
+#define DEFAULT_TY             82.0
+#define DEFAULT_WIDTH          23.0
+#define DEFAULT_RIGHTSHIFT     40.0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

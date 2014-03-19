@@ -36,7 +36,6 @@ char *SegmentSequence(char *fName, Parameters *P)
     fprintf(stderr, "Error: unknown format\n");
     exit(1);
     }
-
   while(fscanf(Reader, "%llu\t%lf", &pos, &val) == 2)
     {
     if(val > threshold && region == 0)

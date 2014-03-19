@@ -41,7 +41,8 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
 
   pModel        = CreatePModel(4);
   readerBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + 1, sizeof(uint8_t));
-  symbolBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + LEFT_BUFFER_GUARD + 1, sizeof(uint8_t));
+  symbolBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + LEFT_BUFFER_GUARD + 1, 
+  sizeof(uint8_t));
   symbolBuffer += LEFT_BUFFER_GUARD;
   while((k = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
     {
@@ -207,10 +208,10 @@ int32_t main(int argc, char *argv[])
               *nameExt;
   Parameters  Par;
   Patterns    *patterns, *patternsIR, *patternsLB, *patternsLBIR;
-  // clock_t     tic, tac, start;
-  // double      cpuTimeUsed;
+  Painter     *Paint;
+  clock_t     stop, start;
   CModel      *refModel, *refModelIR;
-  uint32_t    k;
+  uint32_t    k, nPatterns;
   int64_t     seed;
 
   Parameters  *P = &Par;
@@ -220,6 +221,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Usage: smash [OPTIONS]... [FILE] [FILE]    \n");
     fprintf(stderr, "                                           \n");
     fprintf(stderr, " -v                  verbose mode          \n");
+    fprintf(stderr, " -vv                 very verbose mode     \n");
     fprintf(stderr, " -f                  force (be sure!)      \n");
     fprintf(stderr, "                                           \n");
     fprintf(stderr, " -c  <context>       context order         \n");
@@ -234,6 +236,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, " -wt <wType>         window type [0|1|2|3] \n");
     fprintf(stderr, " -d  <dSize>         drop size             \n");
     fprintf(stderr, " -m  <mSize>         minimum block size    \n");
+    fprintf(stderr, " -wi <width>         design sequence width \n");
     fprintf(stderr, "                                           \n");
     fprintf(stderr, " <refFile>           reference file        \n");
     fprintf(stderr, " <tarFile>           target file         \n\n");
@@ -241,6 +244,7 @@ int32_t main(int argc, char *argv[])
     }
 
   P->verbose   = ArgsState (DEFAULT_VERBOSE,   p, argc, "-v" );
+  P->verbose   = Args3State(P->verbose,        p, argc, "-vv");
   P->force     = ArgsState (DEFAULT_FORCE,     p, argc, "-f" );
   P->context   = ArgsNumber(DEFAULT_CONTEXT,   p, argc, "-c" );
   P->alpha     = ArgsNumber(DEFAULT_ALPHA,     p, argc, "-a" );
@@ -249,12 +253,16 @@ int32_t main(int argc, char *argv[])
   P->threshold = ArgsDouble(DEFAULT_THRESHOLD, p, argc, "-t" );
   P->window    = ArgsNumber(DEFAULT_WINDOW,    p, argc, "-w" );
   P->wType     = ArgsNumber(DEFAULT_WIN_TYPE,  p, argc, "-wt");
+  P->width     = ArgsDouble(DEFAULT_WIDTH,     p, argc, "-wi");
   P->drop      = ArgsNumber(DEFAULT_DROP,      p, argc, "-d" );
   P->minimum   = ArgsNumber(DEFAULT_MINIMUM,   p, argc, "-m" );
 
   seed = (P->seed == DEFAULT_SEED) ? time(NULL) : P->seed;
   if(P->verbose)
+    {
     fprintf(stderr, "Using seed: %u.\n", (uint32_t) seed);
+    start = clock();
+    }
   P->refSize = 0;
   P->tarSize = 0;
 
@@ -300,6 +308,7 @@ int32_t main(int argc, char *argv[])
   // TODO: THIS SHALL BE USED IN A STRUCTURE...
   uint64_t  distance;
   uint32_t  n, z = 0;
+  char      backColor[] = "#ffffff";
   double    width   = 23.0;
   double    cx      = 50.0;
   double    cy      = 90.0;
@@ -307,16 +316,19 @@ int32_t main(int argc, char *argv[])
   double    ty      = 82.0;
   double    refSize = GetPoint(FopenBytesInFile(argv[argc-2]));
   double    tarSize = GetPoint(FopenBytesInFile(argv[argc-1]));
-  double    uH      = refSize > tarSize ? refSize : tarSize;
   FILE      *PLOT   = Fopen("plot.svg", "w"); //TODO: NAME: REF-TAR-$RAND.svg
-  PrintHead(PLOT, width, uH);
-  Rect(PLOT, 5000.0, 5000.0, 0, 0, "#fff");   //TODO: DON'T USE FIXED SIZES...
-  RectOval(PLOT, width, refSize, cx, cy, "#ffffff");
+
+  Paint        = CreatePainter(refSize, tarSize, backColor);
+  Paint->width = P->width;
+
+  PrintHead(PLOT, Paint->width, Paint->maxSize);
+  Rect(PLOT, 5000.0, 5000.0, 0, 0, backColor); //TODO: DON'T USE FIXED SIZES!
+  RectOval(PLOT, Paint->width, refSize, cx, cy, backColor);
   Text(PLOT, tx, ty, "S1");
   tx += 40.0;
   cx += 40.0;
-  //PT:
-  RectOval(PLOT, width, tarSize, cx, cy, "#ffffff");
+
+  RectOval(PLOT, Paint->width, tarSize, cx, cy, backColor);
 
   // TODO: HSV variation
   char Colors[17][8] = {"#005075", //BLUE                   [TOP]
@@ -338,11 +350,16 @@ int32_t main(int argc, char *argv[])
                         "#000000"}; //THE REST IS DARK... 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  if(P->verbose && patterns->nPatterns != 0)
-    fprintf(stderr, "Found %u patterns.\n", patterns->nPatterns);
+  nPatterns = 0; 
   for(k = 0 ; k != patterns->nPatterns ; ++k)
-    {
     if((distance = patterns->p[k].end - patterns->p[k].init) >= P->minimum)
+      ++nPatterns; 
+  if(P->verbose && patterns->nPatterns != 0)
+    fprintf(stderr, "Found %u valid patterns from %u.\n", nPatterns, 
+    patterns->nPatterns);
+
+  for(k = 0 ; k != patterns->nPatterns ; ++k)
+    if((distance = patterns->p[k].end-patterns->p[k].init) >= P->minimum)
       {
       if(P->verbose)
         fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1, 
@@ -374,14 +391,51 @@ int32_t main(int argc, char *argv[])
       fprintf(stderr, "---------------------------------------------------"
       "\n");
       }
-    }
+  //
   // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  nPatterns = 0;
+  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
+    if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+      ++nPatterns;
   if(P->verbose && patternsIR->nPatterns != 0)
-    fprintf(stderr, "Running %u inverted repeats patterns ...\n", 
+    fprintf(stderr, "Found %u inverted valid patterns from %u.\n", nPatterns,
     patternsIR->nPatterns);
+
   for(k = 0 ; k != patternsIR->nPatterns ; ++k)
     {
-    ;
+    if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+      {
+      if(P->verbose)
+        fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1,
+        patternsIR->p[k].end - patternsIR->p[k].init);
+
+      Rect(PLOT, width, GetPoint(distance), cx, cy +
+      GetPoint(patternsIR->p[k].init), Colors[z]);
+ 
+      nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
+                     patternsIR->p[k].end);
+      revRef       = IRSequence(nameExt, P, REF);
+      unlink(nameExt);
+      refModel     = LoadReference(revRef, P);
+      unlink(nameExt);
+      nameInf      = Compress(sRef, refModel, P);
+      nameFil      = FilterSequence(nameInf, P);
+      unlink(nameInf);
+      nameSeg      = SegmentSequence(nameFil, P);
+      unlink(nameFil);
+      patternsLBIR = GetPatterns(nameSeg);
+      unlink(nameSeg);
+      for(n = 0 ; n != patternsLBIR->nPatterns ; ++n)
+        {
+        RectIR(PLOT, width, GetPoint(patternsLBIR->p[n].end -
+        patternsLBIR->p[n].init), cx-40.0, cy + 
+        GetPoint(patternsLBIR->p[n].init),
+        Colors[z]);
+        }
+      ++z;
+      fprintf(stderr, "---------------------------------------------------"
+      "\n");
+      }
     }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //                               cx-rightshift
@@ -396,8 +450,14 @@ int32_t main(int argc, char *argv[])
   unlink(revRef);
   unlink(revTar);
 
-  fprintf(stderr, "Done smash algorithmic information map! Enjoy it :)\n");
-
+  if(P->verbose)
+    {
+    stop = clock();
+    fprintf(stderr, "Done smash algorithmic information map in %g seconds\n", 
+    ((double) (stop-start)) / CLOCKS_PER_SEC);
+    fprintf(stderr, "Enjoy it :)\n");
+    }
+ 
   return EXIT_SUCCESS;
   }
 
