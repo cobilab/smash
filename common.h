@@ -35,6 +35,7 @@ uint8_t     *ReverseStr      (uint8_t *, uint32_t);
 char        *CloneString     (char *   );
 char        *RepString       (const char *, const char *, const char *);
 uint32_t    ArgsNumber       (uint32_t , char *[], uint32_t, char *);
+double      ArgsDouble       (double, char *[], uint32_t, char *);
 uint8_t     ArgsState        (uint8_t  , char *[], uint32_t, char *);
 char        *ArgsString      (char    *, char *[], uint32_t, char *);
 //uint32_t    ReadFNames       (char    *, char *[], uint32_t);

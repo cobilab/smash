@@ -229,6 +229,16 @@ uint32_t ArgsNumber(uint32_t def, char *arg[], uint32_t n, char *str)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+double ArgsDouble(double def, char *arg[], uint32_t n, char *str)
+  {
+  for( ; --n ; )
+    if(!strcmp(str, arg[n]))
+      return atof(arg[n+1]);
+  return def;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 uint8_t ArgsState(uint8_t def, char *arg[], uint32_t n, char *str)
   {     
   for( ; --n ; )

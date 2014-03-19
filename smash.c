@@ -246,7 +246,7 @@ int32_t main(int argc, char *argv[])
   P->alpha     = ArgsNumber(DEFAULT_ALPHA,     p, argc, "-a" );
   P->hash      = ArgsNumber(DEFAULT_HASH_SIZE, p, argc, "-h" );
   P->seed      = ArgsNumber(DEFAULT_SEED,      p, argc, "-s" );
-  P->threshold = ArgsNumber(DEFAULT_THRESHOLD, p, argc, "-t" );
+  P->threshold = ArgsDouble(DEFAULT_THRESHOLD, p, argc, "-t" );
   P->window    = ArgsNumber(DEFAULT_WINDOW,    p, argc, "-w" );
   P->wType     = ArgsNumber(DEFAULT_WIN_TYPE,  p, argc, "-wt");
   P->drop      = ArgsNumber(DEFAULT_DROP,      p, argc, "-d" );
@@ -311,12 +311,12 @@ int32_t main(int argc, char *argv[])
   FILE      *PLOT   = Fopen("plot.svg", "w"); //TODO: NAME: REF-TAR-$RAND.svg
   PrintHead(PLOT, width, uH);
   Rect(PLOT, 5000.0, 5000.0, 0, 0, "#fff");   //TODO: DON'T USE FIXED SIZES...
-  RectOval(PLOT, width, refSize, cx, cy, "#fff");
+  RectOval(PLOT, width, refSize, cx, cy, "#ffffff");
   Text(PLOT, tx, ty, "S1");
   tx += 40.0;
   cx += 40.0;
   //PT:
-  RectOval(PLOT, width, tarSize, cx, cy, "#fff");
+  RectOval(PLOT, width, tarSize, cx, cy, "#ffffff");
 
   // TODO: HSV variation
   char Colors[17][8] = {"#005075", //BLUE                   [TOP]
@@ -342,13 +342,15 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Found %u patterns.\n", patterns->nPatterns);
   for(k = 0 ; k != patterns->nPatterns ; ++k)
     {
-    if((distance = patterns->p[k].end - patterns->p[k].init) > P->minimum)
+    if((distance = patterns->p[k].end - patterns->p[k].init) >= P->minimum)
       {
       if(P->verbose)
         fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1, 
         patterns->p[k].end - patterns->p[k].init);
+
       Rect(PLOT, width, GetPoint(distance), cx, cy + 
       GetPoint(patterns->p[k].init), Colors[z]);
+
       nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
                    patterns->p[k].end);
       refModel   = LoadReference(nameExt, P);
