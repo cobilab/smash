@@ -5,7 +5,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *FilterSequence(char *, Parameters *);
+void     WindowSizeAndDrop  (Parameters *);
+float    *InitWinWeights    (int64_t, int32_t);
+void     EndWinWeights      (float *);
+char     *FilterSequence    (char *, Parameters *, float *);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

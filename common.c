@@ -419,9 +419,10 @@ char *ExtractSubSeq(char *name, Parameters *P, uint64_t init, uint64_t end)
   fNameOut = concatenate(name, ".ext");
   Writter  = Fopen(fNameOut, "w");
 
- if(P->verbose)
-    fprintf(stderr, "Extracting pattern (%"PRIu64";%"PRIu64")\n", init, end);
+  if(P->verbose)
+    fprintf(stderr, "Extracting pattern [%"PRIu64";%"PRIu64"]\n", init, end);
   
+  // TODO: SHAME ON THIS! IMPROVE THIS WITH BUFFERS AND FRED/FWRITE...
   fseek(Reader, init, SEEK_SET);
   for(x = init ; x != end ; ++x)
     fprintf(Writter, "%c", fgetc(Reader));

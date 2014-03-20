@@ -10,7 +10,20 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-float *CalcWinWeights(int64_t M, int32_t type)
+void WindowSizeAndDrop(Parameters *P)
+  {
+  // Auto window size & drop
+/*P->window = size / 1000;
+  P->sample = P->window / 5;
+
+  assert(P->sample >= 1);
+  assert(P->window >= 0);
+*/
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+float *InitWinWeights(int64_t M, int32_t type)
   {
   float    *w = (float *) Malloc((2 * M + 1) * sizeof(float));
   int64_t  k;
@@ -31,28 +44,37 @@ float *CalcWinWeights(int64_t M, int32_t type)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+void EndWinWeights(float *w)
+  {
+  Free(w);
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 static float Mean(float *ent, int64_t nEnt, int64_t n, int64_t M, float *w)
   {
-  int64_t  k;
-  float    sum = 0, wSum = 0;
+  int64_t  k, s;
+  float    sum = 0, wSum = 0, tmp;
 
   for(k = -M ; k <= M ; ++k)
-    if(n + k >= 0 && n + k < nEnt)
+    {
+    s = n + k;
+    if(s >= 0 && s < nEnt)
       {
-      sum  += w[M+k] * ent[n+k];
-      wSum += w[M+k];
+      sum  += (tmp = w[M+k]) * ent[s];
+      wSum += tmp;
       }
+    }
   
   return sum / wSum;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *FilterSequence(char *fName, Parameters *P)
+char *FilterSequence(char *fName, Parameters *P, float *w)
   {
   FILE     *Reader  = NULL, *Writter = NULL;
-  float    *entries = NULL, *w, *buffer;
-  int32_t  wType;
+  float    *entries = NULL, *buffer;
   clock_t  stop, start;
   int64_t  nEntries, n, M, drop, k;
   char     *fNameOut;
@@ -65,7 +87,6 @@ char *FilterSequence(char *fName, Parameters *P)
 
   M        = P->window;
   drop     = P->drop + 1;
-  wType    = P->wType;
   Reader   = Fopen(fName, "rb");
   entries  = (float *) Malloc(BUFFER_SIZE * sizeof(float));
   buffer   = (float *) Malloc(BUFFER_SIZE * sizeof(float));
@@ -87,14 +108,11 @@ char *FilterSequence(char *fName, Parameters *P)
   fNameOut = concatenate(fName, ".fil");
   Writter  = Fopen(fNameOut, "w");
 
-  w = CalcWinWeights(M, wType);
-
   for(n = 0 ; n != nEntries ; ++n)
     if(n % drop == 0)
       fprintf(Writter, "%"PRIu64"\t%.3f\n", n, Mean(entries, nEntries, n, M, 
       w));
 
-  Free(w);
   Free(entries);
   fclose(Writter);
 

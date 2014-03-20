@@ -133,7 +133,7 @@ CModel *LoadReference(char *sRef, Parameters *P)
       }
   ResetCModel(cModel);
   Free(readerBuffer);
-  // Free(symbolBuffer); //XXX: WHY CAN'T FREE?
+  // Free(symbolBuffer); //XXX: WHY CAN'T FREE? MEMCOPY?
   fclose(Reader);
 
   if(P->verbose == 1)
@@ -185,7 +185,6 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
         default: break;
         }
     fwrite(writterBuffer, 1, i, Writter);
-    if(type == 0) P->refSize += i; else P->tarSize += i; 
     }
   fclose(Reader);
   fclose(Writter);
@@ -217,8 +216,12 @@ int32_t main(int argc, char *argv[])
   Painter     *Paint;
   clock_t     stop, start;
   CModel      *refModel, *refModelIR;
-  uint32_t    k, nPatterns;
+  uint32_t    k, nPatterns, n, z;
+  uint64_t    distance;
   int64_t     seed;
+  float       *winWeights;
+  char        backColor[] = "#ffffff";
+  FILE        *PLOT = NULL;
 
   Parameters  *P = &Par;
   if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
@@ -269,9 +272,12 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Using seed: %u.\n", (uint32_t) seed);
     start = clock();
     }
-  P->refSize = 0;
-  P->tarSize = 0;
-
+  P->refSize = FopenBytesInFile(argv[argc-2]);
+  P->tarSize = FopenBytesInFile(argv[argc-1]);
+  Paint      = CreatePainter(GetPoint(P->refSize), GetPoint(P->tarSize), 
+               backColor);
+  WindowSizeAndDrop(P);
+  winWeights = InitWinWeights(P->window, P->wType);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // BUILD TARGET MAP  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //
@@ -279,7 +285,7 @@ int32_t main(int argc, char *argv[])
   sTar       = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, TAR);
   refModel   = LoadReference(sRef, P);
   nameInf    = Compress(sTar, refModel, P);
-  nameFil    = FilterSequence(nameInf, P);
+  nameFil    = FilterSequence(nameInf, P, winWeights);
   unlink(nameInf);
   nameSeg    = SegmentSequence(nameFil, P);   
   unlink(nameFil);
@@ -296,7 +302,7 @@ int32_t main(int argc, char *argv[])
   revTar     = IRSequence(sTar, P, TAR);
   refModelIR = LoadReference(revRef, P);
   nameInfIR  = Compress(sTar, refModelIR, P);    // sTar gives the name to the
-  nameFilIR  = FilterSequence(nameInfIR, P);       // and erase previous files
+  nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
   unlink(nameInfIR);
   nameSegIR  = SegmentSequence(nameFilIR, P);
   unlink(nameFilIR);
@@ -311,30 +317,19 @@ int32_t main(int argc, char *argv[])
   // BUILD REFERENCE MAP FOR EACH TARGET PATTERN - - - - - - - - - - - - - - -
   //
   // OUTPUT HEADER
-  // TODO: THIS SHALL BE USED IN A STRUCTURE...
-  uint64_t  distance;
-  uint32_t  n, z = 0;
-  char      backColor[] = "#ffffff";
-  double    width   = 23.0;
-  double    cx      = 50.0;
-  double    cy      = 90.0;
-  double    tx      = 50.0;
-  double    ty      = 82.0;
-  double    refSize = GetPoint(FopenBytesInFile(argv[argc-2]));
-  double    tarSize = GetPoint(FopenBytesInFile(argv[argc-1]));
-  FILE      *PLOT   = Fopen("plot.svg", "w"); //TODO: NAME: REF-TAR-$RAND.svg
-
-  Paint        = CreatePainter(refSize, tarSize, backColor);
+  PLOT = Fopen("plot.svg", "w"); //TODO: NAME: REF-TAR-$RAND.svg
   Paint->width = P->width;
 
   PrintHead(PLOT, Paint->width, Paint->maxSize);
   Rect(PLOT, 5000.0, 5000.0, 0, 0, backColor); //TODO: DON'T USE FIXED SIZES!
-  RectOval(PLOT, Paint->width, refSize, cx, cy, backColor);
-  Text(PLOT, tx, ty, "S1");
-  tx += 40.0;
-  cx += 40.0;
+  RectOval(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy, 
+  backColor);
+  Text(PLOT, Paint->tx, Paint->ty, "S1");
+  Paint->tx += Paint->rightShift;
+  Paint->cx += Paint->rightShift;
 
-  RectOval(PLOT, Paint->width, tarSize, cx, cy, backColor);
+  RectOval(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy, 
+  backColor);
 
   // TODO: HSV variation
   char Colors[17][8] = {"#005075", //BLUE                   [TOP]
@@ -364,6 +359,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Found %u valid patterns from %u.\n", nPatterns, 
     patterns->nPatterns);
 
+  z = 0;
   for(k = 0 ; k != patterns->nPatterns ; ++k)
     if((distance = patterns->p[k].end-patterns->p[k].init) >= P->minimum)
       {
@@ -371,7 +367,7 @@ int32_t main(int argc, char *argv[])
         fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1, 
         patterns->p[k].end - patterns->p[k].init);
 
-      Rect(PLOT, width, GetPoint(distance), cx, cy + 
+      Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy + 
       GetPoint(patterns->p[k].init), Colors[z]);
 
       nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
@@ -379,19 +375,17 @@ int32_t main(int argc, char *argv[])
       refModel   = LoadReference(nameExt, P);
       unlink(nameExt);
       nameInf    = Compress(sRef, refModel, P);
-      nameFil    = FilterSequence(nameInf, P);
+      nameFil    = FilterSequence(nameInf, P, winWeights);
       unlink(nameInf);
       nameSeg    = SegmentSequence(nameFil, P);
       unlink(nameFil);
       patternsLB = GetPatterns(nameSeg);
       unlink(nameSeg);
-      // LOOP
       for(n = 0 ; n != patternsLB->nPatterns ; ++n)
         {
-        Rect(PLOT, width, GetPoint(patternsLB->p[n].end - 
-        patternsLB->p[n].init), cx-40.0, cy + GetPoint(patternsLB->p[n].init), 
-        Colors[z]);
-        // rightShift
+        Rect(PLOT, Paint->width, GetPoint(patternsLB->p[n].end - 
+        patternsLB->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
+        GetPoint(patternsLB->p[n].init), Colors[z]);
         }
       ++z;
       fprintf(stderr, "---------------------------------------------------"
@@ -415,7 +409,7 @@ int32_t main(int argc, char *argv[])
         fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1,
         patternsIR->p[k].end - patternsIR->p[k].init);
 
-      RectIR(PLOT, width, GetPoint(distance), cx, cy +
+      RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy +
       GetPoint(patternsIR->p[k].init), Colors[z]);
  
       nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
@@ -425,7 +419,7 @@ int32_t main(int argc, char *argv[])
       refModel     = LoadReference(revRef, P);
       unlink(nameExt);
       nameInf      = Compress(sRef, refModel, P);
-      nameFil      = FilterSequence(nameInf, P);
+      nameFil      = FilterSequence(nameInf, P, winWeights);
       unlink(nameInf);
       nameSeg      = SegmentSequence(nameFil, P);
       unlink(nameFil);
@@ -433,10 +427,9 @@ int32_t main(int argc, char *argv[])
       unlink(nameSeg);
       for(n = 0 ; n != patternsLBIR->nPatterns ; ++n)
         {
-        Rect(PLOT, width, GetPoint(patternsLBIR->p[n].end -
-        patternsLBIR->p[n].init), cx-40.0, cy + 
-        GetPoint(patternsLBIR->p[n].init),
-        Colors[z]);
+        Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
+        patternsLBIR->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
+        GetPoint(patternsLBIR->p[n].init), Colors[z]);
         }
       ++z;
       fprintf(stderr, "---------------------------------------------------"
@@ -445,9 +438,11 @@ int32_t main(int argc, char *argv[])
     }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //                               cx-rightshift
-  Chromosome(PLOT, width, refSize, cx-40.0, cy); //<--- HUMAN
-  Chromosome(PLOT, width, tarSize, cx, cy);           //<--- CHIMP
-  Text(PLOT, tx, ty, "S2");
+  EndWinWeights(winWeights);
+  Chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx -Paint->rightShift, 
+  Paint->cy);
+  Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy);
+  Text(PLOT, Paint->tx, Paint->ty, "S2");
   PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
