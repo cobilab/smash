@@ -22,11 +22,12 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
   {
   FILE      *Reader  = Fopen(sTar, "r");
   char      *name    = concatenate(sTar, ".inf");
-  FILE      *Writter = Fopen(name, "w");
+  FILE      *Writter = Fopen(name, "wb");
   uint32_t  k, idxPos, instance;
   uint64_t  bits = 0;
   int32_t   idx = 0;
   uint8_t   *readerBuffer, *symbolBuffer, sym;
+  float     *outputBuffer;
   PModel    *pModel;
   #ifdef PROGRESS
   uint64_t  i = 0, size = NBytesInFile(Reader);
@@ -41,6 +42,7 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
 
   pModel        = CreatePModel(4);
   readerBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + 1, sizeof(uint8_t));
+  outputBuffer  = (float   *) Malloc(BUFFER_SIZE * sizeof(float));
   symbolBuffer  = (uint8_t *) Calloc(BUFFER_SIZE + LEFT_BUFFER_GUARD + 1, 
   sizeof(uint8_t));
   symbolBuffer += LEFT_BUFFER_GUARD;
@@ -52,7 +54,7 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
       GetPModelIdx(symbolBuffer+idx-1, cModel);
       ComputePModel(cModel, pModel);
       bits += (instance = FLog2(pModel->sum / pModel->freqs[sym]));
-      fprintf(Writter, "%.*f\n", PRECISION, (float) instance);
+      outputBuffer[idxPos] = (float) instance;
       if(++idx == BUFFER_SIZE)
         {
         memcpy(symbolBuffer - LEFT_BUFFER_GUARD, symbolBuffer + idx - 
@@ -63,11 +65,15 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
       CalcProgress(size, ++i);
       #endif
       }
+    fwrite(outputBuffer, sizeof(float), k, Writter);
+    fflush(Writter);
     }
+  
   FreeCModel(cModel);
   Free(pModel->freqs);
   Free(pModel);
   Free(readerBuffer);
+  Free(outputBuffer);
   fclose(Reader);
   fclose(Writter);
 
@@ -409,7 +415,7 @@ int32_t main(int argc, char *argv[])
         fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1,
         patternsIR->p[k].end - patternsIR->p[k].init);
 
-      Rect(PLOT, width, GetPoint(distance), cx, cy +
+      RectIR(PLOT, width, GetPoint(distance), cx, cy +
       GetPoint(patternsIR->p[k].init), Colors[z]);
  
       nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
@@ -427,7 +433,7 @@ int32_t main(int argc, char *argv[])
       unlink(nameSeg);
       for(n = 0 ; n != patternsLBIR->nPatterns ; ++n)
         {
-        RectIR(PLOT, width, GetPoint(patternsLBIR->p[n].end -
+        Rect(PLOT, width, GetPoint(patternsLBIR->p[n].end -
         patternsLBIR->p[n].init), cx-40.0, cy + 
         GetPoint(patternsLBIR->p[n].init),
         Colors[z]);

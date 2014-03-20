@@ -10,10 +10,31 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static double Mean(double *ent, int64_t nEnt, int64_t n, int64_t M, double *w)
+float *CalcWinWeights(int64_t M, int32_t type)
   {
-  int64_t k;
-  double sum = 0, wSum = 0;
+  float    *w = (float *) Malloc((2 * M + 1) * sizeof(float));
+  int64_t  k;
+
+  switch(type)
+    {
+    case W_HAMMING: for(k = -M ; k <= M ; ++k) w[M+k] = 0.54 + 0.46 * cos((2 *
+    M_PI * k) / (2 * M + 1)); break;
+    case W_HANN: for(k = -M ; k <= M ; ++k) w[M+k] = 0.5 * (1 + cos((2 * M_PI
+    * k) / (2 * M + 1))); break;
+    case W_BLACKMAN: for(k = -M ; k <= M ; ++k) w[M+k] = 0.42 + 0.5 * cos((2 *
+    M_PI * k) / (2 * M + 1)) + 0.08 * cos((4 * M_PI * k) / (2 * M+1)); break;
+    case W_RECTANGULAR: for(k = -M ; k <= M ; ++k) w[M+k] = 1; break;
+    }
+
+  return w;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+static float Mean(float *ent, int64_t nEnt, int64_t n, int64_t M, float *w)
+  {
+  int64_t  k;
+  float    sum = 0, wSum = 0;
 
   for(k = -M ; k <= M ; ++k)
     if(n + k >= 0 && n + k < nEnt)
@@ -30,10 +51,10 @@ static double Mean(double *ent, int64_t nEnt, int64_t n, int64_t M, double *w)
 char *FilterSequence(char *fName, Parameters *P)
   {
   FILE     *Reader  = NULL, *Writter = NULL;
-  double   *entries = NULL, value, *w;
+  float    *entries = NULL, *w, *buffer;
   int32_t  wType;
   clock_t  stop, start;
-  int64_t  nEntries, n, k, M, drop;
+  int64_t  nEntries, n, M, drop, k;
   char     *fNameOut;
 
   if(P->verbose == 1)
@@ -43,16 +64,20 @@ char *FilterSequence(char *fName, Parameters *P)
     }
 
   M        = P->window;
-  drop     = P->drop;
+  drop     = P->drop + 1;
   wType    = P->wType;
-  w        = (double *) Malloc((2 * M + 1) * sizeof(double));
-  Reader   = Fopen(fName, "r");
+  Reader   = Fopen(fName, "rb");
+  entries  = (float *) Malloc(BUFFER_SIZE * sizeof(float));
+  buffer   = (float *) Malloc(BUFFER_SIZE * sizeof(float));
   nEntries = 0;
-  while(fscanf(Reader, "%lf", &value) == 1)
+
+  while((k = fread(buffer, sizeof(float), BUFFER_SIZE, Reader)))
     {
-    entries = (double *) Realloc(entries, (nEntries + 1) * sizeof(double), 
-    sizeof(double));
-    entries[nEntries++] = value;
+    for(n = 0 ; n != k ; ++n)
+      entries[nEntries++] = buffer[n];
+
+    entries = (float *) Realloc(entries, (nEntries + k) * sizeof(float), 
+    sizeof(float) * k);
     }
   fclose(Reader);
 
@@ -62,19 +87,10 @@ char *FilterSequence(char *fName, Parameters *P)
   fNameOut = concatenate(fName, ".fil");
   Writter  = Fopen(fNameOut, "w");
 
-  switch(wType)
-    {
-    case W_HAMMING: for(k = -M ; k <= M ; ++k) w[M+k] = 0.54 + 0.46 * cos((2 * 
-    M_PI * k) / (2 * M + 1)); break;
-    case W_HANN: for(k = -M ; k <= M ; ++k) w[M+k] = 0.5 * (1 + cos((2 * M_PI 
-    * k) / (2 * M + 1))); break;
-    case W_BLACKMAN: for(k = -M ; k <= M ; ++k) w[M+k] = 0.42 + 0.5 * cos((2 *
-    M_PI * k) / (2 * M + 1)) + 0.08 * cos((4 * M_PI * k) / (2 * M+1)); break;
-    case W_RECTANGULAR: for(k = -M ; k <= M ; ++k) w[M+k] = 1; break;
-    }
+  w = CalcWinWeights(M, wType);
 
   for(n = 0 ; n != nEntries ; ++n)
-    if(n % (drop + 1) == 0)
+    if(n % drop == 0)
       fprintf(Writter, "%"PRIu64"\t%.3f\n", n, Mean(entries, nEntries, n, M, 
       w));
 
