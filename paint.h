@@ -18,9 +18,27 @@ typedef struct
   }
 Painter;
 
+typedef struct
+  {
+  uint8_t  r;
+  uint8_t  g;
+  uint8_t  b;
+  } 
+RgbColor;
+
+typedef struct
+  {
+  uint8_t  h;
+  uint8_t  s;
+  uint8_t  v;
+  } 
+HsvColor;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Painter   *CreatePainter (double, double, char *);
+RgbColor  HsvToRgb       (HsvColor);
+HsvColor  RgbToHsv       (RgbColor);
 void      PrintFinal     (FILE *);
 void      PrintHead      (FILE *, double, double);
 void      RectOval       (FILE *, double, double, double, double, char *);

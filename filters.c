@@ -12,13 +12,21 @@
 
 void WindowSizeAndDrop(Parameters *P)
   {
-  // Auto window size & drop
-/*P->window = size / 1000;
-  P->sample = P->window / 5;
+  uint64_t max = (P->refSize > P->tarSize) ? P->refSize : P->tarSize;
 
-  assert(P->sample >= 1);
-  assert(P->window >= 0);
-*/
+  if(DEFAULT_WINDOW != -1)
+    return;  
+
+  //TODO: forget sequence size, only subsample automatically...
+  if(max < WINDOW_RATIO || (max / WINDOW_RATIO < SUBSAMPLE_RATIO)) 
+    {
+    P->window    = 0;
+    P->subsample = 0;
+    return;
+    }
+
+  P->window    = 150001;  //max / WINDOW_RATIO;
+  P->subsample = P->window / SUBSAMPLE_RATIO;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,7 +94,7 @@ char *FilterSequence(char *fName, Parameters *P, float *w)
     }
 
   M        = P->window;
-  drop     = P->drop + 1;
+  drop     = P->subsample + 1;
   Reader   = Fopen(fName, "rb");
   entries  = (float *) Malloc(BUFFER_SIZE * sizeof(float));
   buffer   = (float *) Malloc(BUFFER_SIZE * sizeof(float));

@@ -18,8 +18,9 @@ typedef struct
   uint32_t seed;
   double   threshold;
   double   width;
-  uint64_t window;
-  uint64_t drop;
+  int64_t  window;
+  int64_t  drop;
+  int64_t  subsample;
   uint8_t  wType;
   uint64_t minimum;
   uint64_t refSize;
@@ -45,6 +46,8 @@ Parameters;
 #define W_RECTANGULAR          3
 #define REF                    0
 #define TAR                    1
+#define WINDOW_RATIO           1300
+#define SUBSAMPLE_RATIO        5
 
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0
@@ -56,7 +59,7 @@ Parameters;
 #define DEFAULT_HASH_SIZE      29999999
 #define DEFAULT_SEED           -1
 #define DEFAULT_THRESHOLD      1.5
-#define DEFAULT_WINDOW         150001
+#define DEFAULT_WINDOW         -1
 #define DEFAULT_WIN_TYPE       0
 #define DEFAULT_DROP           50000
 #define DEFAULT_MINIMUM        1000000
