@@ -23,6 +23,7 @@ typedef struct
   int64_t  subsample;
   uint8_t  wType;
   uint64_t minimum;
+  char     *output;
   uint64_t refSize;
   uint64_t tarSize;
   }
@@ -48,8 +49,8 @@ Parameters;
 #define TAR                    1
 #define WINDOW_RATIO           1300
 #define SUBSAMPLE_RATIO        5
-#define LEVEL_SATURATION       120
-#define LEVEL_VALUE            120
+#define LEVEL_SATURATION       160
+#define LEVEL_VALUE            160
 
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0

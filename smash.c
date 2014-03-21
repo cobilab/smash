@@ -247,6 +247,8 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, " -m  <mSize>         minimum block size    \n");
     fprintf(stderr, " -wi <width>         design sequence width \n");
     fprintf(stderr, "                                           \n");
+    fprintf(stderr, " -o <outFile>        output svg plot file  \n");
+    fprintf(stderr, "                                           \n");
     fprintf(stderr, " <refFile>           reference file        \n");
     fprintf(stderr, " <tarFile>           target file         \n\n");
     return EXIT_SUCCESS;
@@ -265,6 +267,7 @@ int32_t main(int argc, char *argv[])
   P->width     = ArgsDouble(DEFAULT_WIDTH,     p, argc, "-wi");
   P->drop      = ArgsNumber(DEFAULT_DROP,      p, argc, "-d" );
   P->minimum   = ArgsNumber(DEFAULT_MINIMUM,   p, argc, "-m" );
+  P->output    = ArgsFiles (                   p, argc, "-o" );
 
   seed = (P->seed == DEFAULT_SEED) ? time(NULL) : P->seed;
   if(P->verbose)
@@ -316,7 +319,7 @@ int32_t main(int argc, char *argv[])
   // BUILD REFERENCE MAP FOR EACH TARGET PATTERN - - - - - - - - - - - - - - -
   //
   // OUTPUT HEADER
-  PLOT = Fopen("plot.svg", "w"); //TODO: NAME: REF-TAR-$RAND.svg
+  PLOT = Fopen(P->output, "w");
   Paint->width = P->width;
 
   PrintHead(PLOT, Paint->width, Paint->maxSize);
@@ -329,26 +332,6 @@ int32_t main(int argc, char *argv[])
 
   RectOval(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy, 
   backColor);
-
-  /*
-  char Colors[17][8] = {"#005075", //BLUE                   [TOP]
-                        "#219691", //GREEN +- BLUE          [TOP]
-                        "#CB3A33", //RED DARK               -
-                        "#00803E", //GREEN DARK             -
-                        "#5DACEC", //BLUE BABY              [1/2 TOP]
-                        "#EFDE83", //YELLOW BABY            [1/2 TOP]
-                        "#D5D5D3", //SILVER                 [TOP] 
-                        "#8F7BB1", //PURPLE BABY            [1/2 TOP]
-                        "#3570BB", //BLUE LI                [TOP]
-                        "#72417A", //PURPLE ROSE DARK       [TOP]
-                        "#B0DDCE", //GREEN GREY BABY        [1/2 TOP]
-                        "#BF3F70", //ROSE DARK              [1/3 TOP]
-                        "#86A377", //GREEN OLIVER           [1/3 TOP]
-                        "#FF7300", //ORANGE                 -
-                        "#807068", //BROWN GREY             (SMALL PATTERNS!)
-                        "#91B5A8", //GREEN BLUE OLIVER      
-                        "#000000"}; //THE REST IS DARK... 
-  */
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   nPatterns = 0; 
@@ -371,7 +354,7 @@ int32_t main(int argc, char *argv[])
   //http://www.rapidtables.com/web/color/color-picker.htm
   if(nPatterns + nIRPatterns > 0)
     mult = 255 / (nPatterns + nIRPatterns);
-  colorIdx = 1;
+  colorIdx = 0;
  
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   for(k = 0 ; k != patterns->nPatterns ; ++k)

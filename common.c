@@ -268,26 +268,18 @@ char *ArgsString(char *def, char *arg[], uint32_t n, char *str)
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*
-void CreaDecFNames(void)
-  {
-  uint32_t  n;
-  char      e1[MAX_FNAME_SIZE], e2[MAX_FNAME_SIZE], **tmp;
 
-  sprintf(e1, ".%s", EXT );
-  sprintf(e2, ".%s", DEXT);
-  Par.dFileName = (char **) Malloc(Par.nTFiles * sizeof(char *));
-  tmp = (char **) Malloc(Par.nTFiles * sizeof(char *));
-  for(n = 0 ; n != Par.nTFiles ; ++n)
-    {
-    tmp[n] = (char *) Malloc(MAX_FNAME_SIZE * sizeof(char));
-    strcpy(tmp[n], Par.tFileName[n]);
-    Par.dFileName[n] = RepString(tmp[n], e1, e2);
-    if(!strstr(tmp[n], e1))
-      sprintf(Par.dFileName[n], "%s.%s", Par.dFileName[n], DEXT);
-    }
+char *ArgsFiles(char *arg[], uint32_t argc, char *str)
+  {
+  int32_t n = argc;
+
+  for( ; --n ; )
+    if(!strcmp(str, arg[n]))
+      return CloneString(arg[n+1]);
+  
+  return concatenate(concatenate(arg[argc-1], arg[argc-2]), ".svg");
   }
-*/
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void FAccessWPerm(char *fn)
@@ -321,60 +313,7 @@ uint32_t ReadFNames(char *def, char *arg[], uint32_t n)
   return nFiles;
   }
 */
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*
-void LoadReference(void)
-  {
-  FILE      *f = NULL;
-  uint64_t  x = 0, xrc = cRef->nPModels - 1;
-  uint32_t  k, idxPos;
-  int32_t   idx = 0;
-  uint8_t   *seqBuf, *symBuf, *tmp, sym, symC;
-  #ifdef PROGRESS
-  uint64_t  i = 0;
-  #endif
 
-  seqBuf  = (uint8_t *) Calloc(BUF_SIZE,               sizeof(uint8_t));
-  symBuf  = (uint8_t *) Calloc(BUF_SIZE + L_GUARD_BUF, sizeof(uint8_t));
-  symBuf += L_GUARD_BUF;
-
-  if(Par.F.verbose == 1)
-    fprintf(stderr, "Loading reference sequence ... \n");
-
-  f = Fopen(Par.rFileName, "r");
-  while((k = fread(seqBuf, 1, BUF_SIZE, f)))
-    for(idxPos = 0 ; idxPos != k ; ++idxPos)
-      {
-      sym = *(seqBuf+idxPos);
-      symBuf[idx] = sym = Alpha.alp[sym];
-      tmp = &symBuf[idx-1];
-      x = ((x - *(tmp-cRef->ctxSize) * cRef->multiplier) * Alpha.nSym) + *tmp;
-      UpdateHashCounter(cRef, x, sym);                               // Update 
-
-      if(Par.ri == 1)                                      // Inverted repeats
-        {
-        xrc = xrc/Alpha.nSym + GetComp(*(tmp+1)) * cRef->multiplier;
-        symC = GetComp(*(tmp+1-cRef->ctxSize));
-        UpdateHashCounter(cRef, xrc, symC);                          // Update
-        }
-
-      if(++idx == BUF_SIZE)
-        {
-        memcpy(symBuf-L_GUARD_BUF, symBuf+idx-L_GUARD_BUF, L_GUARD_BUF);
-        idx = 0;
-        }
-      #ifdef PROGRESS
-      CalcProgress(Alpha.rFileSize, ++i);
-      #endif
-      }
-
-  if(Par.F.verbose == 1)
-    fprintf(stderr, "Done!                  \n");          // Spaces are valid
-
-  Free(seqBuf);
-  fclose(f);
-  }
-*/
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 inline void CalcProgress(uint64_t size, uint64_t i)

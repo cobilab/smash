@@ -23,7 +23,7 @@ Patterns;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 FILE        *Fopen           (const char *, const char *);
-void        FillLogTable     (uint32_t    , uint32_t    , uint32_t);
+void        FillLogTable     (uint32_t, uint32_t, uint32_t);
 double      SearchLog        (uint32_t );
 uint32_t    FLog2            (uint64_t );
 uint8_t     DNASymToNum      (uint8_t  );
@@ -39,7 +39,7 @@ double      ArgsDouble       (double, char *[], uint32_t, char *);
 uint8_t     ArgsState        (uint8_t  , char *[], uint32_t, char *);
 uint8_t     Args3State       (uint8_t  , char *[], uint32_t, char *);
 char        *ArgsString      (char    *, char *[], uint32_t, char *);
-//uint32_t    ReadFNames       (char    *, char *[], uint32_t);
+char        *ArgsFiles       (char *[], uint32_t, char *);
 void        FAccessWPerm     (char    *);
 void        PrintArgs        (void     );
 void        CmpInputError    (uint32_t );
