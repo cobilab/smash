@@ -216,7 +216,7 @@ int32_t main(int argc, char *argv[])
   Painter     *Paint;
   clock_t     stop, start;
   CModel      *refModel, *refModelIR;
-  uint32_t    k, nPatterns, n, z;
+  uint32_t    k, nPatterns, n;
   uint64_t    distance;
   int64_t     seed;
   float       *winWeights;
@@ -359,7 +359,13 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Found %u valid patterns from %u.\n", nPatterns, 
     patterns->nPatterns);
 
-  z = 0;
+  int mult;
+
+
+if(nPatterns > 0)
+  mult = 350 / nPatterns;
+  int colorIdx = 1;
+
   for(k = 0 ; k != patterns->nPatterns ; ++k)
     if((distance = patterns->p[k].end-patterns->p[k].init) >= P->minimum)
       {
@@ -368,7 +374,7 @@ int32_t main(int argc, char *argv[])
         patterns->p[k].end - patterns->p[k].init);
 
       Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy + 
-      GetPoint(patterns->p[k].init), Colors[z]);
+      GetPoint(patterns->p[k].init), GetRgbColor(colorIdx * mult) /*Colors[z]*/ );
 
       nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
                    patterns->p[k].end);
@@ -385,9 +391,9 @@ int32_t main(int argc, char *argv[])
         {
         Rect(PLOT, Paint->width, GetPoint(patternsLB->p[n].end - 
         patternsLB->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
-        GetPoint(patternsLB->p[n].init), Colors[z]);
+        GetPoint(patternsLB->p[n].init), GetRgbColor(colorIdx * mult));
         }
-      ++z;
+      ++colorIdx;
       fprintf(stderr, "---------------------------------------------------"
       "\n");
       }
@@ -401,6 +407,9 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Found %u inverted valid patterns from %u.\n", nPatterns,
     patternsIR->nPatterns);
 
+if(nPatterns > 0)
+  mult = 360 / nPatterns;
+
   for(k = 0 ; k != patternsIR->nPatterns ; ++k)
     {
     if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
@@ -410,7 +419,7 @@ int32_t main(int argc, char *argv[])
         patternsIR->p[k].end - patternsIR->p[k].init);
 
       RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy +
-      GetPoint(patternsIR->p[k].init), Colors[z]);
+      GetPoint(patternsIR->p[k].init), GetRgbColor(colorIdx * mult));
  
       nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
                      patternsIR->p[k].end);
@@ -429,9 +438,9 @@ int32_t main(int argc, char *argv[])
         {
         Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
         patternsLBIR->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
-        GetPoint(patternsLBIR->p[n].init), Colors[z]);
+        GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
         }
-      ++z;
+      ++colorIdx;
       fprintf(stderr, "---------------------------------------------------"
       "\n");
       }

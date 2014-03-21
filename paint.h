@@ -39,6 +39,7 @@ HsvColor;
 Painter   *CreatePainter (double, double, char *);
 RgbColor  HsvToRgb       (HsvColor);
 HsvColor  RgbToHsv       (RgbColor);
+char      *GetRgbColor   (uint8_t);
 void      PrintFinal     (FILE *);
 void      PrintHead      (FILE *, double, double);
 void      RectOval       (FILE *, double, double, double, double, char *);

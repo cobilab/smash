@@ -49,8 +49,10 @@ HsvColor RgbToHsv(RgbColor rgb)
   HsvColor  hsv;
   uint8_t   rgbMin, rgbMax;
 
-  rgbMin = rgb.r < rgb.g ? (rgb.r < rgb.b ? rgb.r : rgb.b) : (rgb.g < rgb.b ? rgb.g : rgb.b);
-  rgbMax = rgb.r > rgb.g ? (rgb.r > rgb.b ? rgb.r : rgb.b) : (rgb.g > rgb.b ? rgb.g : rgb.b);
+  rgbMin = rgb.r < rgb.g ? (rgb.r < rgb.b ? rgb.r : rgb.b) : (rgb.g < rgb.b ? 
+  rgb.g : rgb.b);
+  rgbMax = rgb.r > rgb.g ? (rgb.r > rgb.b ? rgb.r : rgb.b) : (rgb.g > rgb.b ? 
+  rgb.g : rgb.b);
 
   hsv.v = rgbMax;
   if(hsv.v == 0)
@@ -79,10 +81,28 @@ HsvColor RgbToHsv(RgbColor rgb)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+char *GetRgbColor(uint8_t hue)
+  {
+  RgbColor RGB;
+  HsvColor HSV;
+  char *color = (char *) Malloc(8 * sizeof(char));
+  
+  HSV.h = hue;
+  HSV.s = LEVEL_SATURATION;
+  HSV.v = LEVEL_VALUE;
+
+  RGB = HsvToRgb(HSV);
+
+  sprintf(color, "#%X%X%X", RGB.r, RGB.g, RGB.b); 
+
+  return color;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 Painter *CreatePainter(double refSize, double tarSize, char *fName)
   {
-  Painter *P = (Painter *) Malloc(sizeof(Painter));  
-
+  Painter *P    = (Painter *) Malloc(sizeof(Painter));  
   P->backColor  = fName;
   P->refSize    = refSize; 
   P->tarSize    = tarSize; 
