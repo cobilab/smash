@@ -48,8 +48,8 @@ Parameters;
 #define TAR                    1
 #define WINDOW_RATIO           1300
 #define SUBSAMPLE_RATIO        5
-#define LEVEL_SATURATION       82
-#define LEVEL_VALUE            82
+#define LEVEL_SATURATION       120
+#define LEVEL_VALUE            120
 
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0
@@ -69,7 +69,7 @@ Parameters;
 #define DEFAULT_CY             90.0
 #define DEFAULT_TX             50.0
 #define DEFAULT_TY             82.0
-#define DEFAULT_WIDTH          23.0
+#define DEFAULT_WIDTH          25.0
 #define DEFAULT_RIGHTSHIFT     40.0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

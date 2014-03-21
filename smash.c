@@ -216,7 +216,7 @@ int32_t main(int argc, char *argv[])
   Painter     *Paint;
   clock_t     stop, start;
   CModel      *refModel, *refModelIR;
-  uint32_t    k, nPatterns, n;
+  uint32_t    k, nPatterns, nIRPatterns, n, colorIdx, mult;
   uint64_t    distance;
   int64_t     seed;
   float       *winWeights;
@@ -310,7 +310,6 @@ int32_t main(int argc, char *argv[])
   unlink(nameSegIR);
   if(P->verbose)
     fprintf(stderr, "===================================================\n");
-  //
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -324,14 +323,14 @@ int32_t main(int argc, char *argv[])
   Rect(PLOT, 5000.0, 5000.0, 0, 0, backColor); //TODO: DON'T USE FIXED SIZES!
   RectOval(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy, 
   backColor);
-  Text(PLOT, Paint->tx, Paint->ty, "S1");
+  Text(PLOT, Paint->tx, Paint->ty, "Ref");
   Paint->tx += Paint->rightShift;
   Paint->cx += Paint->rightShift;
 
   RectOval(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy, 
   backColor);
 
-  // TODO: HSV variation
+  /*
   char Colors[17][8] = {"#005075", //BLUE                   [TOP]
                         "#219691", //GREEN +- BLUE          [TOP]
                         "#CB3A33", //RED DARK               -
@@ -349,6 +348,7 @@ int32_t main(int argc, char *argv[])
                         "#807068", //BROWN GREY             (SMALL PATTERNS!)
                         "#91B5A8", //GREEN BLUE OLIVER      
                         "#000000"}; //THE REST IS DARK... 
+  */
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   nPatterns = 0; 
@@ -359,13 +359,21 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Found %u valid patterns from %u.\n", nPatterns, 
     patterns->nPatterns);
 
-  int mult;
+  nIRPatterns = 0;
+  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
+    if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+      ++nIRPatterns;
+  if(P->verbose && patternsIR->nPatterns != 0)
+    fprintf(stderr, "Found %u inverted valid patterns from %u.\n", nIRPatterns,
+    patternsIR->nPatterns);
 
-
-if(nPatterns > 0)
-  mult = 350 / nPatterns;
-  int colorIdx = 1;
-
+  //http://www.color-hex.com
+  //http://www.rapidtables.com/web/color/color-picker.htm
+  if(nPatterns + nIRPatterns > 0)
+    mult = 255 / (nPatterns + nIRPatterns);
+  colorIdx = 1;
+ 
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   for(k = 0 ; k != patterns->nPatterns ; ++k)
     if((distance = patterns->p[k].end-patterns->p[k].init) >= P->minimum)
       {
@@ -374,7 +382,7 @@ if(nPatterns > 0)
         patterns->p[k].end - patterns->p[k].init);
 
       Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy + 
-      GetPoint(patterns->p[k].init), GetRgbColor(colorIdx * mult) /*Colors[z]*/ );
+      GetPoint(patterns->p[k].init), GetRgbColor(colorIdx * mult));
 
       nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
                    patterns->p[k].end);
@@ -399,23 +407,12 @@ if(nPatterns > 0)
       }
   //
   // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-  nPatterns = 0;
-  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
-    if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
-      ++nPatterns;
-  if(P->verbose && patternsIR->nPatterns != 0)
-    fprintf(stderr, "Found %u inverted valid patterns from %u.\n", nPatterns,
-    patternsIR->nPatterns);
-
-if(nPatterns > 0)
-  mult = 360 / nPatterns;
-
   for(k = 0 ; k != patternsIR->nPatterns ; ++k)
     {
     if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
       {
       if(P->verbose)
-        fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1,
+        fprintf(stderr, "Running IR pattern %u with size %"PRIu64"\n", k+1,
         patternsIR->p[k].end - patternsIR->p[k].init);
 
       RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy +
@@ -446,12 +443,11 @@ if(nPatterns > 0)
       }
     }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //                               cx-rightshift
   EndWinWeights(winWeights);
   Chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx -Paint->rightShift, 
   Paint->cy);
   Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy);
-  Text(PLOT, Paint->tx, Paint->ty, "S2");
+  Text(PLOT, Paint->tx, Paint->ty, "Tar");
   PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
