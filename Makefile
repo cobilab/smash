@@ -5,7 +5,7 @@ BIN    = .
 CC     = gcc
 CPLP   = -fstrict-aliasing -ffast-math -msse2 #-g
 #-----------------------------------------------------------------------------
-CFLAGS = -Wall $(CPLP) -DPROGRESS 
+CFLAGS = -O3 -Wall $(CPLP) -DPROGRESS 
 #-----------------------------------------------------------------------------
 LIBS   = -lm 
 DEPS   = defs.h

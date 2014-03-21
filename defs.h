@@ -14,6 +14,7 @@ typedef struct
   uint8_t  force;
   uint32_t context;
   uint32_t alpha;
+  uint8_t  ir;
   uint32_t hash;
   uint32_t seed;
   double   threshold;
@@ -56,8 +57,9 @@ Parameters;
 #define DEFAULT_HELP           0
 #define DEFAULT_FORCE          0
 #define DEFAULT_VERBOSE        0
-#define DEFAULT_CONTEXT        25
+#define DEFAULT_CONTEXT        20
 #define DEFAULT_ALPHA          1000
+#define DEFAULT_IR             0
 #define DEFAULT_MAX_COUNT      65535
 #define DEFAULT_HASH_SIZE      29999999
 #define DEFAULT_SEED           -1
@@ -70,8 +72,8 @@ Parameters;
 #define DEFAULT_CY             90.0
 #define DEFAULT_TX             50.0
 #define DEFAULT_TY             82.0
-#define DEFAULT_WIDTH          25.0
-#define DEFAULT_RIGHTSHIFT     40.0
+#define DEFAULT_WIDTH          23.0
+#define DEFAULT_RIGHTSHIFT     29.0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

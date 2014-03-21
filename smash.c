@@ -226,31 +226,31 @@ int32_t main(int argc, char *argv[])
   Parameters  *P = &Par;
   if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
     {
-    fprintf(stderr, "                                           \n");
-    fprintf(stderr, "Usage: smash [OPTIONS]... [FILE] [FILE]    \n");
-    fprintf(stderr, "                                           \n");
-    fprintf(stderr, " -v                  verbose mode          \n");
-    fprintf(stderr, " -vv                 very verbose mode     \n");
-    fprintf(stderr, " -f                  force (be sure!)      \n");
-    fprintf(stderr, "                                           \n");
-    fprintf(stderr, " -c  <context>       context order         \n");
-    fprintf(stderr, " -i                  inverted repeats      \n");
-    fprintf(stderr, " -a  <alpha>         alpha estimator       \n");
-    fprintf(stderr, " -h  <hSize>         hash size             \n");
-    fprintf(stderr, "                                           \n");
-    fprintf(stderr, " -s  <seed>          seed for random 'N'   \n");
-    fprintf(stderr, "                                           \n");
-    fprintf(stderr, " -t  <threshold>     threshold [0.0,2.0]   \n");
-    fprintf(stderr, " -w  <wSize>         window size           \n");
-    fprintf(stderr, " -wt <wType>         window type [0|1|2|3] \n");
-    fprintf(stderr, " -d  <dSize>         drop size             \n");
-    fprintf(stderr, " -m  <mSize>         minimum block size    \n");
-    fprintf(stderr, " -wi <width>         design sequence width \n");
-    fprintf(stderr, "                                           \n");
-    fprintf(stderr, " -o <outFile>        output svg plot file  \n");
-    fprintf(stderr, "                                           \n");
-    fprintf(stderr, " <refFile>           reference file        \n");
-    fprintf(stderr, " <tarFile>           target file         \n\n");
+    fprintf(stderr, "                                             \n");
+    fprintf(stderr, "Usage: smash [OPTIONS]... [FILE] [FILE]      \n");
+    fprintf(stderr, "                                             \n");
+    fprintf(stderr, " -v                  verbose mode            \n");
+    fprintf(stderr, " -vv                 very verbose mode       \n");
+    fprintf(stderr, " -f                  force (be sure!)        \n");
+    fprintf(stderr, "                                             \n");
+    fprintf(stderr, " -c  <context>       context order           \n");
+    fprintf(stderr, " -i                  no inverted repeats     \n");
+    fprintf(stderr, " -a  <alpha>         alpha estimator         \n");
+    fprintf(stderr, " -h  <hSize>         hash size               \n");
+    fprintf(stderr, "                                             \n");
+    fprintf(stderr, " -s  <seed>          seed for random 'N'     \n");
+    fprintf(stderr, "                                             \n");
+    fprintf(stderr, " -t  <threshold>     threshold [0.0,2.0]     \n");
+    fprintf(stderr, " -w  <wSize>         window size             \n");
+    fprintf(stderr, " -wt <wType>         window type [0|1|2|3]   \n");
+    fprintf(stderr, " -d  <dSize>         drop size               \n");
+    fprintf(stderr, " -m  <mSize>         minimum block size      \n");
+    fprintf(stderr, " -wi <width>         design sequence width   \n");
+    fprintf(stderr, "                                             \n");
+    fprintf(stderr, " -o <outFile>        output svg plot file    \n");
+    fprintf(stderr, "                                             \n");
+    fprintf(stderr, " <refFile>           reference file          \n");
+    fprintf(stderr, " <tarFile>           target file           \n\n");
     return EXIT_SUCCESS;
     }
 
@@ -260,6 +260,7 @@ int32_t main(int argc, char *argv[])
   P->context   = ArgsNumber(DEFAULT_CONTEXT,   p, argc, "-c" );
   P->alpha     = ArgsNumber(DEFAULT_ALPHA,     p, argc, "-a" );
   P->hash      = ArgsNumber(DEFAULT_HASH_SIZE, p, argc, "-h" );
+  P->ir        = ArgsState (DEFAULT_IR,        p, argc, "-i" );
   P->seed      = ArgsNumber(DEFAULT_SEED,      p, argc, "-s" );
   P->threshold = ArgsDouble(DEFAULT_THRESHOLD, p, argc, "-t" );
   P->window    = ArgsNumber(DEFAULT_WINDOW,    p, argc, "-w" );
@@ -296,23 +297,28 @@ int32_t main(int argc, char *argv[])
   unlink(nameSeg);
   //
   // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  if(P->verbose)
+  if(!P->ir)
     {
-    fprintf(stderr, "---------------------------------------------------\n");
-    fprintf(stderr, "Mode: re-running with inverted repeats\n");
+    if(P->verbose)
+      {
+      fprintf(stderr, "---------------------------------------------------"
+      "\n");
+      fprintf(stderr, "Mode: re-running with inverted repeats\n");
+      }
+    revRef     = IRSequence(sRef, P, REF);
+    revTar     = IRSequence(sTar, P, TAR);
+    refModelIR = LoadReference(revRef, P);
+    nameInfIR  = Compress(sTar, refModelIR, P);
+    nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
+    unlink(nameInfIR);
+    nameSegIR  = SegmentSequence(nameFilIR, P);
+    unlink(nameFilIR);
+    patternsIR = GetPatterns(nameSegIR);
+    unlink(nameSegIR);
+    if(P->verbose)
+      fprintf(stderr, "==================================================="
+      "\n");
     }
-  revRef     = IRSequence(sRef, P, REF);
-  revTar     = IRSequence(sTar, P, TAR);
-  refModelIR = LoadReference(revRef, P);
-  nameInfIR  = Compress(sTar, refModelIR, P);    // sTar gives the name to the
-  nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
-  unlink(nameInfIR);
-  nameSegIR  = SegmentSequence(nameFilIR, P);
-  unlink(nameFilIR);
-  patternsIR = GetPatterns(nameSegIR);
-  unlink(nameSegIR);
-  if(P->verbose)
-    fprintf(stderr, "===================================================\n");
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -343,12 +349,15 @@ int32_t main(int argc, char *argv[])
     patterns->nPatterns);
 
   nIRPatterns = 0;
-  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
-    if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
-      ++nIRPatterns;
-  if(P->verbose && patternsIR->nPatterns != 0)
-    fprintf(stderr, "Found %u inverted valid patterns from %u.\n", nIRPatterns,
-    patternsIR->nPatterns);
+  if(!P->ir)
+    {
+    for(k = 0 ; k != patternsIR->nPatterns ; ++k)
+      if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+        ++nIRPatterns;
+    if(P->verbose && patternsIR->nPatterns != 0)
+      fprintf(stderr, "Found %u inverted valid patterns from %u.\n", 
+      nIRPatterns, patternsIR->nPatterns);
+    }
 
   //http://www.color-hex.com
   //http://www.rapidtables.com/web/color/color-picker.htm
@@ -390,39 +399,42 @@ int32_t main(int argc, char *argv[])
       }
   //
   // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
+  if(!P->ir)
     {
-    if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+    for(k = 0 ; k != patternsIR->nPatterns ; ++k)
       {
-      if(P->verbose)
-        fprintf(stderr, "Running IR pattern %u with size %"PRIu64"\n", k+1,
-        patternsIR->p[k].end - patternsIR->p[k].init);
-
-      RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy +
-      GetPoint(patternsIR->p[k].init), GetRgbColor(colorIdx * mult));
- 
-      nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
-                     patternsIR->p[k].end);
-      revRef       = IRSequence(nameExt, P, REF);
-      unlink(nameExt);
-      refModel     = LoadReference(revRef, P);
-      unlink(nameExt);
-      nameInf      = Compress(sRef, refModel, P);
-      nameFil      = FilterSequence(nameInf, P, winWeights);
-      unlink(nameInf);
-      nameSeg      = SegmentSequence(nameFil, P);
-      unlink(nameFil);
-      patternsLBIR = GetPatterns(nameSeg);
-      unlink(nameSeg);
-      for(n = 0 ; n != patternsLBIR->nPatterns ; ++n)
+      if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
         {
-        Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
-        patternsLBIR->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
-        GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
+        if(P->verbose)
+          fprintf(stderr, "Running IR pattern %u with size %"PRIu64"\n", k+1,
+          patternsIR->p[k].end - patternsIR->p[k].init);
+
+        RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy +
+        GetPoint(patternsIR->p[k].init), GetRgbColor(colorIdx * mult));
+ 
+        nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
+                       patternsIR->p[k].end);
+        revRef       = IRSequence(nameExt, P, REF);
+        unlink(nameExt);
+        refModel     = LoadReference(revRef, P);
+        unlink(nameExt);
+        nameInf      = Compress(sRef, refModel, P);
+        nameFil      = FilterSequence(nameInf, P, winWeights);
+        unlink(nameInf);
+        nameSeg      = SegmentSequence(nameFil, P);
+        unlink(nameFil);
+        patternsLBIR = GetPatterns(nameSeg);
+        unlink(nameSeg);
+        for(n = 0 ; n != patternsLBIR->nPatterns ; ++n)
+          {
+          Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
+          patternsLBIR->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
+          GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
+          }
+        ++colorIdx;
+        fprintf(stderr, "---------------------------------------------------"
+        "\n");
         }
-      ++colorIdx;
-      fprintf(stderr, "---------------------------------------------------"
-      "\n");
       }
     }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
