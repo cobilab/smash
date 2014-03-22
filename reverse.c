@@ -21,10 +21,10 @@ void IRBlock(char *block, uint32_t nSym, FILE *F)
 
 char *IRSequence(char *fName, Parameters *P, uint8_t type)
   {
-  FILE     *Reader = NULL , *Writter = NULL;
-  ULL      size, parts, extra;
-  clock_t  stop, start;
-  char     *fNameOut, block[BUFFER_REV_SIZE];
+  FILE      *Reader = NULL , *Writter = NULL;
+  ULL       size, parts, extra;
+  clock_t   stop, start;
+  char      *fNameOut, block[BUFFER_REV_SIZE];
 
   if(P->verbose == 1)
     {
@@ -57,10 +57,9 @@ char *IRSequence(char *fName, Parameters *P, uint8_t type)
 
   if(P->verbose == 1)
     {
-    fprintf(stderr, "Done!\n");
     stop = clock();
-    fprintf(stderr, "Needed %g s for reversing %s.\n", ((double) (stop-start)) 
-    / CLOCKS_PER_SEC, type ? "target" : "reference");
+    fprintf(stderr, "Done! Used %g s for reversing %s.\n", ((double) (stop -
+    start)) / CLOCKS_PER_SEC, type ? "target" : "reference");
     }
 
   return fNameOut;

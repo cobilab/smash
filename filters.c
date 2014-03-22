@@ -83,9 +83,9 @@ char *FilterSequence(char *fName, Parameters *P, float *w)
   {
   FILE     *Reader  = NULL, *Writter = NULL;
   float    *entries = NULL, *buffer;
-  clock_t  stop, start;
   int64_t  nEntries, n, M, drop, k;
   char     *fNameOut;
+  clock_t  stop, start;
 
   if(P->verbose == 1)
     {
@@ -123,12 +123,12 @@ char *FilterSequence(char *fName, Parameters *P, float *w)
 
   Free(entries);
   fclose(Writter);
+  unlink(fName);
 
   if(P->verbose == 1)
     {
-    fprintf(stderr, "Done!\n");
     stop = clock();
-    fprintf(stderr, "Needed %g s for filtering.\n", ((double) (stop-start)) / 
+    fprintf(stderr, "Done! Filtered with %g s.\n", ((double) (stop-start)) / 
     CLOCKS_PER_SEC);
     }
 

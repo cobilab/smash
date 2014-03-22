@@ -5,7 +5,6 @@
 #include <float.h>
 #include <ctype.h>
 #include <time.h>
-#include <unistd.h>
 #include "mem.h"
 #include "defs.h"
 #include "common.h"
@@ -79,10 +78,9 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
 
   if(P->verbose == 1)
     {
-    fprintf(stderr, "Done!                          \n");  // Spaces are valid
     stop = clock();
-    fprintf(stderr, "Needed %g s and %"PRIu64" bytes for compressing target."
-    "\n", ((double) (stop - start)) / CLOCKS_PER_SEC, bits / 8);
+    fprintf(stderr, "Done! Needed %g s and %"PRIu64" bytes for compressing "
+    "target.\n", ((double) (stop - start)) / CLOCKS_PER_SEC, bits / 8);
     }
 
   return name;
@@ -138,9 +136,8 @@ CModel *LoadReference(char *sRef, Parameters *P)
 
   if(P->verbose == 1)
     {
-    fprintf(stderr, "Done!                          \n");  // Spaces are valid
     stop = clock();
-    fprintf(stderr, "Needed %g s for building model.\n", ((double) (stop -
+    fprintf(stderr, "Done! Builded model in %g s.\n", ((double) (stop - 
     start)) / CLOCKS_PER_SEC);
     }
 
@@ -193,8 +190,8 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
     {
     fprintf(stderr, "Done!\n");
     stop = clock();
-    fprintf(stderr, "Needed %g s for randomizing %s.\n", ((double) (stop -
-    start)) / CLOCKS_PER_SEC, type == 0 ? "reference" : "target");
+    fprintf(stderr, "Done! Needed %g s for randomizing %s.\n", ((double) (stop 
+    - start)) / CLOCKS_PER_SEC, type == 0 ? "reference" : "target");
     }
 
   return fNameOut;
@@ -234,7 +231,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, " -f                  force (be sure!)        \n");
     fprintf(stderr, "                                             \n");
     fprintf(stderr, " -c  <context>       context order           \n");
-    fprintf(stderr, " -i                  no inverted repeats     \n");
+    fprintf(stderr, " -i                  only inverted repeats   \n");
     fprintf(stderr, " -a  <alpha>         alpha estimator         \n");
     fprintf(stderr, " -h  <hSize>         hash size               \n");
     fprintf(stderr, "                                             \n");
@@ -282,43 +279,35 @@ int32_t main(int argc, char *argv[])
                backColor);
   WindowSizeAndDrop(P);
   winWeights = InitWinWeights(P->window, P->wType);
+  sRef       = RandomNChars(argv[argc-2], seed,              P, REF);
+  sTar       = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, TAR);
+
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // BUILD TARGET MAP  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //
-  sRef       = RandomNChars(argv[argc-2], seed,              P, REF);
-  sTar       = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, TAR);
-  refModel   = LoadReference(sRef, P);
-  nameInf    = Compress(sTar, refModel, P);
-  nameFil    = FilterSequence(nameInf, P, winWeights);
-  unlink(nameInf);
-  nameSeg    = SegmentSequence(nameFil, P);   
-  unlink(nameFil);
-  patterns   = GetPatterns(nameSeg);
-  unlink(nameSeg);
-  //
-  // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   if(!P->ir)
     {
-    if(P->verbose)
-      {
-      fprintf(stderr, "---------------------------------------------------"
-      "\n");
-      fprintf(stderr, "Mode: re-running with inverted repeats\n");
-      }
-    revRef     = IRSequence(sRef, P, REF);
-    revTar     = IRSequence(sTar, P, TAR);
-    refModelIR = LoadReference(revRef, P);
-    nameInfIR  = Compress(sTar, refModelIR, P);
-    nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
-    unlink(nameInfIR);
-    nameSegIR  = SegmentSequence(nameFilIR, P);
-    unlink(nameFilIR);
-    patternsIR = GetPatterns(nameSegIR);
-    unlink(nameSegIR);
-    if(P->verbose)
-      fprintf(stderr, "==================================================="
-      "\n");
+    refModel = LoadReference(sRef, P);
+    nameInf  = Compress(sTar, refModel, P);
+    nameFil  = FilterSequence(nameInf, P, winWeights);
+    nameSeg  = SegmentSequence(nameFil, P);   
+    patterns = GetPatterns(nameSeg);
     }
+  // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  if(P->verbose)
+    {
+    fprintf(stderr, "---------------------------------------------------\n");
+    fprintf(stderr, "Mode: re-running with inverted repeats\n");
+    }
+  revRef     = IRSequence(sRef, P, REF);
+  revTar     = IRSequence(sTar, P, TAR);
+  refModelIR = LoadReference(revRef, P);
+  nameInfIR  = Compress(sTar, refModelIR, P);
+  nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
+  nameSegIR  = SegmentSequence(nameFilIR, P);
+  patternsIR = GetPatterns(nameSegIR);
+  if(P->verbose)
+    fprintf(stderr, "===================================================\n");
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -341,23 +330,23 @@ int32_t main(int argc, char *argv[])
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   nPatterns = 0; 
-  for(k = 0 ; k != patterns->nPatterns ; ++k)
-    if((distance = patterns->p[k].end - patterns->p[k].init) >= P->minimum)
-      ++nPatterns; 
-  if(P->verbose && patterns->nPatterns != 0)
-    fprintf(stderr, "Found %u valid patterns from %u.\n", nPatterns, 
-    patterns->nPatterns);
-
-  nIRPatterns = 0;
   if(!P->ir)
     {
-    for(k = 0 ; k != patternsIR->nPatterns ; ++k)
-      if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
-        ++nIRPatterns;
-    if(P->verbose && patternsIR->nPatterns != 0)
-      fprintf(stderr, "Found %u inverted valid patterns from %u.\n", 
-      nIRPatterns, patternsIR->nPatterns);
+    for(k = 0 ; k != patterns->nPatterns ; ++k)
+      if((distance = patterns->p[k].end - patterns->p[k].init) >= P->minimum)
+        ++nPatterns; 
+    if(P->verbose && patterns->nPatterns != 0)
+      fprintf(stderr, "Found %u valid patterns from %u.\n", nPatterns, 
+      patterns->nPatterns);
     }
+
+  nIRPatterns = 0;
+  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
+    if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+      ++nIRPatterns;
+  if(P->verbose && patternsIR->nPatterns != 0)
+    fprintf(stderr, "Found %u inverted valid patterns from %u.\n", 
+    nIRPatterns, patternsIR->nPatterns);
 
   //http://www.color-hex.com
   //http://www.rapidtables.com/web/color/color-picker.htm
@@ -366,77 +355,67 @@ int32_t main(int argc, char *argv[])
   colorIdx = 0;
  
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  for(k = 0 ; k != patterns->nPatterns ; ++k)
-    if((distance = patterns->p[k].end-patterns->p[k].init) >= P->minimum)
-      {
-      if(P->verbose)
-        fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1, 
-        patterns->p[k].end - patterns->p[k].init);
-
-      Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy + 
-      GetPoint(patterns->p[k].init), GetRgbColor(colorIdx * mult));
-
-      nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
-                   patterns->p[k].end);
-      refModel   = LoadReference(nameExt, P);
-      unlink(nameExt);
-      nameInf    = Compress(sRef, refModel, P);
-      nameFil    = FilterSequence(nameInf, P, winWeights);
-      unlink(nameInf);
-      nameSeg    = SegmentSequence(nameFil, P);
-      unlink(nameFil);
-      patternsLB = GetPatterns(nameSeg);
-      unlink(nameSeg);
-      for(n = 0 ; n != patternsLB->nPatterns ; ++n)
-        {
-        Rect(PLOT, Paint->width, GetPoint(patternsLB->p[n].end - 
-        patternsLB->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
-        GetPoint(patternsLB->p[n].init), GetRgbColor(colorIdx * mult));
-        }
-      ++colorIdx;
-      fprintf(stderr, "---------------------------------------------------"
-      "\n");
-      }
-  //
-  // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   if(!P->ir)
     {
-    for(k = 0 ; k != patternsIR->nPatterns ; ++k)
-      {
-      if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+    for(k = 0 ; k != patterns->nPatterns ; ++k)
+      if((distance = patterns->p[k].end-patterns->p[k].init) >= P->minimum)
         {
         if(P->verbose)
-          fprintf(stderr, "Running IR pattern %u with size %"PRIu64"\n", k+1,
-          patternsIR->p[k].end - patternsIR->p[k].init);
+          fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1, 
+          patterns->p[k].end - patterns->p[k].init);
 
-        RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy +
-        GetPoint(patternsIR->p[k].init), GetRgbColor(colorIdx * mult));
- 
-        nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
-                       patternsIR->p[k].end);
-        revRef       = IRSequence(nameExt, P, REF);
-        unlink(nameExt);
-        refModel     = LoadReference(revRef, P);
-        unlink(nameExt);
-        nameInf      = Compress(sRef, refModel, P);
-        nameFil      = FilterSequence(nameInf, P, winWeights);
-        unlink(nameInf);
-        nameSeg      = SegmentSequence(nameFil, P);
-        unlink(nameFil);
-        patternsLBIR = GetPatterns(nameSeg);
-        unlink(nameSeg);
-        for(n = 0 ; n != patternsLBIR->nPatterns ; ++n)
+        Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy + 
+        GetPoint(patterns->p[k].init), GetRgbColor(colorIdx * mult));
+
+        nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
+                     patterns->p[k].end);
+        refModel   = LoadReference(nameExt, P); unlink(nameExt);
+        nameInf    = Compress(sRef, refModel, P);
+        nameFil    = FilterSequence(nameInf, P, winWeights);
+        nameSeg    = SegmentSequence(nameFil, P);
+        patternsLB = GetPatterns(nameSeg);
+
+        for(n = 0 ; n != patternsLB->nPatterns ; ++n)
           {
-          Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
-          patternsLBIR->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
-          GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
+          Rect(PLOT, Paint->width, GetPoint(patternsLB->p[n].end - 
+          patternsLB->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
+          GetPoint(patternsLB->p[n].init), GetRgbColor(colorIdx * mult));
           }
         ++colorIdx;
         fprintf(stderr, "---------------------------------------------------"
         "\n");
         }
-      }
     }
+  // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
+    if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+      {
+      if(P->verbose)
+        fprintf(stderr, "Running IR pattern %u with size %"PRIu64"\n", k+1,
+        patternsIR->p[k].end - patternsIR->p[k].init);
+
+      RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy +
+      GetPoint(patternsIR->p[k].init), GetRgbColor(colorIdx * mult));
+ 
+      nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
+                     patternsIR->p[k].end);
+      revRef       = IRSequence(nameExt, P, REF); unlink(nameExt);
+      refModel     = LoadReference(revRef, P);
+      nameInf      = Compress(sRef, refModel, P);
+      nameFil      = FilterSequence(nameInf, P, winWeights);
+      nameSeg      = SegmentSequence(nameFil, P);
+      patternsLBIR = GetPatterns(nameSeg);
+
+      for(n = 0 ; n != patternsLBIR->nPatterns ; ++n)
+        {
+        Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
+        patternsLBIR->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
+        GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
+        }
+      ++colorIdx;
+      fprintf(stderr, "---------------------------------------------------"
+      "\n");
+      }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   EndWinWeights(winWeights);
   Chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx -Paint->rightShift, 

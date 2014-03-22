@@ -59,13 +59,13 @@ char *SegmentSequence(char *fName, Parameters *P)
 
   fclose(Reader);
   fclose(Writter);
+  unlink(fName);
 
   if(P->verbose == 1)
     {
-    fprintf(stderr, "Done!\n");
     stop = clock();
-    fprintf(stderr, "Needed %g s for segmentation.\n", ((double) (stop-start)) 
-    / CLOCKS_PER_SEC);
+    fprintf(stderr, "Done! Needed %g s for segmentation.\n", ((double) (stop -
+    start)) / CLOCKS_PER_SEC);
     }
 
   return fNameOut;

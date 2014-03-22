@@ -277,7 +277,7 @@ char *ArgsFiles(char *arg[], uint32_t argc, char *str)
     if(!strcmp(str, arg[n]))
       return CloneString(arg[n+1]);
   
-  return concatenate(concatenate(arg[argc-1], arg[argc-2]), ".svg");
+  return concatenate(concatenate(arg[argc-2], arg[argc-1]), ".svg");
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -343,6 +343,7 @@ Patterns *GetPatterns(char *name)
     ++Pat->nPatterns; 
     }
   fclose(Reader); 
+  unlink(name);
 
   return Pat;
   }
