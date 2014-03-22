@@ -72,6 +72,7 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
   Free(pModel->freqs);
   Free(pModel);
   Free(readerBuffer);
+//  Free(symbolBuffer); //FIXME: WHY CAN'T FREE? MEMCOPY?
   Free(outputBuffer);
   fclose(Reader);
   fclose(Writter);
@@ -131,7 +132,7 @@ CModel *LoadReference(char *sRef, Parameters *P)
       }
   ResetCModel(cModel);
   Free(readerBuffer);
-  // Free(symbolBuffer); //XXX: WHY CAN'T FREE? MEMCOPY?
+//  Free(symbolBuffer); //FIXME: WHY CAN'T FREE? MEMCOPY?
   fclose(Reader);
 
   if(P->verbose == 1)
@@ -422,7 +423,7 @@ int32_t main(int argc, char *argv[])
   Paint->cy);
   Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy);
   Text(PLOT, Paint->tx, Paint->ty, "Tar");
-  PrintFinal(PLOT);
+  //PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   unlink(sRef);
