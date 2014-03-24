@@ -423,14 +423,14 @@ void PrintHead(FILE *F, double w, double u)
   "style=\"fill:black;stroke:none\" />"
   "</pattern></defs>");
 
-  fprintf(F, "<defs id=\"ffff\"><pattern inkscape:stockid=\"Wavy\" id=\"Wavy\""
-  " height=\"5.1805778\" width=\"30.0\" patternUnits=\"userSpaceOnUse\" "
-  "inkscape:collect=\"always\"><path id=\"path5114\" d=\"M 7.597,0.061 C "
-  "5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 5.173,"
-  "1.052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 C 18.820,4.931" 
-  "23.804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 19.246,3.770 "
-  "14.691,2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z \" style=\"fill:"
-  "black;stroke:none;\" /></pattern></defs>");
+  fprintf(F, "<defs id=\"ffff\"><pattern inkscape:stockid=\"Wavy\" "
+  "id=\"Wavy\" height=\"5.1805778\" width=\"30.0\" patternUnits=\"userSpaceOn"
+  "Use\" inkscape:collect=\"always\"><path id=\"path5114\" d=\"M 7.597,0.061 "
+  "C 5.079,-0.187 2.656,0.302 -0.01,1.788 L -0.01,3.061 C 2.773,1.431 5.173,1"
+  ".052 7.472,1.280 C 9.770,1.508 11.969,2.361 14.253,3.218 C 18.820,4.931 23"
+  ".804,6.676 30.066,3.061 L 30.062,1.788 C 23.622,5.497 19.246,3.770 14.691,"
+  "2.061 C 12.413,1.207 10.115,0.311 7.597,0.061 z \" style=\"fill:black;stro"
+  "ke:none;\" /></pattern></defs>");
 
   fprintf(F, "<defs id=\"defs6219\"><pattern inkscape:stockid=\"xtrace\" "
   "id=\"xtrace\" height=\"20.0\" width=\"20.0\" patternUnits=\"userSpace"
