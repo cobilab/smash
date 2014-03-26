@@ -295,7 +295,6 @@ void FAccessWPerm(char *fn)
     }
   }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*
 uint32_t ReadFNames(char *def, char *arg[], uint32_t n)
   {
@@ -362,7 +361,7 @@ char *ExtractSubSeq(char *name, Parameters *P, uint64_t init, uint64_t end)
   if(P->verbose)
     fprintf(stderr, "Extracting pattern [%"PRIu64";%"PRIu64"]\n", init, end);
   
-  // TODO: SHAME ON THIS! IMPROVE THIS WITH BUFFERS AND FRED/FWRITE...
+  // TODO: SHAME ON THIS! IMPROVE THIS WITH BUFFERS AND FREAD/FWRITE...
   fseek(Reader, init, SEEK_SET);
   for(x = init ; x != end ; ++x)
     fprintf(Writter, "%c", fgetc(Reader));

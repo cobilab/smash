@@ -72,7 +72,7 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
   Free(pModel->freqs);
   Free(pModel);
   Free(readerBuffer);
-//  Free(symbolBuffer); //FIXME: WHY CAN'T FREE? MEMCOPY?
+  Free(symbolBuffer-LEFT_BUFFER_GUARD);
   Free(outputBuffer);
   fclose(Reader);
   fclose(Writter);
@@ -132,7 +132,7 @@ CModel *LoadReference(char *sRef, Parameters *P)
       }
   ResetCModel(cModel);
   Free(readerBuffer);
-//  Free(symbolBuffer); //FIXME: WHY CAN'T FREE? MEMCOPY?
+  Free(symbolBuffer-LEFT_BUFFER_GUARD);
   fclose(Reader);
 
   if(P->verbose == 1)
@@ -383,8 +383,9 @@ int32_t main(int argc, char *argv[])
           GetPoint(patternsLB->p[n].init), GetRgbColor(colorIdx * mult));
           }
         ++colorIdx;
-        fprintf(stderr, "---------------------------------------------------"
-        "\n");
+        if(P->verbose)
+          fprintf(stderr, "--------------------------------------------------"
+          "-\n");
         }
     }
   // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -414,8 +415,9 @@ int32_t main(int argc, char *argv[])
         GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
         }
       ++colorIdx;
-      fprintf(stderr, "---------------------------------------------------"
-      "\n");
+      if(P->verbose)
+        fprintf(stderr, "---------------------------------------------------"
+        "\n");
       }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   EndWinWeights(winWeights);

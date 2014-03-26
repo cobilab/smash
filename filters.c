@@ -17,7 +17,6 @@ void WindowSizeAndDrop(Parameters *P)
   if(DEFAULT_WINDOW != -1)
     return;  
 
-  //TODO: forget sequence size, only subsample automatically...
   if(max < WINDOW_RATIO || (max / WINDOW_RATIO < SUBSAMPLE_RATIO)) 
     {
     P->window    = 0;
@@ -25,7 +24,7 @@ void WindowSizeAndDrop(Parameters *P)
     return;
     }
 
-  P->window    = 150001;  //max / WINDOW_RATIO;
+  P->window    = 150001;  
   P->subsample = P->window / SUBSAMPLE_RATIO;
   }
 
