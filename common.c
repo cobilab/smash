@@ -335,14 +335,13 @@ Patterns *GetPatterns(char *name)
 
   while(fscanf(Reader, "%llu:%llu", &v1, &v2) == 2)
     {
-    Pat->p = (PatEntry *) Realloc(Pat->p, (Pat->nPatterns + 1) * 
-    sizeof(PatEntry), sizeof(PatEntry)); 
     Pat->p[Pat->nPatterns].init = v1;
     Pat->p[Pat->nPatterns].end  = v2;
-    ++Pat->nPatterns; 
+    Pat->p = (PatEntry *) Realloc(Pat->p, (++Pat->nPatterns + 1) *
+    sizeof(PatEntry), sizeof(PatEntry));
     }
   fclose(Reader); 
-  unlink(name);
+  //unlink(name);
 
   return Pat;
   }

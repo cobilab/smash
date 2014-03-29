@@ -282,6 +282,8 @@ int32_t main(int argc, char *argv[])
   winWeights = InitWinWeights(P->window, P->wType);
   sRef       = RandomNChars(argv[argc-2], seed,              P, REF);
   sTar       = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, TAR);
+  revRef     = IRSequence(sRef, P, REF);
+  revTar     = IRSequence(sTar, P, TAR);
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // BUILD TARGET MAP  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -300,8 +302,6 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "---------------------------------------------------\n");
     fprintf(stderr, "Mode: re-running with inverted repeats\n");
     }
-  revRef     = IRSequence(sRef, P, REF);
-  revTar     = IRSequence(sTar, P, TAR);
   refModelIR = LoadReference(revRef, P);
   nameInfIR  = Compress(sTar, refModelIR, P);
   nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
@@ -343,14 +343,12 @@ int32_t main(int argc, char *argv[])
 
   nIRPatterns = 0;
   for(k = 0 ; k != patternsIR->nPatterns ; ++k)
-    if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+    if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
       ++nIRPatterns;
   if(P->verbose && patternsIR->nPatterns != 0)
     fprintf(stderr, "Found %u inverted valid patterns from %u.\n", 
     nIRPatterns, patternsIR->nPatterns);
 
-  //http://www.color-hex.com
-  //http://www.rapidtables.com/web/color/color-picker.htm
   if(nPatterns + nIRPatterns > 0)
     mult = 255 / (nPatterns + nIRPatterns);
   colorIdx = 0;
@@ -376,7 +374,7 @@ int32_t main(int argc, char *argv[])
         nameSeg    = SegmentSequence(nameFil, P);
         patternsLB = GetPatterns(nameSeg);
 
-        for(n = 0 ; n != patternsLB->nPatterns ; ++n)
+        for(n = 0 ; n < patternsLB->nPatterns ; ++n)
           {
           Rect(PLOT, Paint->width, GetPoint(patternsLB->p[n].end - 
           patternsLB->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
@@ -408,7 +406,7 @@ int32_t main(int argc, char *argv[])
       nameSeg      = SegmentSequence(nameFil, P);
       patternsLBIR = GetPatterns(nameSeg);
 
-      for(n = 0 ; n != patternsLBIR->nPatterns ; ++n)
+      for(n = 0 ; n < patternsLBIR->nPatterns ; ++n)
         {
         Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
         patternsLBIR->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
@@ -425,7 +423,7 @@ int32_t main(int argc, char *argv[])
   Paint->cy);
   Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy);
   Text(PLOT, Paint->tx, Paint->ty, "Tar");
-  //PrintFinal(PLOT);
+//  PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   unlink(sRef);

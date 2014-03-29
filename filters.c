@@ -17,15 +17,10 @@ void WindowSizeAndDrop(Parameters *P)
   if(DEFAULT_WINDOW != -1)
     return;  
 
-  if(max < WINDOW_RATIO || (max / WINDOW_RATIO < SUBSAMPLE_RATIO)) 
-    {
-    P->window    = 0;
-    P->subsample = 0;
-    return;
-    }
+  if((P->subsample = max / 10000) < 10000)
+    P->subsample = 1;
 
-  P->window    = 150001;  
-  P->subsample = P->window / SUBSAMPLE_RATIO;
+  P->window = (P->subsample - 1) * SUBSAMPLE_RATIO;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,7 +117,7 @@ char *FilterSequence(char *fName, Parameters *P, float *w)
 
   Free(entries);
   fclose(Writter);
-  unlink(fName);
+//  unlink(fName);
 
   if(P->verbose == 1)
     {
