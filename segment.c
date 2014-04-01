@@ -10,7 +10,7 @@
 char *SegmentSequence(char *fName, Parameters *P)
   {
   FILE     *Reader = NULL , *Writter = NULL;
-  double   val, threshold;
+  float    val, threshold;
   ULL      pos, initPosition, lastPosition;
   int      region;
   clock_t  stop, start;
@@ -22,39 +22,45 @@ char *SegmentSequence(char *fName, Parameters *P)
     fprintf(stderr, "Segmenting ...\n");
     }
 
-  threshold    = P->threshold; 
+  threshold    = (float) P->threshold; 
   Reader       = Fopen(fName, "r");
   fNameOut     = concatenate(fName, ".seg");
   Writter      = Fopen(fNameOut, "w");
 
-  initPosition = 0;
-  lastPosition = 0;
-  if(fscanf(Reader, "%llu\t%lf", &pos, &val) == 2)
-    region = val < threshold ? 0 : 1;
+  if(fscanf(Reader, "%llu\t%f", &pos, &val) == 2)
+    region = val < threshold ? LOW_REGION : HIGH_REGION;
   else
     {
     fprintf(stderr, "Error: unknown format\n");
     exit(1);
     }
-  while(fscanf(Reader, "%llu\t%lf", &pos, &val) == 2)
+  initPosition = 1;
+  lastPosition = pos;
+
+  while(fscanf(Reader, "%llu\t%f", &pos, &val) == 2)
     {
-    if(val > threshold && region == 0)
-      {
-      if(lastPosition != initPosition)
+    if(val >= threshold)
+      { 
+      if(region == LOW_REGION)
         {
-        fprintf(Writter, "%llu:%llu\n", initPosition, lastPosition);
-        region = 1;
+        region = HIGH_REGION;
+        fprintf(Writter, "%llu:%llu\n", initPosition, pos);
         }
       }
-    if(region == 1 && val < threshold)
+
+    else // val < threshold ====> LOW_REGION
       {
-      region = 0;
-      initPosition = pos;
+      if(region == HIGH_REGION)
+        {
+        region       = LOW_REGION;
+        initPosition = pos;
+        }
       }
+
     lastPosition = pos;
     }
 
-  if(region == 0 && (lastPosition > (initPosition + 10)))
+  if(region == LOW_REGION)
     fprintf(Writter, "%llu:%llu\n", initPosition, lastPosition);
 
   fclose(Reader);

@@ -12,12 +12,13 @@
 
 void WindowSizeAndDrop(Parameters *P)
   {
-  uint64_t max = (P->refSize > P->tarSize) ? P->refSize : P->tarSize;
-
   if(DEFAULT_WINDOW != -1)
     return;  
 
-  if((P->subsample = max / 10000) < 10000)
+  uint64_t max = (P->refSize > P->tarSize) ? P->refSize : P->tarSize;
+
+  P->subsample = max / DEFAULT_SAMPLE_RATIO;
+  if(max < DEFAULT_SAMPLE_RATIO)
     P->subsample = 1;
 
   P->window = (P->subsample - 1) * SUBSAMPLE_RATIO;
@@ -73,7 +74,7 @@ static float Mean(float *ent, int64_t nEnt, int64_t n, int64_t M, float *w)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *FilterSequence(char *fName, Parameters *P, float *w)
+char *FilterSequence(char *fName, Parameters *P, float *w, uint8_t remove)
   {
   FILE     *Reader  = NULL, *Writter = NULL;
   float    *entries = NULL, *buffer;
@@ -112,12 +113,12 @@ char *FilterSequence(char *fName, Parameters *P, float *w)
 
   for(n = 0 ; n != nEntries ; ++n)
     if(n % drop == 0)
-      fprintf(Writter, "%"PRIu64"\t%.3f\n", n, Mean(entries, nEntries, n, M, 
-      w));
+      fprintf(Writter, "%"PRIu64"\t%f\n", n, Mean(entries, nEntries, n, M, w));
 
   Free(entries);
   fclose(Writter);
-//  unlink(fName);
+  if(remove == 1)
+    unlink(fName);
 
   if(P->verbose == 1)
     {

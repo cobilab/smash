@@ -8,7 +8,7 @@
 void     WindowSizeAndDrop  (Parameters *);
 float    *InitWinWeights    (int64_t, int32_t);
 void     EndWinWeights      (float *);
-char     *FilterSequence    (char *, Parameters *, float *);
+char     *FilterSequence    (char *, Parameters *, float *, uint8_t);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

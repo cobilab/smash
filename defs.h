@@ -21,7 +21,6 @@ typedef struct
   double   threshold;
   double   width;
   int64_t  window;
-  int64_t  drop;
   int64_t  subsample;
   uint8_t  wType;
   uint64_t minimum;
@@ -53,6 +52,8 @@ Parameters;
 #define SUBSAMPLE_RATIO        5
 #define LEVEL_SATURATION       160
 #define LEVEL_VALUE            160
+#define LOW_REGION             0
+#define HIGH_REGION            1
 
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0
@@ -67,7 +68,8 @@ Parameters;
 #define DEFAULT_THRESHOLD      1.5
 #define DEFAULT_WINDOW         -1
 #define DEFAULT_WIN_TYPE       0
-#define DEFAULT_DROP           50000
+#define DEFAULT_SUBSAMPLE      50000
+#define DEFAULT_SAMPLE_RATIO   10000
 #define DEFAULT_MINIMUM        1000000
 #define DEFAULT_CX             50.0
 #define DEFAULT_CY             90.0

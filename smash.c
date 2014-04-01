@@ -53,6 +53,8 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
       GetPModelIdx(symbolBuffer+idx-1, cModel);
       ComputePModel(cModel, pModel);
       bits += (instance = FLog2(pModel->sum / pModel->freqs[sym]));
+      // bits += (instance = log(pModel->sum / pModel->freqs[sym]) * 
+      // 1.44269504088896340736);
       outputBuffer[idxPos] = (float) instance;
       if(++idx == BUFFER_SIZE)
         {
@@ -252,21 +254,21 @@ int32_t main(int argc, char *argv[])
     return EXIT_SUCCESS;
     }
 
-  P->verbose   = ArgsState (DEFAULT_VERBOSE,   p, argc, "-v" );
-  P->verbose   = Args3State(P->verbose,        p, argc, "-vv");
-  P->force     = ArgsState (DEFAULT_FORCE,     p, argc, "-f" );
-  P->context   = ArgsNumber(DEFAULT_CONTEXT,   p, argc, "-c" );
-  P->alpha     = ArgsNumber(DEFAULT_ALPHA,     p, argc, "-a" );
-  P->hash      = ArgsNumber(DEFAULT_HASH_SIZE, p, argc, "-h" );
-  P->ir        = ArgsState (DEFAULT_IR,        p, argc, "-i" );
-  P->seed      = ArgsNumber(DEFAULT_SEED,      p, argc, "-s" );
-  P->threshold = ArgsDouble(DEFAULT_THRESHOLD, p, argc, "-t" );
-  P->window    = ArgsNumber(DEFAULT_WINDOW,    p, argc, "-w" );
-  P->wType     = ArgsNumber(DEFAULT_WIN_TYPE,  p, argc, "-wt");
-  P->width     = ArgsDouble(DEFAULT_WIDTH,     p, argc, "-wi");
-  P->drop      = ArgsNumber(DEFAULT_DROP,      p, argc, "-d" );
-  P->minimum   = ArgsNumber(DEFAULT_MINIMUM,   p, argc, "-m" );
-  P->output    = ArgsFiles (                   p, argc, "-o" );
+  P->verbose   = ArgsState (DEFAULT_VERBOSE,      p, argc, "-v" );
+  P->verbose   = Args3State(P->verbose,           p, argc, "-vv");
+  P->force     = ArgsState (DEFAULT_FORCE,        p, argc, "-f" );
+  P->context   = ArgsNumber(DEFAULT_CONTEXT,      p, argc, "-c" );
+  P->alpha     = ArgsNumber(DEFAULT_ALPHA,        p, argc, "-a" );
+  P->hash      = ArgsNumber(DEFAULT_HASH_SIZE,    p, argc, "-h" );
+  P->ir        = ArgsState (DEFAULT_IR,           p, argc, "-i" );
+  P->seed      = ArgsNumber(DEFAULT_SEED,         p, argc, "-s" );
+  P->threshold = ArgsDouble(DEFAULT_THRESHOLD,    p, argc, "-t" );
+  P->window    = ArgsNumber(DEFAULT_WINDOW,       p, argc, "-w" );
+  P->wType     = ArgsNumber(DEFAULT_WIN_TYPE,     p, argc, "-wt");
+  P->width     = ArgsDouble(DEFAULT_WIDTH,        p, argc, "-wi");
+  P->subsample = ArgsNumber(DEFAULT_SAMPLE_RATIO, p, argc, "-d" );
+  P->minimum   = ArgsNumber(DEFAULT_MINIMUM,      p, argc, "-m" );
+  P->output    = ArgsFiles (                      p, argc, "-o" );
 
   seed = (P->seed == DEFAULT_SEED) ? time(NULL) : P->seed;
   if(P->verbose)
@@ -292,7 +294,7 @@ int32_t main(int argc, char *argv[])
     {
     refModel = LoadReference(sRef, P);
     nameInf  = Compress(sTar, refModel, P);
-    nameFil  = FilterSequence(nameInf, P, winWeights);
+    nameFil  = FilterSequence(nameInf, P, winWeights, 0);
     nameSeg  = SegmentSequence(nameFil, P);   
     patterns = GetPatterns(nameSeg);
     }
@@ -304,7 +306,7 @@ int32_t main(int argc, char *argv[])
     }
   refModelIR = LoadReference(revRef, P);
   nameInfIR  = Compress(sTar, refModelIR, P);
-  nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
+  nameFilIR  = FilterSequence(nameInfIR, P, winWeights, 1);
   nameSegIR  = SegmentSequence(nameFilIR, P);
   patternsIR = GetPatterns(nameSegIR);
   if(P->verbose)
@@ -370,7 +372,7 @@ int32_t main(int argc, char *argv[])
                      patterns->p[k].end);
         refModel   = LoadReference(nameExt, P); unlink(nameExt);
         nameInf    = Compress(sRef, refModel, P);
-        nameFil    = FilterSequence(nameInf, P, winWeights);
+        nameFil    = FilterSequence(nameInf, P, winWeights, 1);
         nameSeg    = SegmentSequence(nameFil, P);
         patternsLB = GetPatterns(nameSeg);
 
@@ -402,7 +404,7 @@ int32_t main(int argc, char *argv[])
       revRef       = IRSequence(nameExt, P, REF); unlink(nameExt);
       refModel     = LoadReference(revRef, P);
       nameInf      = Compress(sRef, refModel, P);
-      nameFil      = FilterSequence(nameInf, P, winWeights);
+      nameFil      = FilterSequence(nameInf, P, winWeights, 1);
       nameSeg      = SegmentSequence(nameFil, P);
       patternsLBIR = GetPatterns(nameSeg);
 
@@ -423,7 +425,7 @@ int32_t main(int argc, char *argv[])
   Paint->cy);
   Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy);
   Text(PLOT, Paint->tx, Paint->ty, "Tar");
-//  PrintFinal(PLOT);
+  //PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   unlink(sRef);
