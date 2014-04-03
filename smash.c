@@ -294,7 +294,7 @@ int32_t main(int argc, char *argv[])
     {
     refModel = LoadReference(sRef, P);
     nameInf  = Compress(sTar, refModel, P);
-    nameFil  = FilterSequence(nameInf, P, winWeights, 0);
+    nameFil  = FilterSequence(nameInf, P, winWeights, 1);
     nameSeg  = SegmentSequence(nameFil, P);   
     patterns = GetPatterns(nameSeg);
     }
@@ -425,7 +425,7 @@ int32_t main(int argc, char *argv[])
   Paint->cy);
   Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy);
   Text(PLOT, Paint->tx, Paint->ty, "Tar");
-  //PrintFinal(PLOT);
+  // PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   unlink(sRef);
