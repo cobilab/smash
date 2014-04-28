@@ -425,7 +425,7 @@ int32_t main(int argc, char *argv[])
   Paint->cy);
   Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy);
   Text(PLOT, Paint->tx, Paint->ty, "Tar");
-  // PrintFinal(PLOT);
+  PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   unlink(sRef);

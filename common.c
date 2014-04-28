@@ -3,7 +3,11 @@
 #include <string.h>
 #include <math.h>
 #include <assert.h>
-#include <unistd.h>
+#if defined(_MSC_VER)
+  #include <io.h>
+#else
+  #include <unistd.h>
+#endif
 #include "defs.h"
 #include "mem.h"
 #include "common.h"

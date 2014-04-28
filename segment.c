@@ -65,7 +65,7 @@ char *SegmentSequence(char *fName, Parameters *P)
 
   fclose(Reader);
   fclose(Writter);
-  unlink(fName);
+//  unlink(fName);
 
   if(P->verbose == 1)
     {
