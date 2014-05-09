@@ -71,12 +71,13 @@ Parameters;
 #define DEFAULT_SUBSAMPLE      50000
 #define DEFAULT_SAMPLE_RATIO   10000
 #define DEFAULT_MINIMUM        1000000
-#define DEFAULT_CX             50.0
-#define DEFAULT_CY             90.0
+#define DEFAULT_CX             70.0
+#define DEFAULT_CY             75.0
 #define DEFAULT_TX             50.0
 #define DEFAULT_TY             82.0
-#define DEFAULT_WIDTH          23.0
-#define DEFAULT_RIGHTSHIFT     29.0
+#define DEFAULT_WIDTH          20.0
+#define DEFAULT_SPACE          10.0
+#define EXTRA                  150 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

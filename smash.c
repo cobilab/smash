@@ -230,7 +230,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Usage: smash [OPTIONS]... [FILE] [FILE]      \n");
     fprintf(stderr, "                                             \n");
     fprintf(stderr, " -v                  verbose mode            \n");
-    fprintf(stderr, " -vv                 very verbose mode       \n");
+    //fprintf(stderr, " -vv                 very verbose mode       \n");
     fprintf(stderr, " -f                  force (be sure!)        \n");
     fprintf(stderr, "                                             \n");
     fprintf(stderr, " -c  <context>       context order           \n");
@@ -320,13 +320,13 @@ int32_t main(int argc, char *argv[])
   PLOT = Fopen(P->output, "w");
   Paint->width = P->width;
 
-  PrintHead(PLOT, Paint->width, Paint->maxSize);
-  Rect(PLOT, 5000.0, 5000.0, 0, 0, backColor); //TODO: DON'T USE FIXED SIZES!
+  PrintHead(PLOT, (2 * DEFAULT_CX) + (((Paint->width + DEFAULT_SPACE) * 2) - 
+  DEFAULT_SPACE), Paint->maxSize + EXTRA);
+  Rect(PLOT, (2 * DEFAULT_CX) + (((Paint->width + DEFAULT_SPACE) * 2) - 
+  DEFAULT_SPACE), Paint->maxSize + EXTRA, 0, 0, backColor);
+
   RectOval(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy, 
   backColor);
-  Text(PLOT, Paint->tx, Paint->ty, "Ref");
-  Paint->tx += Paint->rightShift;
-  Paint->cx += Paint->rightShift;
 
   RectOval(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy, 
   backColor);
@@ -365,8 +365,9 @@ int32_t main(int argc, char *argv[])
           fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1, 
           patterns->p[k].end - patterns->p[k].init);
 
-        Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy + 
-        GetPoint(patterns->p[k].init), GetRgbColor(colorIdx * mult));
+        Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx + 
+        DEFAULT_SPACE + DEFAULT_WIDTH, Paint->cy + GetPoint(patterns->p[k].init), 
+        GetRgbColor(colorIdx * mult));
 
         nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
                      patterns->p[k].end);
@@ -379,7 +380,7 @@ int32_t main(int argc, char *argv[])
         for(n = 0 ; n < patternsLB->nPatterns ; ++n)
           {
           Rect(PLOT, Paint->width, GetPoint(patternsLB->p[n].end - 
-          patternsLB->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
+          patternsLB->p[n].init), Paint->cx, Paint->cy + 
           GetPoint(patternsLB->p[n].init), GetRgbColor(colorIdx * mult));
           }
         ++colorIdx;
@@ -396,8 +397,9 @@ int32_t main(int argc, char *argv[])
         fprintf(stderr, "Running IR pattern %u with size %"PRIu64"\n", k+1,
         patternsIR->p[k].end - patternsIR->p[k].init);
 
-      RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx, Paint->cy +
-      GetPoint(patternsIR->p[k].init), GetRgbColor(colorIdx * mult));
+      RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx + DEFAULT_SPACE 
+      + DEFAULT_WIDTH, Paint->cy + GetPoint(patternsIR->p[k].init), 
+      GetRgbColor(colorIdx * mult));
  
       nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
                      patternsIR->p[k].end);
@@ -411,7 +413,7 @@ int32_t main(int argc, char *argv[])
       for(n = 0 ; n < patternsLBIR->nPatterns ; ++n)
         {
         Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
-        patternsLBIR->p[n].init), Paint->cx-Paint->rightShift, Paint->cy + 
+        patternsLBIR->p[n].init), Paint->cx, Paint->cy + 
         GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
         }
       ++colorIdx;
@@ -421,10 +423,9 @@ int32_t main(int argc, char *argv[])
       }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   EndWinWeights(winWeights);
-  Chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx -Paint->rightShift, 
+  Chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy);
+  Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx + DEFAULT_SPACE + DEFAULT_WIDTH,
   Paint->cy);
-  Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx, Paint->cy);
-  Text(PLOT, Paint->tx, Paint->ty, "Tar");
   PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

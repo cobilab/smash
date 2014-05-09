@@ -100,10 +100,11 @@ char *GetRgbColor(uint8_t hue)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Painter *CreatePainter(double refSize, double tarSize, char *fName)
+Painter *CreatePainter(double refSize, double tarSize, char *color)
   {
   Painter *P    = (Painter *) Malloc(sizeof(Painter));  
-  P->backColor  = fName;
+
+  P->backColor  = color;
   P->refSize    = refSize; 
   P->tarSize    = tarSize; 
   P->cx         = DEFAULT_CX;
@@ -111,7 +112,6 @@ Painter *CreatePainter(double refSize, double tarSize, char *fName)
   P->tx         = DEFAULT_TX;
   P->ty         = DEFAULT_TY;
   P->width      = DEFAULT_WIDTH; 
-  P->rightShift = DEFAULT_RIGHTSHIFT;
   P->maxSize    = refSize > tarSize ? refSize : tarSize;
 
   return P;
@@ -327,7 +327,7 @@ void PrintHead(FILE *F, double w, double u)
     "</rdf:RDF>\n"
   "</metadata>\n"
   "<g inkscape:label=\"Camada 1\" inkscape:groupmode=\"layer\" id=\"layer1\" "
-  ">\n", w*7, u+150);
+  ">\n", w, u);
   
   fprintf(F, "<defs id=\"defs6211\"><pattern inkscape:stockid=\"Polka dots, "
   "large\" id=\"Polkadots-large\" patternTransform=\"translate(0,0)" 

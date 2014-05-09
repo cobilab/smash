@@ -7,7 +7,6 @@ typedef struct
   {
   char    *backColor;
   double  width;
-  double  rightShift;
   double  cx; 
   double  cy;
   double  tx;
