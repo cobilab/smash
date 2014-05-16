@@ -8,7 +8,7 @@ SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 SET(RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-add_executable (smash mem.c common.c context.c defs.h) 
+add_executable (smash smash.c mem.c common.c context.c defs.h) 
 
 
 
