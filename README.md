@@ -14,5 +14,7 @@ to create the binary smash.
 
 ## LICENSE ##
 
-GPL v2 <pre>http://www.gnu.org/licenses/gpl-2.0.html</pre>
+GPL v2 
+For more information:
+<pre>http://www.gnu.org/licenses/gpl-2.0.html</pre>
 
