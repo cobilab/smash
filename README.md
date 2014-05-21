@@ -1,5 +1,5 @@
 # SMASH #
-Smash is a tool to compute chromosome information maps, based on sequence compression, with an ideogram output architecture. 
+Smash is a tool to compute chromosome information maps, based on sequence compression, with an ideogram output architecture, such as in the following image: 
 
 ![ScreenShot](/HC.png)
 
