@@ -115,7 +115,7 @@ CModel *LoadReference(char *sRef, Parameters *P)
   symbolBuffer = (uint8_t *) Calloc(BUFFER_SIZE + LEFT_BUFFER_GUARD + 1, 
   sizeof(uint8_t));
   symbolBuffer += LEFT_BUFFER_GUARD;
-  cModel = CreateCModel(P->context, P->alpha, P->hash, DEFAULT_MAX_COUNT); 
+  cModel = CreateCModel(P->context, P->alpha, DEFAULT_MAX_COUNT); 
   while((k = fread(readerBuffer, 1, BUFFER_SIZE, Reader)))
     for(idxPos = 0 ; idxPos != k ; ++idxPos)
       {

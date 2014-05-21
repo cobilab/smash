@@ -7,36 +7,45 @@
 #include <unistd.h>
 
 typedef unsigned long long ULL;
+typedef uint64_t U64;
+typedef uint32_t U32;
+typedef uint16_t U16;
+typedef uint8_t  U8;
+typedef int64_t  I64;
+typedef int32_t  I32;
+typedef int16_t  I16;
+typedef int8_t   I8;
+typedef double   DB;
 
 typedef struct
   {
-  uint8_t  help;
-  uint8_t  verbose;
-  uint8_t  force;
-  uint32_t context;
-  uint32_t alpha;
-  uint8_t  ir;
-  uint32_t hash;
-  uint32_t seed;
-  double   threshold;
-  double   width;
-  int64_t  window;
-  int64_t  subsample;
-  uint8_t  wType;
-  uint64_t minimum;
-  char     *output;
-  uint64_t refSize;
-  uint64_t tarSize;
+  U8   help;
+  U8   verbose;
+  U8   force;
+  U32  context;
+  U32  alpha;
+  U8   ir;
+  U32  hash;
+  U32  seed;
+  DB   threshold;
+  DB   width;
+  I64  window;
+  I64  subsample;
+  U8   wType;
+  U64  minimum;
+  char *output;
+  U64  refSize;
+  U64  tarSize;
   }
 Parameters;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // SYSTEM VALUES:
+#define N_SYMBOLS              4
 #define BUFFER_SIZE            65535      
 #define BUFFER_REV_SIZE        1048576
 #define PROGRESS_MIN           1000
-#define HASH_TABLE_BEGIN_CTX   15
 #define MAX_STRING_SIZE        1024
 #define LEFT_BUFFER_GUARD      32
 #define PRECISION              2
