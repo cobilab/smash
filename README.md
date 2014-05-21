@@ -1,19 +1,18 @@
+# SMASH #
+SMASH is a tool to compute chromosome information maps, based on sequence compression, with an ideogram output architecture. 
 
-                       SMASH, 2014 UNIVERSITY OF AVEIRO
+## INSTALLATION ##
+CMake is needed for installation. Use an appropriate packet manager to install brew:
+<pre>sudo apt-get install cmake</pre>,
+<pre>brew install cmake</pre>,
+<pre>...</pre>
 
- Chromosome information maps (sort of ideogram) based on sequence compression
-==============================================================================
+After run:
+<pre>cmake .</pre>
+<pre>make</pre>
+to create the binary Smash.
 
-COMPILATION:
-
-cmake .
-
-make clean ; make
-
-==============================================================================
-
-LICENSE:
+## LICENSE ##
 
 GPL v2
 
-==============================================================================
