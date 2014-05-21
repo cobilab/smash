@@ -3,8 +3,8 @@ SMASH is a tool to compute chromosome information maps, based on sequence compre
 
 ## INSTALLATION ##
 Cmake is needed for installation. Use an appropriate packet manager to install cmake:
-<pre>sudo apt-get install cmake</pre>
-<pre>brew install cmake</pre>
+<pre>sudo apt-get install cmake #LINUX UBUNTU</pre>
+<pre>brew install cmake #OSX</pre>
 <pre>(or any other)</pre>
 
 After run:
