@@ -1,5 +1,7 @@
 # SMASH #
-SMASH is a tool to compute chromosome information maps, based on sequence compression, with an ideogram output architecture. 
+Smash is a tool to compute chromosome information maps, based on sequence compression, with an ideogram output architecture. 
+
+![ScreenShot](/HC.png)
 
 ## INSTALLATION ##
 Cmake is needed for installation. Use an appropriate packet manager to install cmake:
