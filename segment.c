@@ -7,14 +7,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *SegmentSequence(char *fName, Parameters *P)
+U8 *SegmentSequence(U8 *fName, Parameters *P)
   {
   FILE     *Reader = NULL , *Writter = NULL;
-  float    val, threshold;
-  ULL      pos, initPosition, lastPosition;
-  int      region;
+  FL       val, threshold;
+  U64      pos, initPosition, lastPosition;
+  I32      region;
   clock_t  stop, start;
-  char     *fNameOut;
+  U8       *fNameOut;
 
   if(P->verbose == 1)
     {
@@ -22,7 +22,7 @@ char *SegmentSequence(char *fName, Parameters *P)
     fprintf(stderr, "Segmenting ...\n");
     }
 
-  threshold    = (float) P->threshold; 
+  threshold    = (FL) P->threshold; 
   Reader       = Fopen(fName, "r");
   fNameOut     = concatenate(fName, ".seg");
   Writter      = Fopen(fNameOut, "w");
@@ -65,12 +65,12 @@ char *SegmentSequence(char *fName, Parameters *P)
 
   fclose(Reader);
   fclose(Writter);
-//  unlink(fName);
+  unlink(fName);
 
   if(P->verbose == 1)
     {
     stop = clock();
-    fprintf(stderr, "Done! Needed %g s for segmentation.\n", ((double) (stop -
+    fprintf(stderr, "Done! Needed %g s for segmentation.\n", ((DB) (stop-
     start)) / CLOCKS_PER_SEC);
     }
 

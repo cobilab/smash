@@ -142,11 +142,6 @@ void UpdateCModelCounter(CModel *M, U32 s)
           }
         
         small = (M->hTable.entries[h][n].counters>>(s<<1))&0x03;
-         // If "counters" is non-zero, then this is at least the
-         // second time that this key is generated. Therefore,
-         // if the "small" counter of the symbol if full (i.e.,
-         // is equal to 3), then the "large" counters have to be
-         // inserted into the right position.
         if(small == 3)
           {
           nHCC = k;
@@ -169,12 +164,10 @@ void UpdateCModelCounter(CModel *M, U32 s)
           }
         }
 
-      // Keeps counting the number of HCCounters in this entry
       if(!M->hTable.entries[h][n].counters)
         k++;
       }
 
-    // If key not found
     InsertKey(&M->hTable, h, idx);
     M->hTable.entries[h][M->hTable.size[h]-1].counters = (0x01<<(s<<1));
     }

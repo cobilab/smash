@@ -5,50 +5,50 @@
 
 typedef struct
   {
-  char    *backColor;
-  double  width;
-  double  cx; 
-  double  cy;
-  double  tx;
-  double  ty;
-  double  refSize;
-  double  tarSize;
-  double  maxSize;  
+  U8  *backColor;
+  DB  width;
+  DB  cx; 
+  DB  cy;
+  DB  tx;
+  DB  ty;
+  DB  refSize;
+  DB  tarSize;
+  DB  maxSize;  
   }
 Painter;
 
 typedef struct
   {
-  uint8_t  r;
-  uint8_t  g;
-  uint8_t  b;
+  U8  r;
+  U8  g;
+  U8  b;
   } 
 RgbColor;
 
 typedef struct
   {
-  uint8_t  h;
-  uint8_t  s;
-  uint8_t  v;
+  U8  h;
+  U8  s;
+  U8  v;
   } 
 HsvColor;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Painter   *CreatePainter (double, double, char *);
+Painter   *CreatePainter (DB, DB, U8 *);
 RgbColor  HsvToRgb       (HsvColor);
 HsvColor  RgbToHsv       (RgbColor);
-char      *GetRgbColor   (uint8_t);
+U8        *GetRgbColor   (U8);
 void      PrintFinal     (FILE *);
-void      PrintHead      (FILE *, double, double);
-void      RectOval       (FILE *, double, double, double, double, char *);
-void      RectOvalIR     (FILE *, double, double, double, double, char *);
-void      Rect           (FILE *, double, double, double, double, char *);
-void      RectIR         (FILE *, double, double, double, double, char *);
-void      Chromosome     (FILE *, double, double, double, double);
-void      Text           (FILE *, double, double, char *);
-void      TextFloat      (FILE *, double, double, double);
-double    GetPoint       (ULL);
+void      PrintHead      (FILE *, DB, DB);
+void      RectOval       (FILE *, DB, DB, DB, DB, U8 *);
+void      RectOvalIR     (FILE *, DB, DB, DB, DB, U8 *);
+void      Rect           (FILE *, DB, DB, DB, DB, U8 *);
+void      RectIR         (FILE *, DB, DB, DB, DB, U8 *);
+void      Chromosome     (FILE *, DB, DB, DB, DB);
+void      Text           (FILE *, DB, DB, U8 *);
+void      TextFloat      (FILE *, DB, DB, DB);
+DB        GetPoint       (U64);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

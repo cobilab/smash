@@ -5,7 +5,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *SegmentSequence(char *, Parameters *);
+U8 *SegmentSequence(U8 *, Parameters *);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

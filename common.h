@@ -8,15 +8,15 @@
 
 typedef struct
   {
-  uint64_t  init;                                  // Initial pattern position 
-  uint64_t  end;                                       // End pattern position 
+  U64  init;                                       // Initial pattern position 
+  U64  end;                                            // End pattern position 
   }
 PatEntry;
 
 typedef struct
   {
-  uint32_t  nPatterns;                                   // Number of patterns
-  PatEntry  *p;
+  U32      nPatterns;                                    // Number of patterns
+  PatEntry *p;
   }
 Patterns;
 

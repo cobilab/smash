@@ -12,7 +12,7 @@
 RgbColor HsvToRgb(HsvColor hsv)
   {
   RgbColor  rgb;
-  uint8_t   region, remainder, p, q, t;
+  U8        region, remainder, p, q, t;
 
   if(hsv.s == 0)
     {
@@ -22,12 +22,12 @@ RgbColor HsvToRgb(HsvColor hsv)
     return rgb;
     }
 
-  region    =  hsv.h / 43;
-  remainder = (hsv.h - (region * 43)) * 6; 
+  region    =  hsv.h/43;
+  remainder = (hsv.h-(region*43))*6; 
 
-  p = (hsv.v * (255 - hsv.s)) >> 8;
-  q = (hsv.v * (255 - ((hsv.s * remainder) >> 8))) >> 8;
-  t = (hsv.v * (255 - ((hsv.s * (255 - remainder)) >> 8))) >> 8;
+  p = (hsv.v*(255-hsv.s))>>8;
+  q = (hsv.v*(255-((hsv.s*remainder)>>8)))>>8;
+  t = (hsv.v*(255-((hsv.s*(255-remainder))>>8)))>>8;
 
   switch(region)
     {
@@ -47,14 +47,11 @@ RgbColor HsvToRgb(HsvColor hsv)
 HsvColor RgbToHsv(RgbColor rgb)
   {
   HsvColor  hsv;
-  uint8_t   rgbMin, rgbMax;
+  U8       rgbMin, rgbMax;
 
-  rgbMin = rgb.r < rgb.g ? (rgb.r < rgb.b ? rgb.r : rgb.b) : (rgb.g < rgb.b ? 
-  rgb.g : rgb.b);
-  rgbMax = rgb.r > rgb.g ? (rgb.r > rgb.b ? rgb.r : rgb.b) : (rgb.g > rgb.b ? 
-  rgb.g : rgb.b);
-
-  hsv.v = rgbMax;
+  rgbMin = rgb.r<rgb.g?(rgb.r<rgb.b?rgb.r:rgb.b):(rgb.g<rgb.b?rgb.g:rgb.b);
+  rgbMax = rgb.r>rgb.g?(rgb.r>rgb.b?rgb.r:rgb.b):(rgb.g>rgb.b?rgb.g:rgb.b);
+  hsv.v  = rgbMax;
   if(hsv.v == 0)
     {
     hsv.h = 0;
@@ -62,7 +59,7 @@ HsvColor RgbToHsv(RgbColor rgb)
     return hsv;
     }
 
-  hsv.s = 255 * (long) (rgbMax - rgbMin) / hsv.v;
+  hsv.s = 255 * (long) (rgbMax-rgbMin)/hsv.v;
   if(hsv.s == 0)
     {
     hsv.h = 0;
@@ -70,22 +67,22 @@ HsvColor RgbToHsv(RgbColor rgb)
     }
 
   if(rgbMax == rgb.r)
-    hsv.h =       43 * (rgb.g - rgb.b) / (rgbMax - rgbMin);
+    hsv.h =     43*(rgb.g-rgb.b)/(rgbMax-rgbMin);
   else if(rgbMax == rgb.g)
-    hsv.h = 85  + 43 * (rgb.b - rgb.r) / (rgbMax - rgbMin);
+    hsv.h = 85 +43*(rgb.b-rgb.r)/(rgbMax-rgbMin);
   else
-    hsv.h = 171 + 43 * (rgb.r - rgb.g) / (rgbMax - rgbMin);
-
+    hsv.h = 171+43*(rgb.r-rgb.g)/(rgbMax-rgbMin);
+  
   return hsv;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *GetRgbColor(uint8_t hue)
+U8 *GetRgbColor(U8 hue)
   {
   RgbColor RGB;
   HsvColor HSV;
-  char *color = (char *) Malloc(8 * sizeof(char));
+  U8 *color = (U8 *) Malloc(8 * sizeof(U8));
   
   HSV.h = hue;
   HSV.s = LEVEL_SATURATION;
@@ -100,7 +97,7 @@ char *GetRgbColor(uint8_t hue)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Painter *CreatePainter(double refSize, double tarSize, char *color)
+Painter *CreatePainter(DB refSize, DB tarSize, U8 *color)
   {
   Painter *P    = (Painter *) Malloc(sizeof(Painter));  
 
@@ -119,7 +116,7 @@ Painter *CreatePainter(double refSize, double tarSize, char *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectOval(FILE *F, double w, double h, double x, double y, char *color)
+void RectOval(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
   {
   fprintf(F, "<rect "
               "style=\"fill:%s;fill-opacity:1;stroke-width:2;"
@@ -135,7 +132,7 @@ void RectOval(FILE *F, double w, double h, double x, double y, char *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectOvalIR(FILE *F, double w, double h, double x, double y, char *color)
+void RectOvalIR(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
   {
   RectOval(F, w, h, x, y, color);
   fprintf(F, "<rect "
@@ -154,7 +151,7 @@ void RectOvalIR(FILE *F, double w, double h, double x, double y, char *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Rect(FILE *F, double w, double h, double x, double y, char *color)
+void Rect(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
   {
   fprintf(F, "<rect style=\"fill:%s;fill-opacity:1;stroke-width:2;"
               "stroke-miterlimit:4;stroke-dasharray:none\" "
@@ -169,7 +166,7 @@ void Rect(FILE *F, double w, double h, double x, double y, char *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectIR(FILE *F, double w, double h, double x, double y, char *color)
+void RectIR(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
   {
   Rect(F, w, h, x, y, color);
   fprintf(F, "<rect "
@@ -187,10 +184,10 @@ void RectIR(FILE *F, double w, double h, double x, double y, char *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Chromosome(FILE *F, double w, double h, double x, double y)
+void Chromosome(FILE *F, DB w, DB h, DB x, DB y)
   {
-  char borderColor[] = "#000000";
-  double wk = w / 2 + 0.5;
+  U8 borderColor[] = "#000000";
+  DB wk = w / 2 + 0.5;
 
   fprintf(F, "<path "
          "d=\"m %.2lf,"
@@ -225,7 +222,7 @@ void Chromosome(FILE *F, double w, double h, double x, double y)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Text(FILE *F, double x, double y, char *name)
+void Text(FILE *F, DB x, DB y, U8 *name)
   {
   fprintf(F, "<text xml:space=\"preserve\" "
             "style=\"font-size:40px;font-style:normal;"
@@ -250,7 +247,7 @@ void Text(FILE *F, double x, double y, char *name)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void TextFloat(FILE *F, double x, double y, double name)
+void TextFloat(FILE *F, DB x, DB y, DB name)
   {
   fprintf(F, "<text xml:space=\"preserve\" "
              "style=\"font-size:40px;font-style:normal;"
@@ -275,14 +272,14 @@ void TextFloat(FILE *F, double x, double y, double name)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-double GetPoint(ULL p)
+DB GetPoint(U64 p)
   {
   return p / 1000000.0 * 5;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void PrintHead(FILE *F, double w, double u)
+void PrintHead(FILE *F, DB w, DB u)
   {
   fprintf(F, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
   "<!-- IEETA 2014 using Inkscape -->\n""<svg\n"

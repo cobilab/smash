@@ -3,7 +3,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static uint64_t totalMemory = 0;
+static U64 totalMemory = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -66,7 +66,7 @@ void Free(void *ptr)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint64_t TotalMemory()
+U64 TotalMemory()
   {
   return totalMemory;
   }

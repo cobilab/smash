@@ -6,7 +6,8 @@
 #include <inttypes.h>
 #include <unistd.h>
 
-typedef unsigned long long ULL;
+#define DRAND48  1
+
 typedef uint64_t U64;
 typedef uint32_t U32;
 typedef uint16_t U16;
@@ -16,6 +17,7 @@ typedef int32_t  I32;
 typedef int16_t  I16;
 typedef int8_t   I8;
 typedef double   DB;
+typedef float    FL;
 
 typedef struct
   {
@@ -33,7 +35,7 @@ typedef struct
   I64  subsample;
   U8   wType;
   U64  minimum;
-  char *output;
+  U8   *output;
   U64  refSize;
   U64  tarSize;
   }

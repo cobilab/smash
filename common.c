@@ -91,7 +91,7 @@ uint8_t DNASymToNum(uint8_t symbol)
     case 'T': return 3;
     case 'C': return 1;
     case 'G': return 2;
-    default: fprintf(stderr, "Error: unknown numerical symbols\n"); exit(1);
+    default: fprintf(stderr, "Error: unknown numerical symbol\n"); exit(1);
     }
   }
 
@@ -331,7 +331,7 @@ Patterns *GetPatterns(char *name)
   {
   FILE      *Reader = Fopen(name, "r");
   Patterns  *Pat;
-  ULL       v1, v2; 
+  U64       v1, v2; 
 
   Pat    = (Patterns *) Malloc(sizeof(Patterns)); 
   Pat->p = (PatEntry *) Malloc(sizeof(PatEntry)); 
@@ -366,7 +366,7 @@ char *ExtractSubSeq(char *name, Parameters *P, uint64_t init, uint64_t end)
   
   // TODO: SHAME ON THIS! IMPROVE THIS WITH BUFFERS AND FREAD/FWRITE...
   fseek(Reader, init, SEEK_SET);
-  for(x = init ; x != end ; ++x)
+  for(x = init ; x < end ; ++x)
     fprintf(Writter, "%c", fgetc(Reader));
 
   fclose(Reader);
