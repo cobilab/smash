@@ -75,7 +75,7 @@ Parameters;
 #define DEFAULT_CY             75.0
 #define DEFAULT_TX             50.0
 #define DEFAULT_TY             82.0
-#define DEFAULT_WIDTH          20.0
+#define DEFAULT_WIDTH          30.0
 #define DEFAULT_SPACE          10.0
 #define EXTRA                  150 
 
