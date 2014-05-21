@@ -3,9 +3,9 @@ SMASH is a tool to compute chromosome information maps, based on sequence compre
 
 ## INSTALLATION ##
 CMake is needed for installation. Use an appropriate packet manager to install brew:
-<pre>sudo apt-get install cmake</pre>,
-<pre>brew install cmake</pre>,
-<pre>...</pre>
+<pre>sudo apt-get install cmake</pre>
+<pre>brew install cmake</pre>
+<pre>(or any other)</pre>
 
 After run:
 <pre>cmake .</pre>
