@@ -120,9 +120,9 @@ Usage: smash [OPTIONS]... [FILE] [FILE]
  [tarFile]           target file      
 </pre>
 
-## REQUESTS / ISSUES ##
+## ISSUES ##
 
-For any request or issue please send an email to one of the following authors: {pratas, raquelsilva, ap, pjf} @ua.pt.
+For any issue let us know at [issues link](https://github.com/pratas/smash/issues)
 
 ## LICENSE ##
 
