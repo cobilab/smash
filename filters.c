@@ -15,7 +15,7 @@ void WindowSizeAndDrop(Parameters *P)
   if(DEFAULT_WINDOW != -1)
     return;  
 
-  U64 max = P->refSize>P->tarSize?P->refSize:P->tarSize;
+  uint64_t max = P->refSize>P->tarSize?P->refSize:P->tarSize;
 
   P->subsample = max/DEFAULT_SAMPLE_RATIO;
   if(max < DEFAULT_SAMPLE_RATIO)
@@ -26,10 +26,10 @@ void WindowSizeAndDrop(Parameters *P)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-FL *InitWinWeights(I64 M, I32 type)
+float *InitWinWeights(int64_t M, int32_t type)
   {
-  FL  *w = (FL *) Malloc((2 * M + 1) * sizeof(FL));
-  I64 k;
+  float  *w = (float *) Malloc((2 * M + 1) * sizeof(float));
+  int64_t k;
 
   switch(type)
     {
@@ -47,17 +47,17 @@ FL *InitWinWeights(I64 M, I32 type)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void EndWinWeights(FL *w)
+void EndWinWeights(float *w)
   {
   Free(w);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static FL Mean(FL *ent, I64 nEnt, I64 n, I64 M, FL *w)
+static float Mean(float *ent, int64_t nEnt, int64_t n, int64_t M, float *w)
   {
-  I64 k, s;
-  FL  sum = 0, wSum = 0, tmp;
+  int64_t k, s;
+  float   sum = 0, wSum = 0, tmp;
 
   for(k = -M ; k <= M ; ++k)
     {
@@ -74,12 +74,13 @@ static FL Mean(FL *ent, I64 nEnt, I64 n, I64 M, FL *w)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-U8 *FilterSequence(U8 *fName, Parameters *P, FL *w, U8 remove)
+uint8_t *FilterSequence(uint8_t *fName, Parameters *P, float *w, uint8_t 
+remove)
   {
   FILE    *Reader  = NULL, *Writter = NULL;
-  FL      *entries = NULL, *buffer;
-  I64     nEntries, n, M, drop, k;
-  U8      *fNameOut;
+  float   *entries = NULL, *buffer;
+  int64_t nEntries, n, M, drop, k;
+  uint8_t *fNameOut;
   clock_t stop, start;
 
   if(P->verbose == 1)
@@ -91,15 +92,16 @@ U8 *FilterSequence(U8 *fName, Parameters *P, FL *w, U8 remove)
   M        = P->window;
   drop     = P->subsample + 1;
   Reader   = Fopen(fName, "rb");
-  entries  = (FL *) Malloc(BUFFER_SIZE * sizeof(FL));
-  buffer   = (FL *) Malloc(BUFFER_SIZE * sizeof(FL));
+  entries  = (float *) Malloc(BUFFER_SIZE * sizeof(float));
+  buffer   = (float *) Malloc(BUFFER_SIZE * sizeof(float));
   nEntries = 0;
 
-  while((k = fread(buffer, sizeof(FL), BUFFER_SIZE, Reader)))
+  while((k = fread(buffer, sizeof(float), BUFFER_SIZE, Reader)))
     {
     for(n = 0 ; n != k ; ++n)
       entries[nEntries++] = buffer[n];
-    entries = (FL *) Realloc(entries, (nEntries+k)*sizeof(FL), sizeof(FL)*k);
+    entries = (float *) Realloc(entries, (nEntries+k)*sizeof(float), 
+    sizeof(float)*k);
     }
   fclose(Reader);
 
@@ -121,7 +123,7 @@ U8 *FilterSequence(U8 *fName, Parameters *P, FL *w, U8 remove)
   if(P->verbose == 1)
     {
     stop = clock();
-    fprintf(stderr, "Done! Filtered with %g s.\n", ((DB) (stop-start)) / 
+    fprintf(stderr, "Done! Filtered with %g s.\n", ((double) (stop-start)) / 
     CLOCKS_PER_SEC);
     }
 

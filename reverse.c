@@ -7,10 +7,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void IRBlock(U8 *block, U32 nSym, FILE *F)
+void IRBlock(uint8_t *block, uint32_t nSym, FILE *F)
   {
-  U32 k, n = 0;
-  U8  stream[nSym];
+  uint32_t k, n = 0;
+  uint8_t  stream[nSym];
   
   for(k = nSym ; k-- ; ++n)
     stream[n] = GetCompSym(block[k]);
@@ -19,12 +19,12 @@ void IRBlock(U8 *block, U32 nSym, FILE *F)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-U8 *IRSequence(U8 *fName, Parameters *P, U8 type)
+uint8_t *IRSequence(uint8_t *fName, Parameters *P, uint8_t type)
   {
   FILE      *Reader = NULL , *Writter = NULL;
-  U64       size, parts, extra;
+  uint64_t  size, parts, extra;
   clock_t   stop, start;
-  U8        *fNameOut, block[BUFFER_REV_SIZE];
+  uint8_t   *fNameOut, block[BUFFER_REV_SIZE];
 
   if(P->verbose == 1)
     {
@@ -38,7 +38,7 @@ U8 *IRSequence(U8 *fName, Parameters *P, U8 type)
   size     = NBytesInFile(Reader);
   parts    = size / BUFFER_REV_SIZE;
   extra    = size % BUFFER_REV_SIZE;
-  U8 buffer[extra];
+  uint8_t  buffer[extra];
 
   fseek(Reader, -extra, SEEK_END);
   fread(buffer, 1, extra, Reader);
@@ -58,8 +58,8 @@ U8 *IRSequence(U8 *fName, Parameters *P, U8 type)
   if(P->verbose == 1)
     {
     stop = clock();
-    fprintf(stderr, "Done! Used %g s for reversing %s.\n", ((DB)(stop-start)) 
-    / CLOCKS_PER_SEC, type ? "target" : "reference");
+    fprintf(stderr, "Done! Used %g s for reversing %s.\n", ((double)(stop-
+    start)) / CLOCKS_PER_SEC, type ? "target" : "reference");
     }
 
   return fNameOut;

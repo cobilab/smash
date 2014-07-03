@@ -3,7 +3,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static U64 totalMemory = 0;
+static uint64_t totalMemory = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -61,12 +61,11 @@ void *Realloc(void *ptr, size_t size, size_t additionalSize)
 void Free(void *ptr)
   {
   free(ptr);
-//  ptr = NULL;                                           // prevent double free
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-U64 TotalMemory()
+uint64_t TotalMemory()
   {
   return totalMemory;
   }

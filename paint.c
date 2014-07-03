@@ -12,7 +12,7 @@
 RgbColor HsvToRgb(HsvColor hsv)
   {
   RgbColor  rgb;
-  U8        region, remainder, p, q, t;
+  uint8_t   region, remainder, p, q, t;
 
   if(hsv.s == 0)
     {
@@ -47,7 +47,7 @@ RgbColor HsvToRgb(HsvColor hsv)
 HsvColor RgbToHsv(RgbColor rgb)
   {
   HsvColor  hsv;
-  U8       rgbMin, rgbMax;
+  uint8_t   rgbMin, rgbMax;
 
   rgbMin = rgb.r<rgb.g?(rgb.r<rgb.b?rgb.r:rgb.b):(rgb.g<rgb.b?rgb.g:rgb.b);
   rgbMax = rgb.r>rgb.g?(rgb.r>rgb.b?rgb.r:rgb.b):(rgb.g>rgb.b?rgb.g:rgb.b);
@@ -78,11 +78,11 @@ HsvColor RgbToHsv(RgbColor rgb)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-U8 *GetRgbColor(U8 hue)
+uint8_t *GetRgbColor(uint8_t hue)
   {
   RgbColor RGB;
   HsvColor HSV;
-  U8 *color = (U8 *) Malloc(8 * sizeof(U8));
+  uint8_t  *color = (uint8_t *) Malloc(8 * sizeof(uint8_t));
   
   HSV.h = hue;
   HSV.s = LEVEL_SATURATION;
@@ -97,7 +97,7 @@ U8 *GetRgbColor(U8 hue)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Painter *CreatePainter(DB refSize, DB tarSize, U8 *color)
+Painter *CreatePainter(double refSize, double tarSize, uint8_t *color)
   {
   Painter *P    = (Painter *) Malloc(sizeof(Painter));  
 
@@ -116,7 +116,7 @@ Painter *CreatePainter(DB refSize, DB tarSize, U8 *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectOval(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
+void RectOval(FILE *F, double w, double h, double x, double y, uint8_t *color)
   {
   fprintf(F, "<rect "
               "style=\"fill:%s;fill-opacity:1;stroke-width:2;"
@@ -132,7 +132,8 @@ void RectOval(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectOvalIR(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
+void RectOvalIR(FILE *F, double w, double h, double x, double y, uint8_t 
+*color)
   {
   RectOval(F, w, h, x, y, color);
   fprintf(F, "<rect "
@@ -151,7 +152,7 @@ void RectOvalIR(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Rect(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
+void Rect(FILE *F, double w, double h, double x, double y, uint8_t *color)
   {
   fprintf(F, "<rect style=\"fill:%s;fill-opacity:1;stroke-width:2;"
               "stroke-miterlimit:4;stroke-dasharray:none\" "
@@ -166,7 +167,7 @@ void Rect(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectIR(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
+void RectIR(FILE *F, double w, double h, double x, double y, uint8_t *color)
   {
   Rect(F, w, h, x, y, color);
   fprintf(F, "<rect "
@@ -184,10 +185,10 @@ void RectIR(FILE *F, DB w, DB h, DB x, DB y, U8 *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Chromosome(FILE *F, DB w, DB h, DB x, DB y)
+void Chromosome(FILE *F, double w, double h, double x, double y)
   {
-  U8 borderColor[] = "#000000";
-  DB wk = w / 2 + 0.5;
+  uint8_t borderColor[] = "#000000";
+  double  wk = w / 2 + 0.5;
 
   fprintf(F, "<path "
          "d=\"m %.2lf,"
@@ -222,7 +223,7 @@ void Chromosome(FILE *F, DB w, DB h, DB x, DB y)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Text(FILE *F, DB x, DB y, U8 *name)
+void Text(FILE *F, double x, double y, uint8_t *name)
   {
   fprintf(F, "<text xml:space=\"preserve\" "
             "style=\"font-size:40px;font-style:normal;"
@@ -247,7 +248,7 @@ void Text(FILE *F, DB x, DB y, U8 *name)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void TextFloat(FILE *F, DB x, DB y, DB name)
+void TextFloat(FILE *F, double x, double y, double n)
   {
   fprintf(F, "<text xml:space=\"preserve\" "
              "style=\"font-size:40px;font-style:normal;"
@@ -267,19 +268,19 @@ void TextFloat(FILE *F, DB x, DB y, DB name)
              "text-align:start;line-height:125%%;writing-mode"
              ":lr-tb;text-anchor:start;font-family:Arial;-"
              "inkscape-font-specification:Arial\"> %5.2lf</tspan>\n"
-          "</text>\n", x, y, x, y, name);
+          "</text>\n", x, y, x, y, n);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-DB GetPoint(U64 p)
+double GetPoint(uint64_t p)
   {
   return p / 1000000.0 * 5;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void PrintHead(FILE *F, DB w, DB u)
+void PrintHead(FILE *F, double w, double u)
   {
   fprintf(F, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
   "<!-- IEETA 2014 using Inkscape -->\n""<svg\n"

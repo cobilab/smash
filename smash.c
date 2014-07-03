@@ -175,14 +175,16 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
     for(idx = 0 ; idx < maxIdx ; ++idx)
       switch(readerBuffer[idx])
         {
-        case 65:case 97: writterBuffer[i++]=65;                   break; // Aa
-        case 84:case 116:writterBuffer[i++]=84;                   break; // Tt
-        case 67:case 99: writterBuffer[i++]=67;                   break; // Cc
-        case 71:case 103:writterBuffer[i++]=71;                   break; // Gg
+        case 65:case 97: writterBuffer[i++]=65; break; // Aa
+        case 84:case 116:writterBuffer[i++]=84; break; // Tt
+        case 67:case 99: writterBuffer[i++]=67; break; // Cc
+        case 71:case 103:writterBuffer[i++]=71; break; // Gg
         #ifdef DRAND48
-        case 78:case 119:writterBuffer[i++]=gf[(U8)(drand48()*4)];break; // Nn
+        case 78:case 119:writterBuffer[i++]=gf[(uint8_t)(drand48()*4)];
+        break; // Nn
         #else
-        case 78:case 119:writterBuffer[i++]=gf[(U8)(rand()%4)];   break; // Nn
+        case 78:case 119:writterBuffer[i++]=gf[(uint8_t)(rand()%4)];   
+        break; // Nn
         #endif
         default:break;
         }

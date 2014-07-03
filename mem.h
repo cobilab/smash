@@ -11,8 +11,7 @@ void     *Malloc     (size_t);
 void     *Calloc     (size_t, size_t);
 void     *Realloc    (void *, size_t, size_t);
 void     Free        (void *);
-U64      TotalMemory ();
-U64      MaxMemory   ();
+uint64_t TotalMemory ();
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

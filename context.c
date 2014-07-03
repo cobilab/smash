@@ -26,7 +26,7 @@ static void InitHashTable(CModel *M)
 
 void FreeCModel(CModel *M)
   {
-  U32 k;
+  uint32_t k;
   if(M->mode == HASH_TABLE_MODE)
     {
     for(k = 0 ; k < HASH_SIZE ; ++k)
@@ -54,16 +54,17 @@ static void InitArray(CModel *M)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static void InsertKey(HashTable *H, U32 i, U64 key)
+static void InsertKey(HashTable *H, uint32_t i, uint64_t key)
   {
   H->entries[i] = (Entry *) Realloc(H->entries[i], (H->size[i]+1) * 
   sizeof(Entry), sizeof(Entry));
-  H->entries[i][H->size[i]++].key = (U32)(key/HASH_SIZE);
+  H->entries[i][H->size[i]++].key = (uint32_t)(key/HASH_SIZE);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static void InsertCounters(HashTable *H, U32 i, U32 nHCC, U32 k, U32 small)
+static void InsertCounters(HashTable *H, uint32_t i, uint32_t nHCC, 
+uint32_t k, uint32_t small)
   {
   H->counters[i] = (HCCounters *) Realloc(H->counters[i], (nHCC + 1) * 
   sizeof(HCCounters), sizeof(HCCounters));
@@ -80,13 +81,13 @@ static void InsertCounters(HashTable *H, U32 i, U32 nHCC, U32 k, U32 small)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-static HCCounter *GetHCCounters(HashTable *H, U64 key)
+static HCCounter *GetHCCounters(HashTable *H, uint64_t key)
   {
-  U32 k = 0, n, i = key % HASH_SIZE;
+  uint32_t k = 0, n, i = key % HASH_SIZE;
 
   for(n = 0 ; n < H->size[i] ; n++)
     {
-    if(((U64) H->entries[i][n].key * HASH_SIZE) + i == key)
+    if(((uint64_t) H->entries[i][n].key * HASH_SIZE) + i == key)
       switch(H->entries[i][n].counters)
         {
         case 0: return H->counters[i][k];
@@ -105,29 +106,29 @@ static HCCounter *GetHCCounters(HashTable *H, U64 key)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-PModel *CreatePModel(U32 n)
+PModel *CreatePModel(uint32_t n)
   {
   PModel *P = (PModel *) Malloc(sizeof(PModel));
-  P->freqs  = (U32 *) Malloc(n * sizeof(U32));
+  P->freqs  = (uint32_t *) Malloc(n * sizeof(uint32_t));
   return P;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void UpdateCModelCounter(CModel *M, U32 s)
+void UpdateCModelCounter(CModel *M, uint32_t s)
   {
-  U32  n;
+  uint32_t  n;
   ACCounter *aCounters;
-  U64  idx = M->pModelIdx;
+  uint64_t  idx = M->pModelIdx;
 
   if(M->mode == HASH_TABLE_MODE)
     {
-    U8 small;
-    U32 i, k = 0, nHCC, h = idx % HASH_SIZE;
+    uint8_t small;
+    uint32_t i, k = 0, nHCC, h = idx % HASH_SIZE;
 
     for(n = 0 ; n < M->hTable.size[h] ; n++)
       {
-      if(((U64) M->hTable.entries[h][n].key * HASH_SIZE) + h == idx)
+      if(((uint64_t) M->hTable.entries[h][n].key * HASH_SIZE) + h == idx)
         { 
         if(M->hTable.entries[h][n].counters == 0) // Update "large" counters
           {
@@ -155,7 +156,7 @@ void UpdateCModelCounter(CModel *M, U32 s)
           M->hTable.counters[h][k][s]++;
           return;
           }
-        else // There is still room for incrementing the "small" counter.
+        else
           {
           small++;
           M->hTable.entries[h][n].counters &= ~(0x03<<(s<<1));
@@ -187,11 +188,11 @@ void UpdateCModelCounter(CModel *M, U32 s)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-CModel *CreateCModel(U32 ctx, U32 a, U32 mc) 
+CModel *CreateCModel(uint32_t ctx, uint32_t a, uint32_t mc) 
   {
   CModel    *M = (CModel *) Calloc(1, sizeof(CModel));
-  U64       prod = 1, *multipliers;
-  U32       n;
+  uint64_t       prod = 1, *multipliers;
+  uint32_t       n;
 
   if(ctx > MAX_HASH_CTX)
     {
@@ -199,8 +200,8 @@ CModel *CreateCModel(U32 ctx, U32 a, U32 mc)
     exit(1);
     }
 
-  multipliers    = (U64 *) Calloc(ctx, sizeof(U64));
-  M->nPModels    = (U64  ) pow(4, ctx);
+  multipliers    = (uint64_t *) Calloc(ctx, sizeof(uint64_t));
+  M->nPModels    = (uint64_t  ) pow(4, ctx);
   M->ctx         = ctx;
   M->alphaDen    = a;
   M->pModelIdx   = 0;
@@ -238,22 +239,11 @@ void ResetCModel(CModel *M)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetPModelIdx(U8 *p, CModel *M)
+inline void GetPModelIdx(uint8_t *p, CModel *M)
   {
   M->pModelIdx = ((M->pModelIdx-*(p-M->ctx)*M->multiplier)<<2)+*p;
   }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//
-//inline void GetPModelIdx(U8 *p, CModel *M)
-//  {
-//  U64 idx = 0;
-//  U32 n;
-//  for(n = 1 ; n <= M->ctx ; ++n)
-//    idx += *--p * M->multipliers[n-1];
-//  M->pModelIdx = idx;
-//  }
-//
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void ComputePModel(CModel *M, PModel *P)
@@ -281,9 +271,9 @@ void ComputePModel(CModel *M, PModel *P)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-DB PModelSymbolNats(PModel *P, U32 s)
+double PModelSymbolNats(PModel *P, uint32_t s)
   {
-  return log((DB) P->sum / P->freqs[s]);
+  return log((double) P->sum / P->freqs[s]);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

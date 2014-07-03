@@ -299,24 +299,6 @@ void FAccessWPerm(char *fn)
     }
   }
 
-/*
-uint32_t ReadFNames(char *def, char *arg[], uint32_t n)
-  {
-  uint32_t nFiles = 1, k = 0, argLen;
-  
-  argLen = strlen(arg[n]);
-  for( ; k != argLen ; ++k)
-    if(arg[n][k] == ':')
-      ++nFiles;
-  Par.tFileName = (char **) Malloc(nFiles * sizeof(char *));
-  Par.tFileName[0] = strtok(arg[n], ":");
-  for(k = 1 ; k != nFiles ; ++k)
-    Par.tFileName[k] = strtok(NULL, ":");
-
-  return nFiles;
-  }
-*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 inline void CalcProgress(uint64_t size, uint64_t i)
@@ -331,13 +313,13 @@ Patterns *GetPatterns(char *name)
   {
   FILE      *Reader = Fopen(name, "r");
   Patterns  *Pat;
-  U64       v1, v2; 
+  uint64_t  v1, v2; 
 
   Pat    = (Patterns *) Malloc(sizeof(Patterns)); 
   Pat->p = (PatEntry *) Malloc(sizeof(PatEntry)); 
   Pat->nPatterns = 0; 
 
-  while(fscanf(Reader, "%llu:%llu", &v1, &v2) == 2)
+  while(fscanf(Reader, "%"PRIu64":%"PRIu64"", &v1, &v2) == 2)
     {
     Pat->p[Pat->nPatterns].init = v1;
     Pat->p[Pat->nPatterns].end  = v2;
@@ -345,7 +327,7 @@ Patterns *GetPatterns(char *name)
     sizeof(PatEntry), sizeof(PatEntry));
     }
   fclose(Reader); 
-  //unlink(name);
+  unlink(name);
 
   return Pat;
   }
@@ -364,7 +346,7 @@ char *ExtractSubSeq(char *name, Parameters *P, uint64_t init, uint64_t end)
   if(P->verbose)
     fprintf(stderr, "Extracting pattern [%"PRIu64";%"PRIu64"]\n", init, end);
   
-  // TODO: SHAME ON THIS! IMPROVE THIS WITH BUFFERS AND FREAD/FWRITE...
+  // TODO: SHAME ON THIS CODE! IMPROVE THIS WITH BUFFERS AND FREAD/FWRITE...
   fseek(Reader, init, SEEK_SET);
   for(x = init ; x < end ; ++x)
     fprintf(Writter, "%c", fgetc(Reader));

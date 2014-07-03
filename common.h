@@ -8,14 +8,14 @@
 
 typedef struct
   {
-  U64  init;                                       // Initial pattern position 
-  U64  end;                                            // End pattern position 
+  uint64_t init;                                   // Initial pattern position 
+  uint64_t end;                                        // End pattern position 
   }
 PatEntry;
 
 typedef struct
   {
-  U32      nPatterns;                                    // Number of patterns
+  uint32_t nPatterns;                                    // Number of patterns
   PatEntry *p;
   }
 Patterns;
@@ -25,7 +25,7 @@ Patterns;
 FILE        *Fopen           (const char *, const char *);
 void        FillLogTable     (uint32_t, uint32_t, uint32_t);
 double      SearchLog        (uint32_t );
-uint32_t    FLog2            (uint64_t );
+uint32_t    floatog2         (uint64_t );
 uint8_t     DNASymToNum      (uint8_t  );
 uint8_t     GetCompNum       (uint8_t  );
 uint8_t     GetCompSym       (uint8_t  );
@@ -39,7 +39,7 @@ double      ArgsDouble       (double, char *[], uint32_t, char *);
 uint8_t     ArgsState        (uint8_t  , char *[], uint32_t, char *);
 uint8_t     Args3State       (uint8_t  , char *[], uint32_t, char *);
 char        *ArgsString      (char    *, char *[], uint32_t, char *);
-char        *ArgsFiles       (char *[], uint32_t, char *);
+char        *ArgsFiles       (char  *[], uint32_t, char *);
 void        FAccessWPerm     (char    *);
 void        PrintArgs        (void     );
 void        CmpInputError    (uint32_t );

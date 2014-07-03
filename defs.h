@@ -11,36 +11,25 @@
 #endif
 #define DRAND48  1
 
-typedef uint64_t U64;
-typedef uint32_t U32;
-typedef uint16_t U16;
-typedef uint8_t  U8;
-typedef int64_t  I64;
-typedef int32_t  I32;
-typedef int16_t  I16;
-typedef int8_t   I8;
-typedef double   DB;
-typedef float    FL;
-
 typedef struct
   {
-  U8   help;
-  U8   verbose;
-  U8   force;
-  U32  context;
-  U32  alpha;
-  U8   ir;
-  U32  hash;
-  U32  seed;
-  DB   threshold;
-  DB   width;
-  I64  window;
-  I64  subsample;
-  U8   wType;
-  U64  minimum;
-  U8   *output;
-  U64  refSize;
-  U64  tarSize;
+  uint8_t   help;
+  uint8_t   verbose;
+  uint8_t   force;
+  uint32_t  context;
+  uint32_t  alpha;
+  uint8_t   ir;
+  uint32_t  hash;
+  uint32_t  seed;
+  double    threshold;
+  double    width;
+  int64_t   window;
+  int64_t   subsample;
+  uint8_t   wType;
+  uint64_t  minimum;
+  uint8_t   *output;
+  uint64_t  refSize;
+  uint64_t  tarSize;
   }
 Parameters;
 
@@ -55,7 +44,7 @@ Parameters;
 #define LEFT_BUFFER_GUARD      32
 #define PRECISION              2
 #define SEED_JUMP              11
-#define W_TYPE                 0                        // DEFAULT WINDOW TYPE
+#define W_TYPE                 0
 #define W_HAMMING              0
 #define W_HANN                 1
 #define W_BLACKMAN             2

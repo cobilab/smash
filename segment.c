@@ -7,14 +7,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-U8 *SegmentSequence(U8 *fName, Parameters *P)
+uint8_t *SegmentSequence(uint8_t *fName, Parameters *P)
   {
   FILE     *Reader = NULL , *Writter = NULL;
-  FL       val, threshold;
-  U64      pos, initPosition, lastPosition;
-  I32      region;
+  float    val, threshold;
+  uint64_t pos, initPosition, lastPosition;
+  int32_t  region;
   clock_t  stop, start;
-  U8       *fNameOut;
+  uint8_t  *fNameOut;
 
   if(P->verbose == 1)
     {
@@ -22,12 +22,12 @@ U8 *SegmentSequence(U8 *fName, Parameters *P)
     fprintf(stderr, "Segmenting ...\n");
     }
 
-  threshold    = (FL) P->threshold; 
+  threshold    = (float) P->threshold; 
   Reader       = Fopen(fName, "r");
   fNameOut     = concatenate(fName, ".seg");
   Writter      = Fopen(fNameOut, "w");
 
-  if(fscanf(Reader, "%llu\t%f", &pos, &val) == 2)
+  if(fscanf(Reader, "%"PRIu64"\t%f", &pos, &val) == 2)
     region = val < threshold ? LOW_REGION : HIGH_REGION;
   else
     {
@@ -37,14 +37,14 @@ U8 *SegmentSequence(U8 *fName, Parameters *P)
   initPosition = 1;
   lastPosition = pos;
 
-  while(fscanf(Reader, "%llu\t%f", &pos, &val) == 2)
+  while(fscanf(Reader, "%"PRIu64"\t%f", &pos, &val) == 2)
     {
     if(val >= threshold)
       { 
       if(region == LOW_REGION)
         {
         region = HIGH_REGION;
-        fprintf(Writter, "%llu:%llu\n", initPosition, pos);
+        fprintf(Writter, "%"PRIu64":%"PRIu64"\n", initPosition, pos);
         }
       }
 
@@ -61,7 +61,7 @@ U8 *SegmentSequence(U8 *fName, Parameters *P)
     }
 
   if(region == LOW_REGION)
-    fprintf(Writter, "%llu:%llu\n", initPosition, lastPosition);
+    fprintf(Writter, "%"PRIu64":%"PRIu64"\n", initPosition, lastPosition);
 
   fclose(Reader);
   fclose(Writter);
@@ -70,7 +70,7 @@ U8 *SegmentSequence(U8 *fName, Parameters *P)
   if(P->verbose == 1)
     {
     stop = clock();
-    fprintf(stderr, "Done! Needed %g s for segmentation.\n", ((DB) (stop-
+    fprintf(stderr, "Done! Needed %g s for segmentation.\n", ((double) (stop-
     start)) / CLOCKS_PER_SEC);
     }
 

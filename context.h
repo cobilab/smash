@@ -5,7 +5,7 @@
 
 #define ARRAY_MODE            0
 #define HASH_TABLE_MODE       1
-#define HASH_TABLE_BEGIN_CTX  17
+#define HASH_TABLE_BEGIN_CTX  15
 #define HASH_SIZE             33554467        // first PRIME NUMBER after 2^25
 #define MAX_HASH_CTX          28
 
@@ -38,20 +38,20 @@ Array;
 
 typedef struct
   {
-  U32        *freqs;
-  U32        sum;
+  uint32_t        *freqs;
+  uint32_t        sum;
   }
 PModel;
 
 typedef struct
-  {
-  U32        ctx;                    // Current depth of context template
-  U32        alphaDen;                            // Denominator of alpha
-  U32        maxCount;        // Counters /= 2 if one counter >= maxCount
-  U64        multiplier;
-  U64        pModelIdx;
-  U64        nPModels;            // Maximum number of probability models
-  U8         mode;
+  { 
+  uint32_t   ctx;                         // Current depth of context template
+  uint32_t   alphaDen;                                 // Denominator of alpha
+  uint32_t   maxCount;             // Counters /= 2 if one counter >= maxCount
+  uint64_t   multiplier;
+  uint64_t   pModelIdx;
+  uint64_t   nPModels;                 // Maximum number of probability models
+  uint8_t    mode;
   HashTable  hTable;
   Array      array;
   }
@@ -60,13 +60,13 @@ CModel;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void         FreeCModel          (CModel *);
-inline void  GetPModelIdx        (U8 *, CModel *);
-PModel       *CreatePModel       (U32);
+inline void  GetPModelIdx        (uint8_t *, CModel *);
+PModel       *CreatePModel       (uint32_t);
 void         ResetCModel         (CModel *);
-void         UpdateCModelCounter (CModel *, U32);
-CModel       *CreateCModel       (U32, U32, U32);
+void         UpdateCModelCounter (CModel *, uint32_t);
+CModel       *CreateCModel       (uint32_t, uint32_t, uint32_t);
 void         ComputePModel       (CModel *, PModel *);
-DB           PModelSymbolNats    (PModel *, U32);
+double       PModelSymbolNats    (PModel *, uint32_t);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
