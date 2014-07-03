@@ -122,15 +122,9 @@ By default, Smash has many parameters assigned in order to avoid the estimation,
 
 #### Options meaning
 
-<pre>
--v
-</pre>
-verbose mode - it will print progress information such as positions of the patterns, times, etc.
+<pre>-v</pre>|verbose mode - it will print progress information such as positions of the patterns, times, etc.
 
-<pre>
--f
-</pre>
-force mode - 
+<pre>-f</pre>|force mode - 
 
 ## ISSUES ##
 
