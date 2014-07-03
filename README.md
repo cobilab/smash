@@ -17,7 +17,7 @@ to create the binary smash.
 
 ## REAL EXAMPLE
 In the following instructions we show the procedure to create the information map between human and orangutango chromosome 18:
-<pre>wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H\_sapiens/Assembled\_chromosomes/seq/hs\_ref\_GRCh38\_chr18.fa.gz</pre>
+<pre>wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38_chr18.fa.gz</pre>
 
 ## LICENSE ##
 
