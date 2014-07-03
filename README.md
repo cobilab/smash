@@ -122,7 +122,7 @@ By default, Smash has many parameters assigned in order to avoid the estimation,
 
 #### Options meaning
 
-| Parameters        | Meaning                                                                                                      |
+| Parameters   r    | Meaning                                                                                                      |
 |-------------------|:-------------------------------------------------------------------------------------------------------------|
 | -v                | It will print progress information such as positions of the patterns, times, etc.                            |
 | -f                | It will force to write over files already created.                                                           |
