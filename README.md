@@ -74,9 +74,11 @@ gzcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA
 
 
 ### Step 4 ###
+
 Run Smash.
 
 ##### Linux, OS X and Windows
+
 <pre>
 ./smash -v -c 20 -t 1.5 HS20 PA20
 </pre>
