@@ -122,12 +122,12 @@ By default, Smash has many parameters assigned in order to avoid the estimation,
 
 #### Options meaning
 
-| Parameters      | Meaning                                                                                                      |
-|-----------------|:-------------------------------------------------------------------------------------------------------------|
-| -v              | It will print progress information such as positions of the patterns, times, etc.                            |
-| -f              | It will force to write over files already created.                                                           |
-| -c [context]    | Size of the FCM (Markov) context order (interval [1;28]). Contexts above 14 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. When the sequence is very fragmented, or the species are somehow distant, or the sequencing/assembly process has low quality this value show not be very high. |
-| -t [threshold]  | It will be used to segment the high from the low regions of information content (interval [0;2]). For distant species this value might be slightly below 2 (such as 1.9). |
+| Parameters        | Meaning                                                                                                      |
+|-------------------|:-------------------------------------------------------------------------------------------------------------|
+| -v                | It will print progress information such as positions of the patterns, times, etc.                            |
+| -f                | It will force to write over files already created.                                                           |
+| -c [context]      | Size of the FCM (Markov) context order (interval [1;28]). Contexts above 14 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. When the sequence is very fragmented, or the species are somehow distant, or the sequencing/assembly process has low quality this value show not be very high. |
+| -t [threshold]    | It will be used to segment the high from the low regions of information content (interval [0;2]). For distant species this value might be slightly below 2 (such as 1.9). |
 
 ## ISSUES ##
 
