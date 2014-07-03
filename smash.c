@@ -254,8 +254,6 @@ int32_t main(int argc, char *argv[])
     DEFAULT_WIN_TYPE);
     fprintf(stderr, " -d  [dSize]         sub-sample (DEF: %u)\n", 
     DEFAULT_SAMPLE_RATIO);
-    fprintf(stderr, " -m  [mSize]         minimum block size (DEF: %u)\n",
-    DEFAULT_MINIMUM);
     fprintf(stderr, " -wi [width]         sequence width (DEF: %.2g)\n",
     DEFAULT_WIDTH);
     fprintf(stderr, "                                             \n");
