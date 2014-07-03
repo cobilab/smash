@@ -62,7 +62,7 @@ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Pongo_abelii/Assembled_chromosomes/seq/p
 Unzip, exclude headers and filter content.
 
 #### Linux
-<pre>zcat hs_ref_GRCh38_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
+<pre>zcat hs_ref_GRCh38&#95chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
 zcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA20</pre>
 
 #### OS X
@@ -122,7 +122,7 @@ Usage: smash [OPTIONS]... [FILE] [FILE]
 
 ## ISSUES ##
 
-For any issue let us know at [issues link](https://github.com/pratas/smash/issues)
+For any issue let us know at [issues link](https://github.com/pratas/smash/issues).
 
 ## LICENSE ##
 
