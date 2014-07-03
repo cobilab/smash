@@ -1,5 +1,6 @@
 # SMASH #
-Smash is a tool to compute chromosome information maps, based on sequence compression, with an ideogram output architecture, such as in the following image: 
+
+Smash is a completely alignment-free tool to find and visualise genomic rearrangements. The detection is based on conditional exclusive compression, namely using a FCM, also known as Markov model, of high context order (typically 20). For visualization, Smash outputs a SVG image, with an ideogram output architecture, where the patterns are represented with several HSV values (only value varies). The following image, illustrating the information maps between human and chimpanzee for the several chromosomes, depicts an example of the compiled runs with Smash: 
 
 ![ScreenShot](/HC.png)
 
@@ -13,6 +14,10 @@ After run:
 <pre>cmake .</pre>
 <pre>make</pre>
 to create the binary smash.
+
+## REAL EXAMPLE
+In the following instructions we show the procedure to create the information map between human and orangutango chromosome 18:
+<pre>wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H\_sapiens/Assembled\_chromosomes/seq/hs\_ref\_GRCh38\_chr18.fa.gz</pre>
 
 ## LICENSE ##
 
