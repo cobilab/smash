@@ -17,10 +17,14 @@ After download Smash, unzip, go to the source folder and type:
 to create the binary smash.
 
 ## EXAMPLE
-In the following instructions we show the procedure to create the information map between human and orangutango chromosome 20 (Linux environment):
+In the following instructions we show the procedure to create the information map between human and orangutango chromosome 20:
 
-Step 1 (Install Smash, assuming that cmake is installed)
+### LINUX ###
+
+#### Step 1 #### 
+Download and install smash:
 <pre>
+sudo apt-get install cmake
 wget https://github.com/pratas/smash/archive/master.zip
 unzip master.zip
 cd smash-master
@@ -28,16 +32,40 @@ cmake .
 make
 </pre>
 
-Step 2 (download the sequences) [the links might change over time]
+#### Step 2 #### 
+Download the sequences [the links might change over time]:
 <pre>wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38_chr20.fa.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Pongo_abelii/Assembled_chromosomes/seq/pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz
 </pre>
 
-Step 3 (unzip and exclude headers)
+#### Step 3 ####
+Unzip, exclude headers and filter content:
 <pre>zcat hs_ref_GRCh38_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
 zcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA20</pre>
 
-Step 4 (Run Smash)
+### OS X ###
+
+#### Step 1 ####
+Install Smash and dependencies:
+<pre>
+brew install cmake
+brew install wget
+wget https://github.com/pratas/smash/archive/master.zip
+unzip master.zip
+cd smash-master
+cmake .
+make
+</pre>
+
+Only, if you don't have brew run:
+<pre>
+ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)" 
+</pre>
+
+
+
+### Step 4 ###
+Run Smash:
 <pre>
 ./smash -v -c 20 -t 1.5 HS20 PA20
 </pre>
