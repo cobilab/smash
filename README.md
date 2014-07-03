@@ -54,24 +54,24 @@ Usage: smash [OPTIONS]... [FILE] [FILE]
  -v                  verbose mode            
  -f                  force (be sure!)        
                                              
- -c  <context>       context order (DEF: 20)
- -t  <threshold>     threshold [0.0,2.0] (DEF: 1.5)
+ -c  [context]       context order (DEF: 20)
+ -t  [threshold]     threshold [0.0,2.0] (DEF: 1.5)
                                              
- -m  <mSize>         minimum block size (DEF: 1000000)
+ -m  [mSize]         minimum block size (DEF: 1000000)
  -i                  show only inverted repeats
- -r  <ratio>         image size ratio (DEF: 1000000)
- -a  <alpha>         alpha estimator (DEF: 1000)
- -s  <seed>          seed for random 'N'     
- -w  <wSize>         window size
- -wt <wType>         window type [0|1|2|3] (DEF: 0)
- -d  <dSize>         sub-sample (DEF: 10000)
- -m  <mSize>         minimum block size (DEF: 1000000)
- -wi <width>         sequence width (DEF: 25)
+ -r  [ratio]         image size ratio (DEF: 1000000)
+ -a  [alpha]         alpha estimator (DEF: 1000)
+ -s  [seed]          seed for random 'N'     
+ -w  [wSize]         window size
+ -wt [wType]         window type [0|1|2|3] (DEF: 0)
+ -d  [dSize]         sub-sample (DEF: 10000)
+ -m  [mSize]         minimum block size (DEF: 1000000)
+ -wi [width]         sequence width (DEF: 25)
                                              
- -o <outFile>        output svg plot file    
+ -o  [outFile]       output svg plot file    
                                              
- <refFile>           reference file          
- <tarFile>           target file      
+ [refFile]           reference file          
+ [tarFile]           target file      
 </pre>
 
 ## REQUESTS / ISSUES ##
