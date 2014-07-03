@@ -52,7 +52,7 @@ GPL v2.
 For more information:
 <pre>http://www.gnu.org/licenses/gpl-2.0.html</pre>
 
-## REQUESTS / ISSUES ##
+## REQUESTS and ISSUES ##
 
-For any request or issue please send an email to one of the following authors: {pratas, raquelsilva, ap, pjf}@ua.pt.
+For any request or issue please send an email to one of the following authors: {pratas, raquelsilva, ap, pjf} @ua.pt.
 
