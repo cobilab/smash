@@ -38,8 +38,8 @@ Array;
 
 typedef struct
   {
-  uint32_t        *freqs;
-  uint32_t        sum;
+  uint32_t   *freqs;
+  uint32_t   sum;
   }
 PModel;
 

@@ -58,7 +58,7 @@ static void InsertKey(HashTable *H, uint32_t i, uint64_t key)
   {
   H->entries[i] = (Entry *) Realloc(H->entries[i], (H->size[i]+1) * 
   sizeof(Entry), sizeof(Entry));
-  H->entries[i][H->size[i]++].key = (uint32_t)(key/HASH_SIZE);
+  H->entries[i][H->size[i]++].key = (uint32_t) (key&0xffffffff);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,10 +84,11 @@ uint32_t k, uint32_t small)
 static HCCounter *GetHCCounters(HashTable *H, uint64_t key)
   {
   uint32_t k = 0, n, i = key % HASH_SIZE;
+  uint64_t b = key & 0xffffffff00000000;
 
   for(n = 0 ; n < H->size[i] ; n++)
     {
-    if(((uint64_t) H->entries[i][n].key * HASH_SIZE) + i == key)
+    if(((uint64_t) H->entries[i][n].key | b) == key)
       switch(H->entries[i][n].counters)
         {
         case 0: return H->counters[i][k];
@@ -125,10 +126,11 @@ void UpdateCModelCounter(CModel *M, uint32_t s)
     {
     uint8_t small;
     uint32_t i, k = 0, nHCC, h = idx % HASH_SIZE;
+    uint64_t b = idx & 0xffffffff00000000;
 
     for(n = 0 ; n < M->hTable.size[h] ; n++)
       {
-      if(((uint64_t) M->hTable.entries[h][n].key * HASH_SIZE) + h == idx)
+      if(((uint64_t) M->hTable.entries[h][n].key | b) == idx)
         { 
         if(M->hTable.entries[h][n].counters == 0) // Update "large" counters
           {
@@ -168,6 +170,10 @@ void UpdateCModelCounter(CModel *M, uint32_t s)
       if(!M->hTable.entries[h][n].counters)
         k++;
       }
+
+    // LIMITING ENTRYSIZE
+    if(M->hTable.size[h] == 65535)
+      return;
 
     InsertKey(&M->hTable, h, idx);
     M->hTable.entries[h][M->hTable.size[h]-1].counters = (0x01<<(s<<1));
