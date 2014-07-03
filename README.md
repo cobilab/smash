@@ -120,7 +120,17 @@ Usage: smash [OPTIONS]... [FILE] [FILE]
 
 By default, Smash has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width.
 
-> -v verbose mode
+#### Options meaning
+
+<pre>
+-v
+</pre>
+verbose mode - it will print progress information such as positions of the patterns, times, etc.
+
+<pre>
+-f
+</pre>
+force mode - 
 
 ## ISSUES ##
 
