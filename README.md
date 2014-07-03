@@ -126,6 +126,8 @@ By default, Smash has many parameters assigned in order to avoid the estimation,
 |-----------------|:-------------------------------------------------------------------------------------------------------------|
 | -v              | it will print progress information such as positions of the patterns, times, etc.                            |
 | -f              | it will force to write over files already created                                                            |
+| -c [context]    | size of the FCM (Markov) context order. Contexts above 14 will be handled with a hash-table (which the implementation is approximately linear in memory relatively to the size of the sequence)                          |
+| -t              | it will be used to segment the high from the low regions of information content                              |
 
 ## ISSUES ##
 
