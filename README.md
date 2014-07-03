@@ -6,18 +6,9 @@ Smash is a completely alignment-free tool to find and visualise genomic rearrang
 
 ## INSTALLATION ##
 Cmake is needed for installation (http://www.cmake.org/).
-You can download directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager to install cmake, such as:
-<pre>sudo apt-get install cmake #LINUX UBUNTU</pre>
-<pre>brew install cmake #OSX</pre>
-<pre>(or any other)</pre>
+You can download directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
 
-After download Smash, unzip, go to the source folder and type:
-<pre>cmake .</pre>
-<pre>make</pre>
-to create the binary smash.
-
-## EXAMPLE
-In the following instructions we show the procedure to create the information map between human and orangutango chromosome 20:
+In the following instructions we show the procedure install, compile and to create the information map between human and orangutango chromosome 20:
 
 ### STEP 1
 
