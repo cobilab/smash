@@ -20,6 +20,7 @@ typedef struct
   uint32_t  alpha;
   uint8_t   ir;
   uint32_t  hash;
+  uint32_t  ratio;
   uint32_t  seed;
   double    threshold;
   double    width;
@@ -67,6 +68,7 @@ Parameters;
 #define DEFAULT_IR             0
 #define DEFAULT_MAX_COUNT      65535
 #define DEFAULT_HASH_SIZE      29999999
+#define DEFAULT_IMG_RATIO      100000
 #define DEFAULT_SEED           -1
 #define DEFAULT_THRESHOLD      1.5
 #define DEFAULT_WINDOW         -1

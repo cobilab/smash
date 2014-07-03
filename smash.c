@@ -244,6 +244,8 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, " -m  <mSize>         minimum block size (DEF: %u)\n",
     DEFAULT_MINIMUM);
     fprintf(stderr, " -i                  show only inverted repeats\n");
+    fprintf(stderr, " -r  <ratio>         image size ratio (DEF: %u)\n", 
+    DEFAULT_IMG_RATIO);
     fprintf(stderr, " -a  <alpha>         alpha estimator (DEF: %u)\n",
     DEFAULT_ALPHA);
     fprintf(stderr, " -s  <seed>          seed for random 'N'     \n");
@@ -268,6 +270,7 @@ int32_t main(int argc, char *argv[])
   P->verbose   = Args3State(P->verbose,           p, argc, "-vv");
   P->force     = ArgsState (DEFAULT_FORCE,        p, argc, "-f" );
   P->context   = ArgsNumber(DEFAULT_CONTEXT,      p, argc, "-c" );
+  P->ratio     = ArgsNumber(DEFAULT_IMG_RATIO,    p, argc, "-r" );
   P->alpha     = ArgsNumber(DEFAULT_ALPHA,        p, argc, "-a" );
   P->hash      = DEFAULT_HASH_SIZE;
   P->ir        = ArgsState (DEFAULT_IR,           p, argc, "-i" );
@@ -280,6 +283,7 @@ int32_t main(int argc, char *argv[])
   P->minimum   = ArgsNumber(DEFAULT_MINIMUM,      p, argc, "-m" );
   P->output    = ArgsFiles (                      p, argc, "-o" );
 
+  SetRatio(P->ratio);
   seed = (P->seed == DEFAULT_SEED) ? time(NULL) : P->seed;
   if(P->verbose)
     {
@@ -376,8 +380,8 @@ int32_t main(int argc, char *argv[])
           patterns->p[k].end - patterns->p[k].init);
 
         Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx + 
-        DEFAULT_SPACE + DEFAULT_WIDTH, Paint->cy + GetPoint(patterns->p[k].init), 
-        GetRgbColor(colorIdx * mult));
+        DEFAULT_SPACE + DEFAULT_WIDTH, Paint->cy + 
+        GetPoint(patterns->p[k].init), GetRgbColor(colorIdx * mult));
 
         nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
                      patterns->p[k].end);

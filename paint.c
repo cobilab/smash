@@ -273,9 +273,16 @@ void TextFloat(FILE *F, double x, double y, double n)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+void SetRatio(uint32_t r)
+  {
+  ratio = r;
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 double GetPoint(uint64_t p)
   {
-  return p / 1000000.0 * 5;
+  return p / (double) ratio * 5;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

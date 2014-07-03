@@ -3,6 +3,8 @@
 
 #include "defs.h"
 
+uint32_t ratio;
+
 typedef struct
   {
   uint8_t *backColor;
@@ -49,6 +51,7 @@ void      Chromosome     (FILE *, double, double, double, double);
 void      Text           (FILE *, double, double, uint8_t *);
 void      Textfloatoat   (FILE *, double, double, double);
 double    GetPoint       (uint64_t);
+void      SetRatio       (uint32_t);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
