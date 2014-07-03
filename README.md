@@ -110,7 +110,6 @@ Usage: smash [OPTIONS]... [FILE] [FILE]
  -w  [wSize]         window size
  -wt [wType]         window type [0|1|2|3] (DEF: 0)
  -d  [dSize]         sub-sample (DEF: 10000)
- -m  [mSize]         minimum block size (DEF: 1000000)
  -wi [width]         sequence width (DEF: 25)
                                              
  -o  [outFile]       output svg plot file    
@@ -119,7 +118,9 @@ Usage: smash [OPTIONS]... [FILE] [FILE]
  [tarFile]           target file      
 </pre>
 
-By default, Smash has many parameters assigned in order to avoid the estimation, enabling to reference both reference and target file. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters.
+By default, Smash has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width.
+
+> -v verbose mode
 
 ## ISSUES ##
 
