@@ -4,8 +4,11 @@
 #include <stdint.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
-#include <unistd.h>
-
+#if defined(_MSC_VER)
+  #include <io.h>
+#else
+  #include <unistd.h>
+#endif
 #define DRAND48  1
 
 typedef uint64_t U64;
@@ -86,7 +89,7 @@ Parameters;
 #define DEFAULT_CY             75.0
 #define DEFAULT_TX             50.0
 #define DEFAULT_TY             82.0
-#define DEFAULT_WIDTH          30.0
+#define DEFAULT_WIDTH          25.0
 #define DEFAULT_SPACE          10.0
 #define EXTRA                  150 
 

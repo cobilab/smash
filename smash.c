@@ -232,22 +232,28 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Usage: smash [OPTIONS]... [FILE] [FILE]      \n");
     fprintf(stderr, "                                             \n");
     fprintf(stderr, " -v                  verbose mode            \n");
-    //fprintf(stderr, " -vv                 very verbose mode       \n");
     fprintf(stderr, " -f                  force (be sure!)        \n");
     fprintf(stderr, "                                             \n");
-    fprintf(stderr, " -c  <context>       context order           \n");
-    fprintf(stderr, " -i                  only inverted repeats   \n");
-    fprintf(stderr, " -a  <alpha>         alpha estimator         \n");
-    fprintf(stderr, " -h  <hSize>         hash size               \n");
+    fprintf(stderr, " -c  <context>       context order (DEF: %u)\n", 
+    DEFAULT_CONTEXT);
+    fprintf(stderr, " -t  <threshold>     threshold [0.0,2.0] (DEF: %.2g)\n",
+    DEFAULT_THRESHOLD);
     fprintf(stderr, "                                             \n");
+    fprintf(stderr, " -m  <mSize>         minimum block size (DEF: %u)\n",
+    DEFAULT_MINIMUM);
+    fprintf(stderr, " -i                  show only inverted repeats\n");
+    fprintf(stderr, " -a  <alpha>         alpha estimator (DEF: %u)\n",
+    DEFAULT_ALPHA);
     fprintf(stderr, " -s  <seed>          seed for random 'N'     \n");
-    fprintf(stderr, "                                             \n");
-    fprintf(stderr, " -t  <threshold>     threshold [0.0,2.0]     \n");
-    fprintf(stderr, " -w  <wSize>         window size             \n");
-    fprintf(stderr, " -wt <wType>         window type [0|1|2|3]   \n");
-    fprintf(stderr, " -d  <dSize>         drop size               \n");
-    fprintf(stderr, " -m  <mSize>         minimum block size      \n");
-    fprintf(stderr, " -wi <width>         design sequence width   \n");
+    fprintf(stderr, " -w  <wSize>         window size\n");
+    fprintf(stderr, " -wt <wType>         window type [0|1|2|3] (DEF: %u)\n",
+    DEFAULT_WIN_TYPE);
+    fprintf(stderr, " -d  <dSize>         sub-sample (DEF: %u)\n", 
+    DEFAULT_SAMPLE_RATIO);
+    fprintf(stderr, " -m  <mSize>         minimum block size (DEF: %u)\n",
+    DEFAULT_MINIMUM);
+    fprintf(stderr, " -wi <width>         sequence width (DEF: %.2g)\n",
+    DEFAULT_WIDTH);
     fprintf(stderr, "                                             \n");
     fprintf(stderr, " -o <outFile>        output svg plot file    \n");
     fprintf(stderr, "                                             \n");
@@ -261,7 +267,7 @@ int32_t main(int argc, char *argv[])
   P->force     = ArgsState (DEFAULT_FORCE,        p, argc, "-f" );
   P->context   = ArgsNumber(DEFAULT_CONTEXT,      p, argc, "-c" );
   P->alpha     = ArgsNumber(DEFAULT_ALPHA,        p, argc, "-a" );
-  P->hash      = ArgsNumber(DEFAULT_HASH_SIZE,    p, argc, "-h" );
+  P->hash      = DEFAULT_HASH_SIZE;
   P->ir        = ArgsState (DEFAULT_IR,           p, argc, "-i" );
   P->seed      = ArgsNumber(DEFAULT_SEED,         p, argc, "-s" );
   P->threshold = ArgsDouble(DEFAULT_THRESHOLD,    p, argc, "-t" );
@@ -426,7 +432,8 @@ int32_t main(int argc, char *argv[])
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   EndWinWeights(winWeights);
   Chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy);
-  Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx + DEFAULT_SPACE + DEFAULT_WIDTH,
+  Chromosome(PLOT, Paint->width, Paint->tarSize, Paint->cx + DEFAULT_SPACE + 
+  DEFAULT_WIDTH,
   Paint->cy);
   PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

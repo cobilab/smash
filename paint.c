@@ -274,7 +274,7 @@ void TextFloat(FILE *F, DB x, DB y, DB name)
 
 DB GetPoint(U64 p)
   {
-  return p / 1000000.0 * 5;
+  return p / 100000.0 * 5;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

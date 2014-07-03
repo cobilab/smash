@@ -9,16 +9,16 @@
 #define HASH_SIZE             33554467        // first PRIME NUMBER after 2^25
 #define MAX_HASH_CTX          28
 
-typedef U16 ACCounter;                  // Size of context counters for arrays
-typedef U8  HCCounter;                  // Size of context counters for arrays
-typedef U16 ENTMAX;                      // Entry size (nKeys for each hIndex)
-typedef U64 KEYSMAX;                                        // keys index bits
+typedef uint16_t ACCounter;             // Size of context counters for arrays
+typedef uint8_t  HCCounter;             // Size of context counters for arrays
+typedef uint16_t ENTMAX;                 // Entry size (nKeys for each hIndex)
+typedef uint32_t KEYSMAX;                                   // keys index bits
 typedef HCCounter HCCounters[4];
 
 typedef struct
   {
   KEYSMAX    key;                              // The key stored in this entry
-  U8         counters;                // "Small" counters: 2 bits for each one
+  uint8_t    counters;                // "Small" counters: 2 bits for each one
   }
 Entry;
 
