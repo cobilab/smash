@@ -41,7 +41,9 @@ Step 4 (Run Smash)
 ./smash -v -c 20 -t 1.5 HS20 PA20
 </pre>
 
-The last step (4) outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use -o ANYNAME.svg).
+The last step (4) outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use option: -o ANYNAME.svg).
+
+
 
 ## LICENSE ##
 
