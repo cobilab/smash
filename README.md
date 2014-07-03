@@ -76,7 +76,7 @@ Run Smash.
 ./smash -v -c 20 -t 1.5 HS20 PA20
 </pre>
 
-The last step (4) outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use option: -o ANYNAME.svg). The respective information map is the following (transformed in a png image and rotated 90 degrees to left):
+This step outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use option: -o ANYNAME.svg). The respective information map is the following (transformed in a png image and rotated 90 degrees to left):
 
 ![ScreenShot](/HS20PA20.png)
 
@@ -118,6 +118,8 @@ Usage: smash [OPTIONS]... [FILE] [FILE]
  [refFile]           reference file          
  [tarFile]           target file      
 </pre>
+
+By default, Smash has many parameters assigned in order to avoid the estimation, enabling to reference both reference and target file. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters.
 
 ## ISSUES ##
 
