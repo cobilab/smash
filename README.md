@@ -16,7 +16,7 @@ After run:
 to create the binary smash.
 
 ## EXAMPLE
-In the following instructions we show the procedure to create the information map between human and orangutango chromosome 20 in a Linux environment:
+In the following instructions we show the procedure to create the information map between human and orangutango chromosome 20 (Linux environment):
 
 Step 1 (Install Smash, assuming that cmake is installed)
 <pre>
@@ -34,16 +34,16 @@ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Pongo_abelii/Assembled_chromosomes/seq/p
 
 Step 3 (unzip and exclude headers)
 <pre>zcat hs_ref_GRCh38_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
-zcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz |  grep -v ">" | tr -d -c "ACGTN" > PA20</pre>
+zcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA20</pre>
 
 Step 4 (Run Smash)
 <pre>
 ./smash -v -c 20 -t 1.5 HS20 PA20
 </pre>
 
-The last step (4) outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use option: -o ANYNAME.svg).
+The last step (4) outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use option: -o ANYNAME.svg). The respective information map is the following (transformed in a png image and rotated 90 degrees to left):
 
-
+![ScreenShot](/HS20PA20.png)
 
 ## LICENSE ##
 
