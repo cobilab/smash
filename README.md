@@ -5,12 +5,13 @@ Smash is a completely alignment-free tool to find and visualise genomic rearrang
 ![ScreenShot](/HC.png)
 
 ## INSTALLATION ##
-Cmake is needed for installation. Use an appropriate packet manager to install cmake:
+Cmake is needed for installation (http://www.cmake.org/)
+You can use an appropriate packet manager to install cmake:
 <pre>sudo apt-get install cmake #LINUX UBUNTU</pre>
 <pre>brew install cmake #OSX</pre>
 <pre>(or any other)</pre>
 
-After run:
+After download Smash, unzip, go to the source folder and type:
 <pre>cmake .</pre>
 <pre>make</pre>
 to create the binary smash.
