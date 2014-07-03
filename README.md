@@ -31,7 +31,7 @@ Step 3 (Install Smash, assuming that cmake is installed)
 <pre>
 wget https://github.com/pratas/smash/archive/master.zip
 unzip master.zip
-cd master-smash
+cd smash-master
 cmake .
 make
 </pre>
