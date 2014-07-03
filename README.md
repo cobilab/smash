@@ -19,11 +19,11 @@ to create the binary smash.
 ## EXAMPLE ##
 In the following instructions we show the procedure to create the information map between human and orangutango chromosome 20:
 
-### STEP 1 ###
+### STEP 1
 
 Download, install smash and resolve conflits.
 
-#### Linux #### 
+#### Linux 
 <pre>
 sudo apt-get install cmake
 wget https://github.com/pratas/smash/archive/master.zip
