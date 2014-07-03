@@ -8,7 +8,7 @@ Smash is a completely alignment-free tool to find and visualise genomic rearrang
 Cmake is needed for installation (http://www.cmake.org/).
 You can download directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
 
-In the following instructions we show the procedure install, compile and to create the information map between human and orangutango chromosome 20:
+In the following instructions we show the procedure to install, compile and create the information map between human and orangutango chromosome 20:
 
 ### STEP 1
 
