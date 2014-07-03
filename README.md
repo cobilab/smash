@@ -19,10 +19,11 @@ to create the binary smash.
 ## EXAMPLE ##
 In the following instructions we show the procedure to create the information map between human and orangutango chromosome 20:
 
-### LINUX ###
+### STEP 1 ###
 
-#### Step 1 #### 
-Download and install smash:
+Download, install smash and resolve conflits.
+
+#### Linux #### 
 <pre>
 sudo apt-get install cmake
 wget https://github.com/pratas/smash/archive/master.zip
@@ -32,24 +33,16 @@ cmake .
 make
 </pre>
 
-#### Step 2 #### 
-Download the sequences [the links might change over time]:
-<pre>wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38_chr20.fa.gz
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Pongo_abelii/Assembled_chromosomes/seq/pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz
+#### OS X ####
+Only if you don't have brew run:
+<pre>
+ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 </pre>
-
-#### Step 3 ####
-Unzip, exclude headers and filter content:
-<pre>zcat hs_ref_GRCh38_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
-zcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA20</pre>
-
-### OS X ###
-
-#### Step 1 ####
-Install Smash and dependencies:
+An after:
 <pre>
 brew install cmake
 brew install wget
+brew install gcc48
 wget https://github.com/pratas/smash/archive/master.zip
 unzip master.zip
 cd smash-master
@@ -57,15 +50,29 @@ cmake .
 make
 </pre>
 
-Only, if you don't have brew run:
-<pre>
-ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)" 
+### Step 2 ###
+Download the sequences [the links might change over time].
+
+#### Linux and OS X ####
+<pre>wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38_chr20.fa.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Pongo_abelii/Assembled_chromosomes/seq/pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz
 </pre>
 
+### Step 3 ###
+Unzip, exclude headers and filter content.
 
+#### Linux ####
+<pre>zcat hs_ref_GRCh38_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
+zcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA20</pre>
+
+#### OS X ####
+<pre>gzcat hs_ref_GRCh38_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
+gzcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA20</pre>
 
 ### Step 4 ###
-Run Smash:
+Run Smash.
+
+#### Linux, OS X and Windows ####
 <pre>
 ./smash -v -c 20 -t 1.5 HS20 PA20
 </pre>
