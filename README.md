@@ -6,7 +6,7 @@ Smash is a completely alignment-free tool to find and visualise genomic rearrang
 
 ## INSTALLATION ##
 Cmake is needed for installation (http://www.cmake.org/).
-You can download directly from http://www.cmake.org/cmake/resources/software.html) or use an appropriate packet manager to install cmake, such as:
+You can download directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager to install cmake, such as:
 <pre>sudo apt-get install cmake #LINUX UBUNTU</pre>
 <pre>brew install cmake #OSX</pre>
 <pre>(or any other)</pre>
@@ -48,6 +48,17 @@ The last step (4) outputs a SVG image using the respective map under the name: H
 
 ## USAGE ##
 
+The Smash program have many options in the interface because there are a wide variety of parameters that can be defined by the user. However, for the detection of the arrangements only two are critical, namely context and threshold. Mathematical information about these parameters can be found in the paper.
+
+To see the possible options type
+<pre>
+./smash
+</pre>
+or
+<pre>
+./smash -h
+</pre>
+These will print the following options:
 <pre>
 Usage: smash [OPTIONS]... [FILE] [FILE]      
                                              
