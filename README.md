@@ -16,7 +16,7 @@ After download Smash, unzip, go to the source folder and type:
 <pre>make</pre>
 to create the binary smash.
 
-## EXAMPLE
+## EXAMPLE ##
 In the following instructions we show the procedure to create the information map between human and orangutango chromosome 20:
 
 ### LINUX ###
