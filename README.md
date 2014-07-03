@@ -15,7 +15,7 @@ After run:
 <pre>make</pre>
 to create the binary smash.
 
-## REAL EXAMPLE
+## EXAMPLE
 In the following instructions we show the procedure to create the information map between human and orangutango chromosome 18 in a Linux environment:
 
 Step 1 (Install Smash, assuming that cmake is installed)
@@ -40,6 +40,8 @@ Step 4 (Run Smash)
 <pre>
 ./smash -v -c 25 -t 1.5 HS18 PA18
 </pre>
+
+The last step (4) outputs a SVG image using the respective map under the name: HS18PA18.svg (for custom name use -o ANYNAME.svg).
 
 ## LICENSE ##
 
