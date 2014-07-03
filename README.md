@@ -45,14 +45,14 @@ The last step (4) outputs a SVG image using the respective map under the name: H
 
 ![ScreenShot](/HS20PA20.png)
 
+## REQUESTS / ISSUES ##
+
+For any request or issue please send an email to one of the following authors: {pratas, raquelsilva, ap, pjf} @ua.pt.
+
 ## LICENSE ##
 
-GPL v2. 
+GPL v2.
 
 For more information:
 <pre>http://www.gnu.org/licenses/gpl-2.0.html</pre>
-
-## REQUESTS and ISSUES ##
-
-For any request or issue please send an email to one of the following authors: {pratas, raquelsilva, ap, pjf} @ua.pt.
 
