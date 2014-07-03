@@ -16,9 +16,9 @@ After run:
 to create the binary smash.
 
 ## REAL EXAMPLE
-In the following instructions we show the procedure to create the information map between human and orangutango chromosome 18:
+In the following instructions we show the procedure to create the information map between human and orangutango chromosome 18 in a Linux environment:
 
-Step 1 (download the sequences)
+Step 1 (download the sequences) [the links might change over time]
 <pre>wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38_chr18.fa.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Pongo_abelii/Assembled_chromosomes/seq/pab_ref_P_pygmaeus_2.0.2_chr18.fa.gz
 </pre>
@@ -26,6 +26,15 @@ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Pongo_abelii/Assembled_chromosomes/seq/p
 Step 2 (unzip and exclude headers)
 <pre>zcat hs_ref_GRCh38_chr18.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS18
 zcat pab_ref_P_pygmaeus_2.0.2_chr18.fa.gz |  grep -v ">" | tr -d -c "ACGTN" > PA18</pre>
+
+Step 3 (Install Smash, assuming that cmake is installed)
+<pre>
+wget https://github.com/pratas/smash/archive/master.zip
+unzip master.zip
+cd master-smash
+cmake .
+make
+</pre>
 
 ## LICENSE ##
 
