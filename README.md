@@ -130,6 +130,10 @@ By default, Smash has many parameters assigned in order to avoid the estimation,
 | -t [threshold] | It will be used to segment the high from the low regions of information content (interval [0;2]). For distant species this value might be slightly below 2 (such as 1.9). |
 | -m [mSize]     | Minimum size of the block considered as a valid patters after each segmentation process. Values below 1 Million for primate chromosomes might emerge excessive valid patterns. However for other purposes, such as gene scale analysis, this value should be set almost to 1. |
 | -i             | It will detect and show only the information map regarding to inverions. |
+| -r [ratio]     | Sets the ratio size of the image. Currently is fixed to 1000000 which is an estimated value to the medium of the primate chromosomes sizes. This parameter is not automatically adaptad since a fixed value will bring different size chromosomes to the same scale. Nevertheless, to use it in small sequences, namely bacterial genomes, this parameter might be adjusted. |
+| -i             | It will detect and show only the information map regarding to inverions. |
+| -i             | It will detect and show only the information map regarding to inverions. |
+| -i             | It will detect and show only the information map regarding to inverions. |
 
 ## ISSUES ##
 
