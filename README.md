@@ -6,7 +6,7 @@ Smash is a completely alignment-free tool to find and visualise genomic rearrang
 
 ## INSTALLATION ##
 Cmake is needed for installation (http://www.cmake.org/).
-You can download directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
+You can download it directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
 
 In the following instructions we show the procedure to install, compile and create the information map between human and orangutango chromosome 20:
 
@@ -131,6 +131,7 @@ Usage: smash [OPTIONS]... [FILE] [FILE]
 </pre>
 
 By default, Smash has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width.
+Only [refFile] and [TarFile] are mandatory.
 
 #### Options meaning
 
