@@ -40,6 +40,18 @@ cd smash-master
 cmake .
 make
 </pre>
+With some versions you might need to create a link to cc, namely
+<pre>
+sudo mv /usr/bin/gcc /usr/bin/gcc-old   # gcc backup
+sudo mv /usr/bin/cc /usr/bin/cc-old     # cc backup
+sudo ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
+sudo ln -s /usr/bin/gcc-4.8 /usr/bin/cc
+</pre>
+In some versions the gcc48 is installed over /usr/local/bin, therefore you might substitute the last two commands by the following two:
+<pre>
+sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/gcc
+sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/cc
+</pre>
 
 ### Step 2 
 Download the sequences [the links might change over time].
