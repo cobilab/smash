@@ -130,10 +130,14 @@ By default, Smash has many parameters assigned in order to avoid the estimation,
 | -t [threshold] | It will be used to segment the high from the low regions of information content (interval [0;2]). For distant species this value might be slightly below 2 (such as 1.9). |
 | -m [mSize]     | Minimum size of the block considered as a valid patters after each segmentation process. Values below 1 Million for primate chromosomes might emerge excessive valid patterns. However for other purposes, such as gene scale analysis, this value should be set almost to 1. |
 | -i             | It will detect and show only the information map regarding to inverions. |
-| -r [ratio]     | Sets the ratio size of the image. Currently is fixed to 1000000 which is an estimated value to the medium of the primate chromosomes sizes. This parameter is not automatically adaptad since a fixed value will bring different size chromosomes to the same scale. Nevertheless, to use it in small sequences, namely bacterial genomes, this parameter might be adjusted. |
-| -i             | It will detect and show only the information map regarding to inverions. |
-| -i             | It will detect and show only the information map regarding to inverions. |
-| -i             | It will detect and show only the information map regarding to inverions. |
+| -r [ratio]     | Sets the ratio size of the image. Currently is fixed to 1000000 which is an estimated value to the medium of the primate chromosomes sizes relatively to the medium of the screen resolution. This parameter is not automatically adaptad since a fixed value will bring different size chromosomes to the same scale. Nevertheless, to use it in small sequences, namely bacterial genomes, this parameter might be adjusted. |
+| -a [alpha]       | Probabilities estimator. This value relates a linear interpolation between the maximum likelihood estimator and the uniform distribution. This also shows that when the total number of events is large, the estimator behaves as a maximum likelihood estimator. Default value is set to 1000. |
+| -s [seed]        | This is a parameter to the pseudo-random generation function. Different seed values ensure different generated values. |
+| -w [wSize]       | The window size among with the sub-sampling is calculated automatically, nevertheless this value might be adjusted for special needs. |
+| -wt [wType]      | Window filtering type. Types: 0, 1, 2 or 3. Type 0 stands for Hamming, 1 for Hann, 2 for Blackman, while 3 represents a rectangular window. |
+| -d [dSize]       | Subsampling value. This value among with the window size is calculated automatically. Nevertheless, for special purposes this value might be adjusted. | 
+| -wi [width]      | Thickness of the image for each sequence. Default value is set to 25. |
+| -o [outFile]     | The output SVG image filename. The default uses the concatenation of reference with target filenames (adding the "svg" extension).  |
 
 ## ISSUES ##
 
