@@ -25,11 +25,11 @@ make
 </pre>
 
 #### OS X
-Only if you don't have brew run:
+Install brew:
 <pre>
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 </pre>
-and after:
+only if you do not have it. After type:
 <pre>
 brew install cmake
 brew install wget
@@ -40,14 +40,14 @@ cd smash-master
 cmake .
 make
 </pre>
-With some versions you might need to create a link to cc, namely
+With some versions you might need to create a link to cc or gcc (after the *brew install gcc48* command), namely
 <pre>
 sudo mv /usr/bin/gcc /usr/bin/gcc-old   # gcc backup
 sudo mv /usr/bin/cc /usr/bin/cc-old     # cc backup
 sudo ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
 sudo ln -s /usr/bin/gcc-4.8 /usr/bin/cc
 </pre>
-In some versions the gcc48 is installed over /usr/local/bin, therefore you might substitute the last two commands by the following two:
+In some versions, the gcc48 is installed over /usr/local/bin, therefore you might substitute the last two commands by the following two:
 <pre>
 sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/gcc
 sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/cc
