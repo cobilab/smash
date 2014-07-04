@@ -137,9 +137,9 @@ By default, Smash has many parameters assigned in order to avoid the estimation,
 | -wt [wType]      | Window filtering type. Types: 0, 1, 2 or 3. Type 0 stands for Hamming, 1 for Hann, 2 for Blackman, while 3 represents a rectangular window. |
 | -d [dSize]       | Subsampling value. This value among with the window size is calculated automatically. Nevertheless, for special purposes this value might be adjusted. | 
 | -wi [width]      | Thickness of the image for each sequence. Default value is set to 25. |
-| -o [outFile]     | The output SVG image filename. The default uses the concatenation of reference with target filenames (adding the "svg" extension). Beware: if the files are not in the working directory this might have problems due to several types of characters (such as '/') |
-| [refFile]     | The reference filename |
-| [tarFile]     | The target filename |
+| -o [outFile]     | The output SVG image filename. The default uses the concatenation of reference with target filenames (adding the "svg" extension). Beware: if the files are not in the working directory this might have problems due to several types of characters (such as '/'). |
+| [refFile]     | The reference filename. |
+| [tarFile]     | The target filename. |
 
 ## ISSUES ##
 
