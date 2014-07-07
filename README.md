@@ -53,6 +53,10 @@ sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/gcc
 sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/cc
 </pre>
 
+#### Windows
+
+In windows use cygwin (https://www.cygwin.com/) and make sure that it is included in the installation: cmake, make, zcat, unzip, wget, tr, grep (and any dependencies). If you install the complete cygwin packet then all these will be installed. After, this and the rest of the steps is the same as in Linux.
+
 ### Step 2 
 Download the sequences [the links might change over time].
 
@@ -77,12 +81,11 @@ gzcat hs_ref_GRCh38_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
 gzcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA20
 </pre>
 
-
 ### Step 4 ###
 
 Run Smash.
 
-##### Linux, OS X and Windows
+##### Linux and OS X
 
 <pre>
 ./smash -v -c 20 -t 1.5 HS20 PA20
