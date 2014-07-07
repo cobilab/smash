@@ -5,6 +5,8 @@
 ![ScreenShot](/HC.png)
 
 ## INSTALLATION ##
+
+We provide a binary for each 64 bits operating systems (Linux, OSX, Windows). However, for other purposes use the following installation instructions.
 Cmake is needed for installation (http://www.cmake.org/).
 You can download it directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
 
@@ -55,7 +57,7 @@ sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/cc
 
 #### Windows
 
-In windows use cygwin (https://www.cygwin.com/) and make sure that it is included in the installation: cmake, make, zcat, unzip, wget, tr, grep (and any dependencies). If you install the complete cygwin packet then all these will be installed. After, this and the rest of the steps is the same as in Linux.
+In windows use cygwin (https://www.cygwin.com/) and make sure that it is included in the installation: cmake, make, zcat, unzip, wget, tr, grep (and any dependencies). If you install the complete cygwin packet then all these will be installed. After, all steps will be the same as in Linux.
 
 ### Step 2 
 Download the sequences [the links might change over time].
