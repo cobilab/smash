@@ -7,14 +7,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void IRBlock(uint8_t *block, uint32_t nSym, FILE *F)
+void IRBlock(uint8_t *i, uint8_t *o, uint32_t nSym, FILE *F)
   {
   uint32_t k, n = 0;
-  uint8_t  stream[nSym];
-  
   for(k = nSym ; k-- ; ++n)
-    stream[n] = GetCompSym(block[k]);
-  fwrite(stream, 1, nSym, F);
+    o[n] = GetCompSym(i[k]);
+  fwrite(o, 1, nSym, F);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -24,34 +22,26 @@ uint8_t *IRSequence(uint8_t *fName, Parameters *P, uint8_t type)
   FILE      *Reader = NULL , *Writter = NULL;
   uint64_t  size, parts, extra;
   clock_t   stop, start;
-  uint8_t   *fNameOut, block[BUFFER_REV_SIZE];
+  uint8_t   *fNameOut;
 
   if(P->verbose == 1)
     {
     start = clock();
     fprintf(stderr, "Reversing %s ...\n", type ? "target" : "reference");
     }
-
+ 
   Reader   = Fopen(fName, "r");
   fNameOut = concatenate(fName, ".rev");
   Writter  = Fopen(fNameOut, "w");
   size     = NBytesInFile(Reader);
-  parts    = size / BUFFER_REV_SIZE;
-  extra    = size % BUFFER_REV_SIZE;
-  uint8_t  buffer[extra];
 
-  fseek(Reader, -extra, SEEK_END);
-  fread(buffer, 1, extra, Reader);
-  IRBlock(buffer, extra, Writter);
-  
-  size -= extra;
-  while(parts--)
-    {
-    fseek(Reader, size -= BUFFER_REV_SIZE, SEEK_SET);
-    fread(block, 1, BUFFER_REV_SIZE, Reader);
-    IRBlock(block, BUFFER_REV_SIZE, Writter);
-    }
+  uint8_t *bIn  = (uint8_t*) malloc((size+1) * sizeof(uint8_t));
+  uint8_t *bOut = (uint8_t*) malloc((size+1) * sizeof(uint8_t));
 
+  fread(bIn, 1, size, Reader);
+  IRBlock(bIn, bOut, size, Writter);
+  Free(bIn);
+  Free(bOut);
   fclose(Reader);
   fclose(Writter);
 
@@ -66,4 +56,3 @@ uint8_t *IRSequence(uint8_t *fName, Parameters *P, uint8_t type)
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
