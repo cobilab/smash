@@ -157,6 +157,13 @@ Only [refFile] and [TarFile] are mandatory.
 | [refFile]     | The reference filename. |
 | [tarFile]     | The target filename. |
 
+## CITATION ##
+
+On using this software/method please cite:
+
+Diogo Pratas, Raquel M. Silva, Armando J. Pinho, Paulo J. S. G. Ferreira (2014) An alignment-free method to find and visualize genomic rearrangements.
+DOI: doi-to-appear
+
 ## ISSUES ##
 
 For any issue let us know at [issues link](https://github.com/pratas/smash/issues).
