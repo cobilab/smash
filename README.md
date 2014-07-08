@@ -8,11 +8,11 @@
 
 We provide a binary for each 64 bits operating systems (Linux, OSX, Windows). However, for other purposes, such as source code compilation, use the following installation instructions.
 Cmake is needed for installation (http://www.cmake.org/). You can download it directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
-In the following instructions we show the procedure to install, compile and create the information map between human and orangutango chromosome 20:
+In the following instructions we show the procedure to install, compile and create the information map between human and orangutan chromosome 20:
 
 ### STEP 1
 
-Download, install smash and resolve conflits.
+Download, install smash and resolve conflicts.
 
 #### Linux 
 <pre>
