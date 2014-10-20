@@ -46,6 +46,7 @@ uint64_t NBytesInFile(FILE *file)
 //    fprintf(stderr, "Error: input file is very small!\n");
 //    exit(1);
 //    }
+  size = ftell(file);
   rewind(file);
   return size;
   }
