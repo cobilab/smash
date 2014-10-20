@@ -41,6 +41,7 @@ uint64_t NBytesInFile(FILE *file)
   {
   uint64_t size = 0;
   fseek(file, 0, SEEK_END);
+  size = ftell(file);
 //  if((size = ftell(file)) < 1000)
 //    {
 //    fprintf(stderr, "Error: input file is very small!\n");
