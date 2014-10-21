@@ -236,33 +236,33 @@ int32_t main(int argc, char *argv[])
   if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
     {
     fprintf(stderr, "                                             \n");
-    fprintf(stderr, "Usage: smash [OPTIONS]... [FILE] [FILE]      \n");
+    fprintf(stderr, "Usage: smash <OPTIONS>... [FILE] [FILE]      \n");
     fprintf(stderr, "                                             \n");
     fprintf(stderr, " -v                  verbose mode            \n");
     fprintf(stderr, " -f                  force (be sure!)        \n");
     fprintf(stderr, "                                             \n");
-    fprintf(stderr, " -c  [context]       context order (DEF: %u)\n", 
+    fprintf(stderr, " -c  <context>       context order (DEF: %u)\n", 
     DEFAULT_CONTEXT);
-    fprintf(stderr, " -t  [threshold]     threshold [0.0,2.0] (DEF: %.2g)\n",
+    fprintf(stderr, " -t  <threshold>     threshold [0.0,2.0] (DEF: %.2g)\n",
     DEFAULT_THRESHOLD);
     fprintf(stderr, "                                             \n");
-    fprintf(stderr, " -m  [mSize]         minimum block size (DEF: %u)\n",
+    fprintf(stderr, " -m  <mSize>         minimum block size (DEF: %u)\n",
     DEFAULT_MINIMUM);
     fprintf(stderr, " -i                  show only inverted repeats\n");
-    fprintf(stderr, " -r  [ratio]         image size ratio (DEF: %u)\n", 
+    fprintf(stderr, " -r  <ratio>         image size ratio (DEF: %u)\n", 
     DEFAULT_IMG_RATIO);
-    fprintf(stderr, " -a  [alpha]         alpha estimator (DEF: %u)\n",
+    fprintf(stderr, " -a  <alpha>         alpha estimator (DEF: %u)\n",
     DEFAULT_ALPHA);
-    fprintf(stderr, " -s  [seed]          seed for random 'N'     \n");
-    fprintf(stderr, " -w  [wSize]         window size\n");
-    fprintf(stderr, " -wt [wType]         window type [0|1|2|3] (DEF: %u)\n",
+    fprintf(stderr, " -s  <seed>          seed for random 'N'     \n");
+    fprintf(stderr, " -w  <wSize>         window size\n");
+    fprintf(stderr, " -wt <wType>         window type [0|1|2|3] (DEF: %u)\n",
     DEFAULT_WIN_TYPE);
-    fprintf(stderr, " -d  [dSize]         sub-sample (DEF: %u)\n", 
+    fprintf(stderr, " -d  <dSize>         sub-sample (DEF: %u)\n", 
     DEFAULT_SAMPLE_RATIO);
-    fprintf(stderr, " -wi [width]         sequence width (DEF: %.2g)\n",
+    fprintf(stderr, " -wi <width>         sequence width (DEF: %.2g)\n",
     DEFAULT_WIDTH);
     fprintf(stderr, "                                             \n");
-    fprintf(stderr, " -o  [outFile]       output svg plot file    \n");
+    fprintf(stderr, " -o  <outFile>       output svg plot file    \n");
     fprintf(stderr, "                                             \n");
     fprintf(stderr, " [refFile]           reference file          \n");
     fprintf(stderr, " [tarFile]           target file           \n\n");
