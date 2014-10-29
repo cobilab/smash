@@ -225,7 +225,7 @@ int32_t main(int argc, char *argv[])
   Painter     *Paint;
   clock_t     stop, start;
   CModel      *refModel, *refModelIR;
-  uint32_t    k, nPatterns, nIRPatterns, n, colorIdx, mult;
+  uint32_t    k, nPatterns, nIRPatterns, n, colorIdx, mult, cip;
   uint64_t    distance;
   int64_t     seed;
   float       *winWeights;
@@ -259,7 +259,7 @@ int32_t main(int argc, char *argv[])
     DEFAULT_WIN_TYPE);
     fprintf(stderr, " -d  <dSize>         sub-sample (DEF: %u)\n", 
     DEFAULT_SAMPLE_RATIO);
-    fprintf(stderr, " -ad                 avoid deleting temporary files\n"); 
+    fprintf(stderr, " -nd                 do not delete temporary files\n"); 
     fprintf(stderr, " -wi <width>         sequence width (DEF: %.2g)\n",
     DEFAULT_WIDTH);
     fprintf(stderr, "                                             \n");
@@ -284,7 +284,7 @@ int32_t main(int argc, char *argv[])
   P->wType     = ArgsNumber(DEFAULT_WIN_TYPE,     p, argc, "-wt");
   P->width     = ArgsDouble(DEFAULT_WIDTH,        p, argc, "-wi");
   P->subsample = ArgsNumber(DEFAULT_SAMPLE_RATIO, p, argc, "-d" );
-  P->del       = ArgsState (DEFAULT_DELETE,       p, argc, "-ad");
+  P->del       = ArgsState (DEFAULT_DELETE,       p, argc, "-nd");
   P->minimum   = ArgsNumber(DEFAULT_MINIMUM,      p, argc, "-m" );
   P->output    = ArgsFiles (                      p, argc, "-o" );
 
@@ -377,12 +377,13 @@ int32_t main(int argc, char *argv[])
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   if(!P->ir)
     {
+    cip = 0;
     for(k = 0 ; k != patterns->nPatterns ; ++k)
-      if((distance = patterns->p[k].end-patterns->p[k].init) >= P->minimum)
+      if((distance = patterns->p[k].end-patterns->p[k].init)>= P->minimum)
         {
         if(P->verbose)
-          fprintf(stderr, "Running pattern %u with size %"PRIu64"\n", k+1, 
-          patterns->p[k].end - patterns->p[k].init);
+          fprintf(stderr, "Running valid pattern %u (id:%u) with size "
+          "%"PRIu64"\n", ++cip, k+1, patterns->p[k].end-patterns->p[k].init);
 
         Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx + 
         DEFAULT_SPACE + DEFAULT_WIDTH, Paint->cy + 
@@ -391,7 +392,6 @@ int32_t main(int argc, char *argv[])
         nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
                      patterns->p[k].end);
         refModel   = LoadReference(nameExt, P); 
-        if(P->del) unlink(nameExt);
         nameInf    = Compress(sRef, refModel, P);
         nameFil    = FilterSequence(nameInf, P, winWeights);
         nameSeg    = SegmentSequence(nameFil, P);
@@ -410,12 +410,14 @@ int32_t main(int argc, char *argv[])
         }
     }
   // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
+  cip = 0;
+  for(k = 0 ; k < patternsIR->nPatterns ; ++k)
     if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
       {
       if(P->verbose)
-        fprintf(stderr, "Running IR pattern %u with size %"PRIu64"\n", k+1,
-        patternsIR->p[k].end - patternsIR->p[k].init);
+        fprintf(stderr, "Running IR valid pattern %u (id:%u) with size "
+        "%"PRIu64"\n", ++cip, k+1, patternsIR->p[k].end - 
+        patternsIR->p[k].init);
 
       RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx + DEFAULT_SPACE 
       + DEFAULT_WIDTH, Paint->cy + GetPoint(patternsIR->p[k].init), 
@@ -424,7 +426,6 @@ int32_t main(int argc, char *argv[])
       nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
                      patternsIR->p[k].end);
       revRef       = IRSequence(nameExt, P, REF); 
-      if(P->del) unlink(nameExt);
       refModel     = LoadReference(revRef, P);
       nameInf      = Compress(sRef, refModel, P);
       nameFil      = FilterSequence(nameInf, P, winWeights);
@@ -457,6 +458,18 @@ int32_t main(int argc, char *argv[])
     unlink(sTar);
     unlink(revRef);
     unlink(revTar);
+ // , *nameInf,
+//            *nameInfIR, *nameFil, *nameFilIR, *nameSeg, *nameSegIR,
+  //          *nameExt;
+
+    //unlink(nameInf);
+    //unlink(nameInfIR);
+    //unlink(nameFil);
+    //unlink(nameFilIR);
+    //unlink(nameSeg);
+    //unlink(nameSegIR);
+    unlink(nameExt);
+
     }
 
   if(P->verbose)
