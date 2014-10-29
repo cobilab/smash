@@ -16,6 +16,7 @@ typedef struct
   uint8_t   help;
   uint8_t   verbose;
   uint8_t   force;
+  uint8_t   del;
   uint32_t  context;
   uint32_t  alpha;
   uint8_t   ir;
@@ -62,6 +63,7 @@ Parameters;
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0
 #define DEFAULT_FORCE          0
+#define DEFAULT_DELETE         1
 #define DEFAULT_VERBOSE        0
 #define DEFAULT_CONTEXT        20
 #define DEFAULT_ALPHA          1000

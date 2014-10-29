@@ -259,6 +259,7 @@ int32_t main(int argc, char *argv[])
     DEFAULT_WIN_TYPE);
     fprintf(stderr, " -d  <dSize>         sub-sample (DEF: %u)\n", 
     DEFAULT_SAMPLE_RATIO);
+    fprintf(stderr, " -ad                 avoid deleting temporary files\n"); 
     fprintf(stderr, " -wi <width>         sequence width (DEF: %.2g)\n",
     DEFAULT_WIDTH);
     fprintf(stderr, "                                             \n");
@@ -283,6 +284,7 @@ int32_t main(int argc, char *argv[])
   P->wType     = ArgsNumber(DEFAULT_WIN_TYPE,     p, argc, "-wt");
   P->width     = ArgsDouble(DEFAULT_WIDTH,        p, argc, "-wi");
   P->subsample = ArgsNumber(DEFAULT_SAMPLE_RATIO, p, argc, "-d" );
+  P->del       = ArgsState (DEFAULT_DELETE,       p, argc, "-ad");
   P->minimum   = ArgsNumber(DEFAULT_MINIMUM,      p, argc, "-m" );
   P->output    = ArgsFiles (                      p, argc, "-o" );
 
@@ -311,7 +313,7 @@ int32_t main(int argc, char *argv[])
     {
     refModel = LoadReference(sRef, P);
     nameInf  = Compress(sTar, refModel, P);
-    nameFil  = FilterSequence(nameInf, P, winWeights, 1);
+    nameFil  = FilterSequence(nameInf, P, winWeights);
     nameSeg  = SegmentSequence(nameFil, P);   
     patterns = GetPatterns(nameSeg);
     }
@@ -323,7 +325,7 @@ int32_t main(int argc, char *argv[])
     }
   refModelIR = LoadReference(revRef, P);
   nameInfIR  = Compress(sTar, refModelIR, P);
-  nameFilIR  = FilterSequence(nameInfIR, P, winWeights, 1);
+  nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
   nameSegIR  = SegmentSequence(nameFilIR, P);
   patternsIR = GetPatterns(nameSegIR);
   if(P->verbose)
@@ -388,9 +390,10 @@ int32_t main(int argc, char *argv[])
 
         nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
                      patterns->p[k].end);
-        refModel   = LoadReference(nameExt, P); unlink(nameExt);
+        refModel   = LoadReference(nameExt, P); 
+        if(P->del) unlink(nameExt);
         nameInf    = Compress(sRef, refModel, P);
-        nameFil    = FilterSequence(nameInf, P, winWeights, 1);
+        nameFil    = FilterSequence(nameInf, P, winWeights);
         nameSeg    = SegmentSequence(nameFil, P);
         patternsLB = GetPatterns(nameSeg);
 
@@ -420,10 +423,11 @@ int32_t main(int argc, char *argv[])
  
       nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
                      patternsIR->p[k].end);
-      revRef       = IRSequence(nameExt, P, REF); unlink(nameExt);
+      revRef       = IRSequence(nameExt, P, REF); 
+      if(P->del) unlink(nameExt);
       refModel     = LoadReference(revRef, P);
       nameInf      = Compress(sRef, refModel, P);
-      nameFil      = FilterSequence(nameInf, P, winWeights, 1);
+      nameFil      = FilterSequence(nameInf, P, winWeights);
       nameSeg      = SegmentSequence(nameFil, P);
       patternsLBIR = GetPatterns(nameSeg);
 
@@ -447,10 +451,13 @@ int32_t main(int argc, char *argv[])
   PrintFinal(PLOT);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  unlink(sRef);
-  unlink(sTar);
-  unlink(revRef);
-  unlink(revTar);
+  if(P->del)
+    {
+    unlink(sRef);
+    unlink(sTar);
+    unlink(revRef);
+    unlink(revTar);
+    }
 
   if(P->verbose)
     {

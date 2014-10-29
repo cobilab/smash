@@ -74,8 +74,7 @@ static float Mean(float *ent, int64_t nEnt, int64_t n, int64_t M, float *w)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t *FilterSequence(uint8_t *fName, Parameters *P, float *w, uint8_t 
-remove)
+uint8_t *FilterSequence(uint8_t *fName, Parameters *P, float *w)
   {
   FILE    *Reader  = NULL, *Writter = NULL;
   float   *entries = NULL, *buffer;
@@ -117,7 +116,7 @@ remove)
 
   Free(entries);
   fclose(Writter);
-  if(remove == 1)
+  if(P->del)
     unlink(fName);
 
   if(P->verbose == 1)
