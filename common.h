@@ -23,6 +23,7 @@ Patterns;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 FILE        *Fopen           (const char *, const char *);
+void        Unlink           (const char *);
 void        FillLogTable     (uint32_t, uint32_t, uint32_t);
 double      SearchLog        (uint32_t );
 uint32_t    floatog2         (uint64_t );

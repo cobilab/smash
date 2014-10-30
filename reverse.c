@@ -44,7 +44,7 @@ uint8_t *IRSequence(uint8_t *fName, Parameters *P, uint8_t type)
   Free(bOut);
   fclose(Reader);
   fclose(Writter);
-
+  
   if(P->verbose == 1)
     {
     stop = clock();

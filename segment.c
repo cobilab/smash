@@ -66,7 +66,7 @@ uint8_t *SegmentSequence(uint8_t *fName, Parameters *P)
   fclose(Reader);
   fclose(Writter);
   
-  if(P->del) unlink(fName);
+  if(P->del) Unlink(fName);
 
   if(P->verbose == 1)
     {

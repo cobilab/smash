@@ -116,8 +116,8 @@ uint8_t *FilterSequence(uint8_t *fName, Parameters *P, float *w)
 
   Free(entries);
   fclose(Writter);
-  if(P->del)
-    unlink(fName);
+
+  if(P->del) Unlink(fName);
 
   if(P->verbose == 1)
     {

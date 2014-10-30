@@ -37,6 +37,14 @@ uint32_t FLog2(uint64_t i)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+void Unlink(const char *f)
+  {
+  if(unlink(f))
+    fprintf(stderr, "Warning: file %s was not deleted.\n", f);
+  }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 uint64_t NBytesInFile(FILE *file)
   {
   uint64_t size = 0;

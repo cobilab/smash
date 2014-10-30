@@ -324,6 +324,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Mode: re-running with inverted repeats\n");
     }
   refModelIR = LoadReference(revRef, P);
+  if(P->del) Unlink(revRef);
   nameInfIR  = Compress(sTar, refModelIR, P);
   nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
   nameSegIR  = SegmentSequence(nameFilIR, P);
@@ -454,22 +455,11 @@ int32_t main(int argc, char *argv[])
 
   if(P->del)
     {
-    unlink(sRef);
-    unlink(sTar);
-    unlink(revRef);
-    unlink(revTar);
- // , *nameInf,
-//            *nameInfIR, *nameFil, *nameFilIR, *nameSeg, *nameSegIR,
-  //          *nameExt;
-
-    //unlink(nameInf);
-    //unlink(nameInfIR);
-    //unlink(nameFil);
-    //unlink(nameFilIR);
-    //unlink(nameSeg);
-    //unlink(nameSegIR);
-    unlink(nameExt);
-
+    Unlink(sRef);
+    Unlink(sTar);
+    Unlink(revRef);
+    Unlink(revTar);
+    Unlink(nameExt);
     }
 
   if(P->verbose)
