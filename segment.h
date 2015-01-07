@@ -5,7 +5,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t *SegmentSequence(uint8_t *, Parameters *);
+char *SegmentSequence(char *, Parameters *);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

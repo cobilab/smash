@@ -17,12 +17,12 @@ void IRBlock(uint8_t *i, uint8_t *o, uint32_t nSym, FILE *F)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t *IRSequence(uint8_t *fName, Parameters *P, uint8_t type)
+char *IRSequence(char *fName, Parameters *P, uint8_t type)
   {
   FILE      *Reader = NULL , *Writter = NULL;
-  uint64_t  size, parts, extra;
-  clock_t   stop, start;
-  uint8_t   *fNameOut;
+  uint64_t  size;
+  clock_t   stop = 0, start = 0;
+  char      *fNameOut;
 
   if(P->verbose == 1)
     {
@@ -38,7 +38,7 @@ uint8_t *IRSequence(uint8_t *fName, Parameters *P, uint8_t type)
   uint8_t *bIn  = (uint8_t*) malloc((size+1) * sizeof(uint8_t));
   uint8_t *bOut = (uint8_t*) malloc((size+1) * sizeof(uint8_t));
 
-  fread(bIn, 1, size, Reader);
+  garbage = fread(bIn, 1, size, Reader);
   IRBlock(bIn, bOut, size, Writter);
   Free(bIn);
   Free(bOut);

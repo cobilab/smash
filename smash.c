@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //                                                                          //
-//  SMASH V1.0  D. Pratas, R. M. Silva, A. J. Pinho, P. J. S. G. Ferreira.  //
+//  SMASH    D. Pratas, R. M. Silva, A. J. Pinho, P. J. S. G. Ferreira.     //
 //                                                                          //
 //////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
@@ -33,10 +33,10 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
   uint8_t   *readerBuffer, *symbolBuffer, sym;
   float     *outputBuffer;
   PModel    *pModel;
-  #ifdef PROGRESS
+  #ifndef PROGRESS
   uint64_t  i = 0, size = NBytesInFile(Reader);
   #endif
-  clock_t   start, stop;
+  clock_t   start = 0, stop = 0;
 
   if(P->verbose == 1)
     {
@@ -57,7 +57,7 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
       symbolBuffer[idx] = sym = DNASymToNum(readerBuffer[idxPos]);
       GetPModelIdx(symbolBuffer+idx-1, cModel);
       ComputePModel(cModel, pModel);
-      bits += (instance = FLog2(pModel->sum / pModel->freqs[sym]));
+      bits += (uint64_t) (instance = FLog2(pModel->sum / pModel->freqs[sym]));
       outputBuffer[idxPos] = (float) instance;
       if(++idx == BUFFER_SIZE)
         {
@@ -65,7 +65,7 @@ char *Compress(char *sTar, CModel *cModel, Parameters *P)
         LEFT_BUFFER_GUARD, LEFT_BUFFER_GUARD);
         idx = 0;
         }
-      #ifdef PROGRESS
+      #ifndef PROGRESS
       CalcProgress(size, ++i);
       #endif
       }
@@ -103,10 +103,10 @@ CModel *LoadReference(char *sRef, Parameters *P)
   int32_t   idx = 0;
   uint8_t   *readerBuffer, *symbolBuffer, sym;
   CModel    *cModel;
-  #ifdef PROGRESS
+  #ifndef PROGRESS
   uint64_t  i = 0, size = NBytesInFile(Reader);
   #endif
-  clock_t   start, stop;
+  clock_t   start = 0, stop = 0;
 
   if(P->verbose == 1)
     {
@@ -131,7 +131,7 @@ CModel *LoadReference(char *sRef, Parameters *P)
         idx - LEFT_BUFFER_GUARD, LEFT_BUFFER_GUARD);
         idx = 0;
         }
-      #ifdef PROGRESS
+      #ifndef PROGRESS
       CalcProgress(size, ++i);
       #endif
       }
@@ -160,7 +160,7 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
   uint32_t maxIdx, idx, i;
   char     *fNameOut, gf[] = "ACGT", timeMark[MAX_STRING_SIZE];
   uint8_t  readerBuffer[BUFFER_SIZE+1], writterBuffer[BUFFER_SIZE+1];
-  clock_t  start, stop;
+  clock_t  start = 0, stop = 0;
 
   if(P->verbose == 1)
     {
@@ -219,13 +219,13 @@ int32_t main(int argc, char *argv[])
   {
   char        **p = *&argv, *sRef, *sTar, *revRef, *revTar, *nameInf, 
               *nameInfIR, *nameFil, *nameFilIR, *nameSeg, *nameSegIR, 
-              *nameExt;
+              *nameExt = NULL;
   Parameters  Par;
-  Patterns    *patterns, *patternsIR, *patternsLB, *patternsLBIR;
+  Patterns    *patterns = NULL, *patternsIR, *patternsLB, *patternsLBIR;
   Painter     *Paint;
-  clock_t     stop, start;
+  clock_t     stop = 0, start = 0;
   CModel      *refModel, *refModelIR;
-  uint32_t    k, nPatterns, nIRPatterns, n, colorIdx, mult, cip;
+  uint32_t    k, nPatterns, nIRPatterns, n, colorIdx, mult = 0, cip;
   uint64_t    distance;
   int64_t     seed;
   float       *winWeights;
@@ -235,38 +235,51 @@ int32_t main(int argc, char *argv[])
   Parameters  *P = &Par;
   if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
     {
-    fprintf(stderr, "                                             \n");
-    fprintf(stderr, "Usage: smash <OPTIONS>... [FILE] [FILE]      \n");
-    fprintf(stderr, "                                             \n");
-    fprintf(stderr, " -v                  verbose mode            \n");
-    fprintf(stderr, " -f                  force (be sure!)        \n");
-    fprintf(stderr, "                                             \n");
-    fprintf(stderr, " -c  <context>       context order (DEF: %u)\n", 
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, "Usage: smash <OPTIONS>... [FILE] [FILE]              \n");
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, " -f                  give this help,                 \n");
+    fprintf(stderr, " -V                  display version number,         \n");
+    fprintf(stderr, " -v                  verbose mode,                   \n");
+    fprintf(stderr, " -f                  force (be sure!),               \n");
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, " -c  <context>       context order (DEF: %u),        \n", 
     DEFAULT_CONTEXT);
-    fprintf(stderr, " -t  <threshold>     threshold [0.0,2.0] (DEF: %.2g)\n",
+    fprintf(stderr, " -t  <threshold>     threshold [0.0,2.0] (DEF: %.2g),\n",
     DEFAULT_THRESHOLD);
-    fprintf(stderr, "                                             \n");
-    fprintf(stderr, " -m  <mSize>         minimum block size (DEF: %u)\n",
+    fprintf(stderr, " -m  <mSize>         minimum block size (DEF: %u),   \n",
     DEFAULT_MINIMUM);
-    fprintf(stderr, " -i                  show only inverted repeats\n");
-    fprintf(stderr, " -r  <ratio>         image size ratio (DEF: %u)\n", 
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, " -i                  show only inverted repeats,     \n");
+    fprintf(stderr, " -r  <ratio>         image size ratio (DEF: %u),     \n", 
     DEFAULT_IMG_RATIO);
-    fprintf(stderr, " -a  <alpha>         alpha estimator (DEF: %u)\n",
+    fprintf(stderr, " -a  <alpha>         alpha estimator (DEF: %u),      \n",
     DEFAULT_ALPHA);
-    fprintf(stderr, " -s  <seed>          seed for random 'N'     \n");
-    fprintf(stderr, " -w  <wSize>         window size\n");
-    fprintf(stderr, " -wt <wType>         window type [0|1|2|3] (DEF: %u)\n",
+    fprintf(stderr, " -s  <seed>          seed for random 'N',            \n");
+    fprintf(stderr, " -w  <wSize>         window size,                    \n");
+    fprintf(stderr, " -wt <wType>         window type [0|1|2|3] (DEF: %u),\n",
     DEFAULT_WIN_TYPE);
-    fprintf(stderr, " -d  <dSize>         sub-sample (DEF: %u)\n", 
+    fprintf(stderr, " -d  <dSize>         sub-sample (DEF: %u),           \n", 
     DEFAULT_SAMPLE_RATIO);
-    fprintf(stderr, " -nd                 do not delete temporary files\n"); 
-    fprintf(stderr, " -wi <width>         sequence width (DEF: %.2g)\n",
+    fprintf(stderr, " -nd                 do not delete temporary files,  \n"); 
+    fprintf(stderr, " -wi <width>         sequence width (DEF: %.2g),     \n",
     DEFAULT_WIDTH);
-    fprintf(stderr, "                                             \n");
-    fprintf(stderr, " -o  <outFile>       output svg plot file    \n");
-    fprintf(stderr, "                                             \n");
-    fprintf(stderr, " [refFile]           reference file          \n");
-    fprintf(stderr, " [tarFile]           target file           \n\n");
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, " -p  <posFile>       output target positions file,   \n");
+    fprintf(stderr, " -o  <outFile>       output svg plot file,           \n");
+    fprintf(stderr, "                                                     \n");
+    fprintf(stderr, " [refFile]           reference file,                 \n");
+    fprintf(stderr, " [tarFile]           target file.                  \n\n");
+    return EXIT_SUCCESS;
+    }
+
+  if(ArgsState(DEFAULT_VERSION, p, argc, "-V")){
+    fprintf(stderr, "Smash %u.%u\n"
+    "Copyright (C) 2014 University of Aveiro.\nThis is Free software. \nYou "
+    "may redistribute copies of it under the terms of the GNU General \n"
+    "Public License v2 <http://www.gnu.org/licenses/gpl.html>.\nThere is NO "
+    "WARRANTY, to the extent permitted by law.\nAuthors: Diogo Pratas, Raquel "
+    "M. Silva, Armando J. Pinho, Paulo J. S. G. Ferreira.\n", RELEASE, VERSION);
     return EXIT_SUCCESS;
     }
 
@@ -286,7 +299,8 @@ int32_t main(int argc, char *argv[])
   P->subsample = ArgsNumber(DEFAULT_SAMPLE_RATIO, p, argc, "-d" );
   P->del       = ArgsState (DEFAULT_DELETE,       p, argc, "-nd");
   P->minimum   = ArgsNumber(DEFAULT_MINIMUM,      p, argc, "-m" );
-  P->output    = ArgsFiles (                      p, argc, "-o" );
+  P->positions = ArgsFiles (                      p, argc, "-p", ".pos");
+  P->output    = ArgsFiles (                      p, argc, "-o", ".svg");
 
   SetRatio(P->ratio);
   seed = (P->seed == DEFAULT_SEED) ? time(NULL) : P->seed;
@@ -324,7 +338,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Mode: re-running with inverted repeats\n");
     }
   refModelIR = LoadReference(revRef, P);
-  if(P->del) Unlink(revRef);
+  if(P->del && !revRef) Unlink(revRef);
   nameInfIR  = Compress(sTar, refModelIR, P);
   nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
   nameSegIR  = SegmentSequence(nameFilIR, P);
@@ -455,11 +469,11 @@ int32_t main(int argc, char *argv[])
 
   if(P->del)
     {
-    Unlink(sRef);
-    Unlink(sTar);
-    Unlink(revRef);
-    Unlink(revTar);
-    Unlink(nameExt);
+    if(!sRef)    Unlink(sRef);
+    if(!sTar)    Unlink(sTar);
+    if(!revRef)  Unlink(revRef);
+    if(!revTar)  Unlink(revTar);
+    if(!nameExt) Unlink(nameExt);
     }
 
   if(P->verbose)

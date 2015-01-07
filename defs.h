@@ -11,6 +11,8 @@
 #endif
 #define DRAND48  1
 
+int garbage;
+
 typedef struct
   {
   uint8_t   help;
@@ -29,13 +31,18 @@ typedef struct
   int64_t   subsample;
   uint8_t   wType;
   uint64_t  minimum;
-  uint8_t   *output;
+  char      *positions;
+  char      *output;
   uint64_t  refSize;
   uint64_t  tarSize;
   }
 Parameters;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// SMASH VERSION SETTINGS:
+#define RELEASE                1
+#define VERSION                1
 
 // SYSTEM VALUES:
 #define N_SYMBOLS              4
@@ -63,6 +70,7 @@ Parameters;
 // DEFAULT VALUES:
 #define DEFAULT_HELP           0
 #define DEFAULT_FORCE          0
+#define DEFAULT_VERSION        0
 #define DEFAULT_DELETE         1
 #define DEFAULT_VERBOSE        0
 #define DEFAULT_CONTEXT        20

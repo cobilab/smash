@@ -78,11 +78,11 @@ HsvColor RgbToHsv(RgbColor rgb)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t *GetRgbColor(uint8_t hue)
+char *GetRgbColor(uint8_t hue)
   {
   RgbColor RGB;
   HsvColor HSV;
-  uint8_t  *color = (uint8_t *) Malloc(8 * sizeof(uint8_t));
+  char  *color = (char *) Malloc(8 * sizeof(char));
   
   HSV.h = hue;
   HSV.s = LEVEL_SATURATION;
@@ -97,10 +97,9 @@ uint8_t *GetRgbColor(uint8_t hue)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Painter *CreatePainter(double refSize, double tarSize, uint8_t *color)
+Painter *CreatePainter(double refSize, double tarSize, char *color)
   {
   Painter *P    = (Painter *) Malloc(sizeof(Painter));  
-
   P->backColor  = color;
   P->refSize    = refSize; 
   P->tarSize    = tarSize; 
@@ -110,13 +109,12 @@ Painter *CreatePainter(double refSize, double tarSize, uint8_t *color)
   P->ty         = DEFAULT_TY;
   P->width      = DEFAULT_WIDTH; 
   P->maxSize    = refSize > tarSize ? refSize : tarSize;
-
   return P;
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectOval(FILE *F, double w, double h, double x, double y, uint8_t *color)
+void RectOval(FILE *F, double w, double h, double x, double y, char *color)
   {
   fprintf(F, "<rect "
               "style=\"fill:%s;fill-opacity:1;stroke-width:2;"
@@ -132,8 +130,7 @@ void RectOval(FILE *F, double w, double h, double x, double y, uint8_t *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectOvalIR(FILE *F, double w, double h, double x, double y, uint8_t 
-*color)
+void RectOvalIR(FILE *F, double w, double h, double x, double y, char *color)
   {
   RectOval(F, w, h, x, y, color);
   fprintf(F, "<rect "
@@ -152,7 +149,7 @@ void RectOvalIR(FILE *F, double w, double h, double x, double y, uint8_t
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Rect(FILE *F, double w, double h, double x, double y, uint8_t *color)
+void Rect(FILE *F, double w, double h, double x, double y, char *color)
   {
   fprintf(F, "<rect style=\"fill:%s;fill-opacity:1;stroke-width:2;"
               "stroke-miterlimit:4;stroke-dasharray:none\" "
@@ -167,7 +164,7 @@ void Rect(FILE *F, double w, double h, double x, double y, uint8_t *color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void RectIR(FILE *F, double w, double h, double x, double y, uint8_t *color)
+void RectIR(FILE *F, double w, double h, double x, double y, char *color)
   {
   Rect(F, w, h, x, y, color);
   fprintf(F, "<rect "
@@ -187,7 +184,7 @@ void RectIR(FILE *F, double w, double h, double x, double y, uint8_t *color)
 
 void Chromosome(FILE *F, double w, double h, double x, double y)
   {
-  uint8_t borderColor[] = "#000000";
+  char    borderColor[] = "#000000";
   double  wk = w / 2 + 0.5;
 
   fprintf(F, "<path "
@@ -223,7 +220,7 @@ void Chromosome(FILE *F, double w, double h, double x, double y)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-void Text(FILE *F, double x, double y, uint8_t *name)
+void Text(FILE *F, double x, double y, char *name)
   {
   fprintf(F, "<text xml:space=\"preserve\" "
             "style=\"font-size:40px;font-style:normal;"

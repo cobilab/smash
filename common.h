@@ -23,6 +23,7 @@ Patterns;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 FILE        *Fopen           (const char *, const char *);
+uint32_t    FLog2            (uint64_t);
 void        Unlink           (const char *);
 void        FillLogTable     (uint32_t, uint32_t, uint32_t);
 double      SearchLog        (uint32_t );
@@ -40,7 +41,7 @@ double      ArgsDouble       (double, char *[], uint32_t, char *);
 uint8_t     ArgsState        (uint8_t  , char *[], uint32_t, char *);
 uint8_t     Args3State       (uint8_t  , char *[], uint32_t, char *);
 char        *ArgsString      (char    *, char *[], uint32_t, char *);
-char        *ArgsFiles       (char  *[], uint32_t, char *);
+char        *ArgsFiles       (char  *[], uint32_t, char   *, char *);
 void        FAccessWPerm     (char    *);
 void        PrintArgs        (void     );
 void        CmpInputError    (uint32_t );

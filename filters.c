@@ -74,13 +74,13 @@ static float Mean(float *ent, int64_t nEnt, int64_t n, int64_t M, float *w)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t *FilterSequence(uint8_t *fName, Parameters *P, float *w)
+char *FilterSequence(char *fName, Parameters *P, float *w)
   {
   FILE    *Reader  = NULL, *Writter = NULL;
   float   *entries = NULL, *buffer;
   int64_t nEntries, n, M, drop, k;
-  uint8_t *fNameOut;
-  clock_t stop, start;
+  char    *fNameOut;
+  clock_t stop = 0, start = 0;
 
   if(P->verbose == 1)
     {

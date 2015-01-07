@@ -7,14 +7,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-uint8_t *SegmentSequence(uint8_t *fName, Parameters *P)
+char *SegmentSequence(char *fName, Parameters *P)
   {
   FILE     *Reader = NULL , *Writter = NULL;
   float    val, threshold;
   uint64_t pos, initPosition, lastPosition;
   int32_t  region;
-  clock_t  stop, start;
-  uint8_t  *fNameOut;
+  clock_t  stop = 0, start = 0;
+  char     *fNameOut;
 
   if(P->verbose == 1)
     {

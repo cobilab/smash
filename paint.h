@@ -7,7 +7,7 @@ uint32_t ratio;
 
 typedef struct
   {
-  uint8_t *backColor;
+  char    *backColor;
   double  width;
   double  cx; 
   double  cy;
@@ -37,18 +37,18 @@ HsvColor;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Painter   *CreatePainter (double, double, uint8_t *);
+Painter   *CreatePainter (double, double, char *);
 RgbColor  HsvToRgb       (HsvColor);
 HsvColor  RgbToHsv       (RgbColor);
-uint8_t   *GetRgbColor   (uint8_t);
+char      *GetRgbColor   (uint8_t);
 void      PrintFinal     (FILE *);
 void      PrintHead      (FILE *, double, double);
-void      RectOval       (FILE *, double, double, double, double, uint8_t *);
-void      RectOvalIR     (FILE *, double, double, double, double, uint8_t *);
-void      Rect           (FILE *, double, double, double, double, uint8_t *);
-void      RectIR         (FILE *, double, double, double, double, uint8_t *);
+void      RectOval       (FILE *, double, double, double, double, char *);
+void      RectOvalIR     (FILE *, double, double, double, double, char *);
+void      Rect           (FILE *, double, double, double, double, char *);
+void      RectIR         (FILE *, double, double, double, double, char *);
 void      Chromosome     (FILE *, double, double, double, double);
-void      Text           (FILE *, double, double, uint8_t *);
+void      Text           (FILE *, double, double, char *);
 void      Textfloatoat   (FILE *, double, double, double);
 double    GetPoint       (uint64_t);
 void      SetRatio       (uint32_t);

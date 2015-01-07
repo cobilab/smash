@@ -283,7 +283,7 @@ char *ArgsString(char *def, char *arg[], uint32_t n, char *str)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-char *ArgsFiles(char *arg[], uint32_t argc, char *str)
+char *ArgsFiles(char *arg[], uint32_t argc, char *str, char *f)
   {
   int32_t n = argc;
 
@@ -291,7 +291,7 @@ char *ArgsFiles(char *arg[], uint32_t argc, char *str)
     if(!strcmp(str, arg[n]))
       return CloneString(arg[n+1]);
   
-  return concatenate(concatenate(arg[argc-2], arg[argc-1]), ".svg");
+  return concatenate(concatenate(arg[argc-2], arg[argc-1]), f);
   }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
