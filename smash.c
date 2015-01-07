@@ -230,7 +230,7 @@ int32_t main(int argc, char *argv[])
   int64_t     seed;
   float       *winWeights;
   char        backColor[] = "#ffffff";
-  FILE        *PLOT = NULL;
+  FILE        *PLOT = NULL, *POS = NULL;
 
   Parameters  *P = &Par;
   if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
@@ -351,7 +351,8 @@ int32_t main(int argc, char *argv[])
   // BUILD REFERENCE MAP FOR EACH TARGET PATTERN - - - - - - - - - - - - - - -
   //
   // OUTPUT HEADER
-  PLOT = Fopen(P->output, "w");
+  PLOT = Fopen(P->output,    "w");
+  POS  = Fopen(P->positions, "w");
   Paint->width = P->width;
 
   PrintHead(PLOT, (2 * DEFAULT_CX) + (((Paint->width + DEFAULT_SPACE) * 2) - 
@@ -399,6 +400,8 @@ int32_t main(int argc, char *argv[])
         if(P->verbose)
           fprintf(stderr, "Running valid pattern %u (id:%u) with size "
           "%"PRIu64"\n", ++cip, k+1, patterns->p[k].end-patterns->p[k].init);
+        fprintf(POS, "#TARGET#\t%"PRIu64":%"PRIu64"\t0-regular\n", 
+        patterns->p[k].init, patterns->p[k].end);
 
         Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx + 
         DEFAULT_SPACE + DEFAULT_WIDTH, Paint->cy + 
@@ -433,6 +436,8 @@ int32_t main(int argc, char *argv[])
         fprintf(stderr, "Running IR valid pattern %u (id:%u) with size "
         "%"PRIu64"\n", ++cip, k+1, patternsIR->p[k].end - 
         patternsIR->p[k].init);
+      fprintf(POS, "#TARGET#\t%"PRIu64":%"PRIu64"\t1-inverted\n", 
+      patternsIR->p[k].init, patternsIR->p[k].end);
 
       RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx + DEFAULT_SPACE 
       + DEFAULT_WIDTH, Paint->cy + GetPoint(patternsIR->p[k].init), 
@@ -465,6 +470,7 @@ int32_t main(int argc, char *argv[])
   DEFAULT_WIDTH,
   Paint->cy);
   PrintFinal(PLOT);
+  if(!POS) fclose(POS);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   if(P->del)
