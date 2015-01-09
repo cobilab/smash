@@ -157,17 +157,17 @@ Only [refFile] and [TarFile] are mandatory.
 | -v             | It will print progress information such as positions of the patterns, times, etc.    |
 | -f             | It will force to write over files already created.                                   |
 | -c &#60;context&#62;   | Size of the FCM (Markov) context order (interval [1;28]). Contexts above 14 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. When the sequence is very fragmented, or the species are somehow distant, or the sequencing/assembly process has low quality this value show not be very high. |
-| -t <threshold> | It will be used to segment the high from the low regions of information content (interval [0;2]). For distant species this value might be slightly below 2 (such as 1.9). |
-| -m <mSize>     | Minimum size of the block considered as a valid patters after each segmentation process. Values below 1 Million for primate chromosomes might emerge excessive valid patterns. However for other purposes, such as gene scale analysis, this value should be set almost to 1. |
+| -t &#60;threshold&#62; | It will be used to segment the high from the low regions of information content (interval [0;2]). For distant species this value might be slightly below 2 (such as 1.9). |
+| -m &#60;mSize&#62;     | Minimum size of the block considered as a valid patters after each segmentation process. Values below 1 Million for primate chromosomes might emerge excessive valid patterns. However for other purposes, such as gene scale analysis, this value should be set almost to 1. |
 | -i             | It will detect and show only the information map regarding to inversions. |
-| -r <ratio>     | Sets the ratio size of the image. Currently is fixed to 1000000 which is an estimated value to the medium of the primate chromosomes sizes relatively to the medium of the screen resolution. This parameter is not automatically adaptad since a fixed value will bring different size chromosomes to the same scale. Nevertheless, to use it in small sequences, namely bacterial genomes, this parameter might be adjusted. |
-| -a <alpha>       | Probabilities estimator. This value relates a linear interpolation between the maximum likelihood estimator and the uniform distribution. This also shows that when the total number of events is large, the estimator behaves as a maximum likelihood estimator. Default value is set to 1000. |
-| -s <seed>        | This is a parameter to the pseudo-random generation function. Different seed values ensure different generated values. |
-| -w <wSize>       | The window size among with the sub-sampling is calculated automatically, nevertheless this value might be adjusted for special needs. |
-| -wt <wType>      | Window filtering type. Types: 0, 1, 2 or 3. Type 0 stands for Hamming, 1 for Hann, 2 for Blackman, while 3 represents a rectangular window. |
-| -d <dSize>       | Sub-sampling value. This value among with the window size is calculated automatically. Nevertheless, for special purposes this value might be adjusted. | 
-| -wi <width>      | Thickness of the image for each sequence. Default value is set to 25. |
-| -o <outFile>     | The output SVG image filename. The default uses the concatenation of reference with the target filenames (adding the "svg" extension). Beware: if the files are not in the working directory this might have problems due to several types of characters (such as '/'). |
+| -r &#60;ratio&#62;     | Sets the ratio size of the image. Currently is fixed to 1000000 which is an estimated value to the medium of the primate chromosomes sizes relatively to the medium of the screen resolution. This parameter is not automatically adaptad since a fixed value will bring different size chromosomes to the same scale. Nevertheless, to use it in small sequences, namely bacterial genomes, this parameter might be adjusted. |
+| -a &#60;alpha&#62;       | Probabilities estimator. This value relates a linear interpolation between the maximum likelihood estimator and the uniform distribution. This also shows that when the total number of events is large, the estimator behaves as a maximum likelihood estimator. Default value is set to 1000. |
+| -s &#60;seed&#62;        | This is a parameter to the pseudo-random generation function. Different seed values ensure different generated values. |
+| -w &#60;wSize&#62;       | The window size among with the sub-sampling is calculated automatically, nevertheless this value might be adjusted for special needs. |
+| -wt &#60;wType&#62;      | Window filtering type. Types: 0, 1, 2 or 3. Type 0 stands for Hamming, 1 for Hann, 2 for Blackman, while 3 represents a rectangular window. |
+| -d &#60;dSize&#62;       | Sub-sampling value. This value among with the window size is calculated automatically. Nevertheless, for special purposes this value might be adjusted. | 
+| -wi &#60;width&#62;      | Thickness of the image for each sequence. Default value is set to 25. |
+| -o &#60;outFile&#62;     | The output SVG image filename. The default uses the concatenation of reference with the target filenames (adding the "svg" extension). Beware: if the files are not in the working directory this might have problems due to several types of characters (such as '/'). |
 | [refFile]     | The reference filename. |
 | [tarFile]     | The target filename. |
 
