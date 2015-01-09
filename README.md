@@ -174,6 +174,12 @@ Only [refFile] and [TarFile] are mandatory.
 | [refFile]     | The reference filename. |
 | [tarFile]     | The target filename. |
 
+#### POSITIONS FILE
+
+A file will be created, reporting the each rearrangement position, with the following characteristics:
+
+
+
 ## CITATION ##
 
 On using this software/method please cite:
