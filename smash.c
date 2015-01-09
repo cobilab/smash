@@ -267,7 +267,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, " -wi <width>         sequence width (DEF: %.2g),     \n",
     DEFAULT_WIDTH);
     fprintf(stderr, "                                                     \n");
-    fprintf(stderr, " -p  <posFile>       output target positions file,   \n");
+    fprintf(stderr, " -p  <posFile>       output positions file,          \n");
     fprintf(stderr, " -o  <outFile>       output svg plot file,           \n");
     fprintf(stderr, "                                                     \n");
     fprintf(stderr, " [refFile]           reference file,                 \n");

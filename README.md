@@ -24,6 +24,16 @@ cmake .
 make
 </pre>
 
+Alternatively, you can install (without cmake and only for linux) using
+
+<pre>
+wget https://github.com/pratas/smash/archive/master.zip
+unzip master.zip
+cd smash-master
+mv Makefile.nix Makefile
+make
+</pre>
+
 #### OS X
 Install brew:
 <pre>
@@ -109,25 +119,29 @@ or
 </pre>
 These will print the following options:
 <pre>
-Usage: smash [OPTIONS]... [FILE] [FILE]      
-                                             
+Usage: smash &#60OPTIONS&#62... [FILE] [FILE]      
+
+ -h                  give this help,                 
+ -V                  display version number,
  -v                  verbose mode            
  -f                  force (be sure!)        
                                              
- -c  [context]       context order (DEF: 20)
- -t  [threshold]     threshold [0.0,2.0] (DEF: 1.5)
-                                             
- -m  [mSize]         minimum block size (DEF: 1000000)
+ -c  &#60context&#62       context order (DEF: 20)
+ -t  &#60threshold&#62     threshold [0.0,2.0] (DEF: 1.5)
+ -m  &#60mSize&#62         minimum block size (DEF: 1000000)
+ 
  -i                  show only inverted repeats
- -r  [ratio]         image size ratio (DEF: 1000000)
- -a  [alpha]         alpha estimator (DEF: 1000)
- -s  [seed]          seed for random 'N'     
- -w  [wSize]         window size
- -wt [wType]         window type [0|1|2|3] (DEF: 0)
- -d  [dSize]         sub-sample (DEF: 10000)
- -wi [width]         sequence width (DEF: 25)
+ -r  &#60ratio&#62         image size ratio (DEF: 1000000)
+ -a  &#60alpha&#62         alpha estimator (DEF: 1000)
+ -s  &#60seed&#62          seed for random 'N'     
+ -w  &#60wSize&#62         window size
+ -wt &#60wType&#62         window type [0|1|2|3] (DEF: 0)
+ -d  &#60dSize&#62         sub-sample (DEF: 10000)
+ -nd                 do not delete temporary files,
+ -wi &#60width&#62         sequence width (DEF: 25)
                                              
- -o  [outFile]       output svg plot file    
+ -p  &#60posFile&#62       output positions file,
+ -o  &#60outFile&#62       output svg plot file    
                                              
  [refFile]           reference file          
  [tarFile]           target file      
@@ -153,7 +167,7 @@ Only [refFile] and [TarFile] are mandatory.
 | -wt [wType]      | Window filtering type. Types: 0, 1, 2 or 3. Type 0 stands for Hamming, 1 for Hann, 2 for Blackman, while 3 represents a rectangular window. |
 | -d [dSize]       | Sub-sampling value. This value among with the window size is calculated automatically. Nevertheless, for special purposes this value might be adjusted. | 
 | -wi [width]      | Thickness of the image for each sequence. Default value is set to 25. |
-| -o [outFile]     | The output SVG image filename. The default uses the concatenation of reference with the target filenames (adding the "svg" extension). Beware: if the files are not in the working directory this might have problems due to several types of characters (such as '/'). |
+| -o [outFile>     | The output SVG image filename. The default uses the concatenation of reference with the target filenames (adding the "svg" extension). Beware: if the files are not in the working directory this might have problems due to several types of characters (such as '/'). |
 | [refFile]     | The reference filename. |
 | [tarFile]     | The target filename. |
 
