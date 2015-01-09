@@ -180,20 +180,20 @@ A file will be created, reporting each rearrangement position, with the followin
 
 An example ca be seen below, where columns are separated by a tab (ascii code:9)
 
-|type            |id     |start        | end            | direction|
-|:---------------|:------|:------------|:---------------|:---------|
-|TARGET          |1      |12890        |  9068115       | 0-regular|
-|REFERENCE       |1      |5542700      |  14243450      | 0-regular|
-|TARGET          |2      |9100340      |  13134910      | 0-regular|
-|REFERENCE       |2      |14243450     |  16350965      | 0-regular|
-|REFERENCE       |2      |16383190     |  18129785      | 0-regular|
-|TARGET          |3      |13154245     |  18883850      | 0-regular|
-|REFERENCE       |3      |18136230     |  19083645      | 0-regular|
-|REFERENCE       |3      |19160985     |  23666040      | 0-regular|
-|TARGET          |4      |18961190     |  20920470      | 0-regular|
-|REFERENCE       |4      |23840055     |  23975400      | 0-regular|
-|REFERENCE       |4      |24001180     |  24639235      | 0-regular|
-|REFERENCE       |4      |24697240     |  25754220      | 0-regular|
+|type            |id     |start        | end            | direction |
+|:---------------|:------|:------------|:---------------|:----------|
+|TARGET          |1      |12890        |  9068115       | 0-regular |
+|REFERENCE       |1      |5542700      |  14243450      | 0-regular |
+|TARGET          |2      |9100340      |  13134910      | 0-regular |
+|REFERENCE       |2      |14243450     |  16350965      | 0-regular |
+|REFERENCE       |2      |16383190     |  18129785      | 0-regular |
+|TARGET          |3      |13154245     |  18883850      | 0-regular |
+|REFERENCE       |3      |18136230     |  19083645      | 0-regular |
+|REFERENCE       |3      |19160985     |  23666040      | 0-regular |
+|TARGET          |4      |18961190     |  20920470      | 1-inverted|
+|REFERENCE       |4      |23840055     |  23975400      | 0-regular |
+|REFERENCE       |4      |24001180     |  24639235      | 0-regular |
+|REFERENCE       |4      |24697240     |  25754220      | 0-regular |
 
 The first column reports if the regions are in the target or reference sequences and the second column sets an id for each similar region. The third and fourth columns, repectively, indicate the beginning and the end of each similar region, while the last column reports the direction (if was inverted or regular).
 
