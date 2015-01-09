@@ -147,13 +147,15 @@ Usage: smash &#60OPTIONS&#62... [FILE] [FILE]
  [tarFile]           target file.      
 </pre>
 
-By default, Smash has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width.
+By default, Smash has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width and/or ratio (scale).
 Only [refFile] and [TarFile] are mandatory.
 
 #### Options meaning
 
 | Parameters     | Meaning                                                                              |
 |----------------|:-------------------------------------------------------------------------------------|
+| -h             | It will print the parameters menu (help menu)                                        |
+| -V             | It will print the smash version number, license type and authors.                    |
 | -v             | It will print progress information such as positions of the patterns, times, etc.    |
 | -f             | It will force to write over files already created.                                   |
 | -c &#60;context&#62;   | Size of the FCM (Markov) context order (interval [1;28]). Contexts above 14 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. When the sequence is very fragmented, or the species are somehow distant, or the sequencing/assembly process has low quality this value show not be very high. |
@@ -167,6 +169,7 @@ Only [refFile] and [TarFile] are mandatory.
 | -wt &#60;wType&#62;      | Window filtering type. Types: 0, 1, 2 or 3. Type 0 stands for Hamming, 1 for Hann, 2 for Blackman, while 3 represents a rectangular window. |
 | -d &#60;dSize&#62;       | Sub-sampling value. This value among with the window size is calculated automatically. Nevertheless, for special purposes this value might be adjusted. | 
 | -wi &#60;width&#62;      | Thickness of the image for each sequence. Default value is set to 25. |
+| -p &#60;posFile&#62;     | The positions from all the rearrangements detected on the run. |
 | -o &#60;outFile&#62;     | The output SVG image filename. The default uses the concatenation of reference with the target filenames (adding the "svg" extension). Beware: if the files are not in the working directory this might have problems due to several types of characters (such as '/'). |
 | [refFile]     | The reference filename. |
 | [tarFile]     | The target filename. |
