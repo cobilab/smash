@@ -180,7 +180,8 @@ A file will be created, reporting each rearrangement position, with the followin
 
 An example ca be seen below, where columns are separated by a tab (ascii code:9)
 
-|----------------|-------|-------------|----------------|----------|
+|
+|----------------|:------|-------------|----------------|----------|
 |TARGET          |1      |12890        |  9068115       | 0-regular|
 |REFERENCE       |1      |5542700      |  14243450      | 0-regular|
 |TARGET          |2      |9100340      |  13134910      | 0-regular|
