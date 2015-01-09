@@ -123,28 +123,28 @@ Usage: smash &#60OPTIONS&#62... [FILE] [FILE]
 
  -h                  give this help,                 
  -V                  display version number,
- -v                  verbose mode            
- -f                  force (be sure!)        
+ -v                  verbose mode,            
+ -f                  force (be sure!),        
                                              
- -c  &#60context&#62       context order (DEF: 20)
- -t  &#60threshold&#62     threshold [0.0,2.0] (DEF: 1.5)
- -m  &#60mSize&#62         minimum block size (DEF: 1000000)
+ -c  &#60context&#62       context order (DEF: 20),
+ -t  &#60threshold&#62     threshold [0.0,2.0] (DEF: 1.5),
+ -m  &#60mSize&#62         minimum block size (DEF: 1000000),
  
- -i                  show only inverted repeats
- -r  &#60ratio&#62         image size ratio (DEF: 1000000)
- -a  &#60alpha&#62         alpha estimator (DEF: 1000)
- -s  &#60seed&#62          seed for random 'N'     
- -w  &#60wSize&#62         window size
- -wt &#60wType&#62         window type [0|1|2|3] (DEF: 0)
- -d  &#60dSize&#62         sub-sample (DEF: 10000)
+ -i                  show only inverted repeats,
+ -r  &#60ratio&#62         image size ratio (MaxSeq/150),
+ -a  &#60alpha&#62         alpha estimator (DEF: 1000),
+ -s  &#60seed&#62          seed for random 'N',     
+ -w  &#60wSize&#62         window size,
+ -wt &#60wType&#62         window type [0|1|2|3] (DEF: 0),
+ -d  &#60dSize&#62         sub-sample (DEF: 10000),
  -nd                 do not delete temporary files,
- -wi &#60width&#62         sequence width (DEF: 25)
+ -wi &#60width&#62         sequence width (DEF: 25),
                                              
  -p  &#60posFile&#62       output positions file,
- -o  &#60outFile&#62       output svg plot file    
+ -o  &#60outFile&#62       output svg plot file,    
                                              
- [refFile]           reference file          
- [tarFile]           target file      
+ [refFile]           reference file,          
+ [tarFile]           target file.      
 </pre>
 
 By default, Smash has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width.
@@ -156,18 +156,18 @@ Only [refFile] and [TarFile] are mandatory.
 |----------------|:-------------------------------------------------------------------------------------|
 | -v             | It will print progress information such as positions of the patterns, times, etc.    |
 | -f             | It will force to write over files already created.                                   |
-| -c [context]   | Size of the FCM (Markov) context order (interval [1;28]). Contexts above 14 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. When the sequence is very fragmented, or the species are somehow distant, or the sequencing/assembly process has low quality this value show not be very high. |
-| -t [threshold] | It will be used to segment the high from the low regions of information content (interval [0;2]). For distant species this value might be slightly below 2 (such as 1.9). |
-| -m [mSize]     | Minimum size of the block considered as a valid patters after each segmentation process. Values below 1 Million for primate chromosomes might emerge excessive valid patterns. However for other purposes, such as gene scale analysis, this value should be set almost to 1. |
+| -c <context>   | Size of the FCM (Markov) context order (interval [1;28]). Contexts above 14 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. When the sequence is very fragmented, or the species are somehow distant, or the sequencing/assembly process has low quality this value show not be very high. |
+| -t <threshold> | It will be used to segment the high from the low regions of information content (interval [0;2]). For distant species this value might be slightly below 2 (such as 1.9). |
+| -m <mSize>     | Minimum size of the block considered as a valid patters after each segmentation process. Values below 1 Million for primate chromosomes might emerge excessive valid patterns. However for other purposes, such as gene scale analysis, this value should be set almost to 1. |
 | -i             | It will detect and show only the information map regarding to inversions. |
-| -r [ratio]     | Sets the ratio size of the image. Currently is fixed to 1000000 which is an estimated value to the medium of the primate chromosomes sizes relatively to the medium of the screen resolution. This parameter is not automatically adaptad since a fixed value will bring different size chromosomes to the same scale. Nevertheless, to use it in small sequences, namely bacterial genomes, this parameter might be adjusted. |
-| -a [alpha]       | Probabilities estimator. This value relates a linear interpolation between the maximum likelihood estimator and the uniform distribution. This also shows that when the total number of events is large, the estimator behaves as a maximum likelihood estimator. Default value is set to 1000. |
-| -s [seed]        | This is a parameter to the pseudo-random generation function. Different seed values ensure different generated values. |
-| -w [wSize]       | The window size among with the sub-sampling is calculated automatically, nevertheless this value might be adjusted for special needs. |
-| -wt [wType]      | Window filtering type. Types: 0, 1, 2 or 3. Type 0 stands for Hamming, 1 for Hann, 2 for Blackman, while 3 represents a rectangular window. |
-| -d [dSize]       | Sub-sampling value. This value among with the window size is calculated automatically. Nevertheless, for special purposes this value might be adjusted. | 
-| -wi [width]      | Thickness of the image for each sequence. Default value is set to 25. |
-| -o [outFile>     | The output SVG image filename. The default uses the concatenation of reference with the target filenames (adding the "svg" extension). Beware: if the files are not in the working directory this might have problems due to several types of characters (such as '/'). |
+| -r <ratio>     | Sets the ratio size of the image. Currently is fixed to 1000000 which is an estimated value to the medium of the primate chromosomes sizes relatively to the medium of the screen resolution. This parameter is not automatically adaptad since a fixed value will bring different size chromosomes to the same scale. Nevertheless, to use it in small sequences, namely bacterial genomes, this parameter might be adjusted. |
+| -a <alpha>       | Probabilities estimator. This value relates a linear interpolation between the maximum likelihood estimator and the uniform distribution. This also shows that when the total number of events is large, the estimator behaves as a maximum likelihood estimator. Default value is set to 1000. |
+| -s <seed>        | This is a parameter to the pseudo-random generation function. Different seed values ensure different generated values. |
+| -w <wSize>       | The window size among with the sub-sampling is calculated automatically, nevertheless this value might be adjusted for special needs. |
+| -wt <wType>      | Window filtering type. Types: 0, 1, 2 or 3. Type 0 stands for Hamming, 1 for Hann, 2 for Blackman, while 3 represents a rectangular window. |
+| -d <dSize>       | Sub-sampling value. This value among with the window size is calculated automatically. Nevertheless, for special purposes this value might be adjusted. | 
+| -wi <width>      | Thickness of the image for each sequence. Default value is set to 25. |
+| -o <outFile>     | The output SVG image filename. The default uses the concatenation of reference with the target filenames (adding the "svg" extension). Beware: if the files are not in the working directory this might have problems due to several types of characters (such as '/'). |
 | [refFile]     | The reference filename. |
 | [tarFile]     | The target filename. |
 
