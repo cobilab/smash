@@ -11,6 +11,8 @@
 #endif
 #define DRAND48  1
 
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
 int garbage;
 
 typedef struct
@@ -78,7 +80,7 @@ Parameters;
 #define DEFAULT_IR             0
 #define DEFAULT_MAX_COUNT      65535
 #define DEFAULT_HASH_SIZE      29999999
-#define DEFAULT_IMG_RATIO      1000000
+#define DEFAULT_SCALE          150
 #define DEFAULT_SEED           -1
 #define DEFAULT_THRESHOLD      1.5
 #define DEFAULT_WINDOW         -1

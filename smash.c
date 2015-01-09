@@ -238,7 +238,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "                                                     \n");
     fprintf(stderr, "Usage: smash <OPTIONS>... [FILE] [FILE]              \n");
     fprintf(stderr, "                                                     \n");
-    fprintf(stderr, " -f                  give this help,                 \n");
+    fprintf(stderr, " -h                  give this help,                 \n");
     fprintf(stderr, " -V                  display version number,         \n");
     fprintf(stderr, " -v                  verbose mode,                   \n");
     fprintf(stderr, " -f                  force (be sure!),               \n");
@@ -251,8 +251,8 @@ int32_t main(int argc, char *argv[])
     DEFAULT_MINIMUM);
     fprintf(stderr, "                                                     \n");
     fprintf(stderr, " -i                  show only inverted repeats,     \n");
-    fprintf(stderr, " -r  <ratio>         image size ratio (DEF: %u),     \n", 
-    DEFAULT_IMG_RATIO);
+    fprintf(stderr, " -r  <ratio>         image size ratio (MaxSeq/%u),   \n",
+    DEFAULT_SCALE);
     fprintf(stderr, " -a  <alpha>         alpha estimator (DEF: %u),      \n",
     DEFAULT_ALPHA);
     fprintf(stderr, " -s  <seed>          seed for random 'N',            \n");
@@ -287,7 +287,6 @@ int32_t main(int argc, char *argv[])
   P->verbose   = Args3State(P->verbose,           p, argc, "-vv");
   P->force     = ArgsState (DEFAULT_FORCE,        p, argc, "-f" );
   P->context   = ArgsNumber(DEFAULT_CONTEXT,      p, argc, "-c" );
-  P->ratio     = ArgsNumber(DEFAULT_IMG_RATIO,    p, argc, "-r" );
   P->alpha     = ArgsNumber(DEFAULT_ALPHA,        p, argc, "-a" );
   P->hash      = DEFAULT_HASH_SIZE;
   P->ir        = ArgsState (DEFAULT_IR,           p, argc, "-i" );
@@ -302,6 +301,13 @@ int32_t main(int argc, char *argv[])
   P->positions = ArgsFiles (                      p, argc, "-p", ".pos");
   P->output    = ArgsFiles (                      p, argc, "-o", ".svg");
 
+  P->refSize = FopenBytesInFile(argv[argc-2]);
+  P->tarSize = FopenBytesInFile(argv[argc-1]);
+
+  // CALCULATE AUTOMATICALLY RATIO
+  P->ratio = ArgsNumber(MAX(P->refSize, P->tarSize) / 
+             DEFAULT_SCALE, p, argc, "-r");
+
   SetRatio(P->ratio);
   seed = (P->seed == DEFAULT_SEED) ? time(NULL) : P->seed;
   if(P->verbose)
@@ -309,8 +315,6 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "Using seed: %u.\n", (uint32_t) seed);
     start = clock();
     }
-  P->refSize = FopenBytesInFile(argv[argc-2]);
-  P->tarSize = FopenBytesInFile(argv[argc-1]);
   Paint      = CreatePainter(GetPoint(P->refSize), GetPoint(P->tarSize), 
                backColor);
   WindowSizeAndDrop(P);
