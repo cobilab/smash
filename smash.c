@@ -217,15 +217,17 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
 
 int32_t main(int argc, char *argv[])
   {
-  char        **p = *&argv, *sRef, *sTar, *revRef, *revTar, *nameInf, 
-              *nameInfIR, *nameFil, *nameFilIR, *nameSeg, *nameSegIR, 
+  char        **p = *&argv, *sRef = NULL, *sTar = NULL, *revRef = NULL, 
+              *revTar = NULL, *nameInf = NULL, *nameInfIR = NULL, *nameFil = 
+              NULL, *nameFilIR = NULL, *nameSeg = NULL, *nameSegIR = NULL, 
               *nameExt = NULL;
   Parameters  Par;
-  Patterns    *patterns = NULL, *patternsIR, *patternsLB, *patternsLBIR;
+  Patterns    *patterns = NULL, *patternsIR = NULL, *patternsLB = NULL, 
+              *patternsLBIR = NULL;
   Painter     *Paint;
   clock_t     stop = 0, start = 0;
   CModel      *refModel, *refModelIR;
-  uint32_t    k, nPatterns, nIRPatterns, n, colorIdx, mult = 0, cip;
+  uint32_t    k, nPatterns, nIRPatterns, n, colorIdx, mult = 0, cip, pt;
   uint64_t    distance;
   int64_t     seed;
   float       *winWeights;
@@ -301,28 +303,28 @@ int32_t main(int argc, char *argv[])
   P->positions = ArgsFiles (                      p, argc, "-p", ".pos");
   P->output    = ArgsFiles (                      p, argc, "-o", ".svg");
 
-  P->refSize = FopenBytesInFile(argv[argc-2]);
-  P->tarSize = FopenBytesInFile(argv[argc-1]);
+  P->refSize   = FopenBytesInFile(argv[argc-2]);
+  P->tarSize   = FopenBytesInFile(argv[argc-1]);
 
   // CALCULATE AUTOMATICALLY RATIO
-  P->ratio = ArgsNumber(MAX(P->refSize, P->tarSize) / 
+  P->ratio     = ArgsNumber(MAX(P->refSize, P->tarSize) / 
              DEFAULT_SCALE, p, argc, "-r");
-
   SetRatio(P->ratio);
+
   seed = (P->seed == DEFAULT_SEED) ? time(NULL) : P->seed;
   if(P->verbose)
     {
     fprintf(stderr, "Using seed: %u.\n", (uint32_t) seed);
     start = clock();
     }
-  Paint      = CreatePainter(GetPoint(P->refSize), GetPoint(P->tarSize), 
-               backColor);
+  Paint        = CreatePainter(GetPoint(P->refSize), GetPoint(P->tarSize), 
+                 backColor);
   WindowSizeAndDrop(P);
-  winWeights = InitWinWeights(P->window, P->wType);
-  sRef       = RandomNChars(argv[argc-2], seed,              P, REF);
-  sTar       = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, TAR);
-  revRef     = IRSequence(sRef, P, REF);
-  revTar     = IRSequence(sTar, P, TAR);
+  winWeights   = InitWinWeights(P->window, P->wType);
+  sRef         = RandomNChars(argv[argc-2], seed,              P, REF);
+  sTar         = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, TAR);
+  revRef       = IRSequence(sRef, P, REF);
+  revTar       = IRSequence(sTar, P, TAR);
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // BUILD TARGET MAP  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -395,6 +397,7 @@ int32_t main(int argc, char *argv[])
   colorIdx = 0;
  
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  k = 0;
   if(!P->ir)
     {
     cip = 0;
@@ -404,7 +407,7 @@ int32_t main(int argc, char *argv[])
         if(P->verbose)
           fprintf(stderr, "Running valid pattern %u (id:%u) with size "
           "%"PRIu64"\n", ++cip, k+1, patterns->p[k].end-patterns->p[k].init);
-        fprintf(POS, "#TARGET#\t%"PRIu64":%"PRIu64"\t0-regular\n", 
+        fprintf(POS, "###TARGET\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", k+1,
         patterns->p[k].init, patterns->p[k].end);
 
         Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx + 
@@ -424,6 +427,10 @@ int32_t main(int argc, char *argv[])
           Rect(PLOT, Paint->width, GetPoint(patternsLB->p[n].end - 
           patternsLB->p[n].init), Paint->cx, Paint->cy + 
           GetPoint(patternsLB->p[n].init), GetRgbColor(colorIdx * mult));
+
+          fprintf(POS, "REFERENCE\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", k+1,
+          patternsLB->p[n].init, patternsLB->p[n].end);
+
           }
         ++colorIdx;
         if(P->verbose)
@@ -431,6 +438,8 @@ int32_t main(int argc, char *argv[])
           "-\n");
         }
     }
+  pt = k;
+
   // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   cip = 0;
   for(k = 0 ; k < patternsIR->nPatterns ; ++k)
@@ -440,7 +449,7 @@ int32_t main(int argc, char *argv[])
         fprintf(stderr, "Running IR valid pattern %u (id:%u) with size "
         "%"PRIu64"\n", ++cip, k+1, patternsIR->p[k].end - 
         patternsIR->p[k].init);
-      fprintf(POS, "#TARGET#\t%"PRIu64":%"PRIu64"\t1-inverted\n", 
+      fprintf(POS, "###TARGET\t%u\t%"PRIu64"\t%"PRIu64"\t1-inverted\n", k+pt,
       patternsIR->p[k].init, patternsIR->p[k].end);
 
       RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx + DEFAULT_SPACE 
@@ -461,6 +470,9 @@ int32_t main(int argc, char *argv[])
         Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
         patternsLBIR->p[n].init), Paint->cx, Paint->cy + 
         GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
+
+        fprintf(POS, "REFERENCE\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", k+pt,
+        patternsLBIR->p[n].init, patternsLBIR->p[n].end);
         }
       ++colorIdx;
       if(P->verbose)
