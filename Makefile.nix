@@ -2,7 +2,7 @@ BIN    = .
 CC     = gcc
 CPLP   = -fstrict-aliasing -ffast-math -msse2
 #-----------------------------------------------------------------------------
-CFLAGS = -O3 -Wall $(CPLP) #-DPROGRESS
+CFLAGS = -O3 -Wall $(CPLP) -DDRAND48 #-DPROGRESS
 #-----------------------------------------------------------------------------
 LIBS   = -lm
 DEPS   = defs.h

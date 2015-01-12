@@ -54,7 +54,7 @@ Parameters;
 #define MAX_STRING_SIZE        1024
 #define LEFT_BUFFER_GUARD      32
 #define PRECISION              2
-#define SEED_JUMP              11
+#define SEED_JUMP              101
 #define W_TYPE                 0
 #define W_HAMMING              0
 #define W_HANN                 1

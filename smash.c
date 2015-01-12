@@ -169,7 +169,11 @@ char *RandomNChars(char *fName, uint32_t seed, Parameters *P, uint8_t type)
     : "target");
     }
 
+  #ifdef DRAND48
+  srand48(seed);
+  #else
   srand(seed);
+  #endif
   sprintf(timeMark, ".sys%ux", seed);
   Reader   = Fopen(fName, "r");
   fNameOut = concatenate(fName, timeMark);
