@@ -389,7 +389,8 @@ int32_t main(int argc, char *argv[])
   if(!P->rg)
     {
     for(k = 0 ; k != patterns->nPatterns ; ++k)
-      if((distance = patterns->p[k].end - patterns->p[k].init) >= P->minimum)
+      if((distance = patterns->p[k].end - patterns->p[k].init) >= 
+      P->minimum)
         ++nPatterns; 
     if(P->verbose && patterns->nPatterns != 0)
       fprintf(stderr, "Found %u valid patterns from %u.\n", nPatterns, 
@@ -424,7 +425,7 @@ int32_t main(int argc, char *argv[])
         if(P->verbose)
           fprintf(stderr, "Running valid pattern %u (id:%u) with size "
           "%"PRIu64"\n", ++cip, k+1, patterns->p[k].end-patterns->p[k].init);
-        fprintf(POS, "###TARGET\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", cip,
+        fprintf(POS, "TARGET\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", cip,
         patterns->p[k].init, patterns->p[k].end);
 
         Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx + 
@@ -512,9 +513,12 @@ int32_t main(int argc, char *argv[])
     {
     if(!sRef)    Unlink(sRef);
     if(!sTar)    Unlink(sTar);
-    if(!revRef)  Unlink(revRef);
-    if(!revTar)  Unlink(revTar);
     if(!nameExt) Unlink(nameExt);
+    if(!P->ir)
+      {
+      if(!revRef)  Unlink(revRef);
+      if(!revTar)  Unlink(revTar);
+      }
     }
 
   if(P->verbose)
