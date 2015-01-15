@@ -256,7 +256,8 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, " -m  <mSize>         minimum block size (DEF: %u),   \n",
     DEFAULT_MINIMUM);
     fprintf(stderr, "                                                     \n");
-    fprintf(stderr, " -i                  show only inverted repeats,     \n");
+    fprintf(stderr, " -i                  do not show inversions,          \n");
+    fprintf(stderr, " -n                  do not show regulars,            \n");
     fprintf(stderr, " -r  <ratio>         image size ratio (MaxSeq/%u),   \n",
     DEFAULT_SCALE);
     fprintf(stderr, " -a  <alpha>         alpha estimator (DEF: %u),      \n",
@@ -296,6 +297,7 @@ int32_t main(int argc, char *argv[])
   P->alpha     = ArgsNumber(DEFAULT_ALPHA,        p, argc, "-a" );
   P->hash      = DEFAULT_HASH_SIZE;
   P->ir        = ArgsState (DEFAULT_IR,           p, argc, "-i" );
+  P->rg        = ArgsState (DEFAULT_RG,           p, argc, "-n" );
   P->seed      = ArgsNumber(DEFAULT_SEED,         p, argc, "-s" );
   P->threshold = ArgsDouble(DEFAULT_THRESHOLD,    p, argc, "-t" );
   P->window    = ArgsNumber(DEFAULT_WINDOW,       p, argc, "-w" );
@@ -327,13 +329,16 @@ int32_t main(int argc, char *argv[])
   winWeights   = InitWinWeights(P->window, P->wType);
   sRef         = RandomNChars(argv[argc-2], seed,              P, REF);
   sTar         = RandomNChars(argv[argc-1], seed += SEED_JUMP, P, TAR);
-  revRef       = IRSequence(sRef, P, REF);
-  revTar       = IRSequence(sTar, P, TAR);
+  if(!P->ir)
+    {
+    revRef     = IRSequence(sRef, P, REF);
+    revTar     = IRSequence(sTar, P, TAR);
+    }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // BUILD TARGET MAP  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //
-  if(!P->ir)
+  if(!P->rg)
     {
     refModel = LoadReference(sRef, P);
     nameInf  = Compress(sTar, refModel, P);
@@ -342,19 +347,22 @@ int32_t main(int argc, char *argv[])
     patterns = GetPatterns(nameSeg);
     }
   // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  if(P->verbose)
+  if(!P->ir)
     {
-    fprintf(stderr, "---------------------------------------------------\n");
-    fprintf(stderr, "Mode: re-running with inverted repeats\n");
+    if(P->verbose)
+      {
+      fprintf(stderr, "--------------------------------------------------\n");
+      fprintf(stderr, "Mode: re-running with inverted repeats\n");
+      }
+    refModelIR = LoadReference(revRef, P);
+    if(P->del && !revRef) Unlink(revRef);
+    nameInfIR  = Compress(sTar, refModelIR, P);
+    nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
+    nameSegIR  = SegmentSequence(nameFilIR, P);
+    patternsIR = GetPatterns(nameSegIR);
+    if(P->verbose)
+      fprintf(stderr, "==================================================\n");
     }
-  refModelIR = LoadReference(revRef, P);
-  if(P->del && !revRef) Unlink(revRef);
-  nameInfIR  = Compress(sTar, refModelIR, P);
-  nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
-  nameSegIR  = SegmentSequence(nameFilIR, P);
-  patternsIR = GetPatterns(nameSegIR);
-  if(P->verbose)
-    fprintf(stderr, "===================================================\n");
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -378,7 +386,7 @@ int32_t main(int argc, char *argv[])
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   nPatterns = 0; 
-  if(!P->ir)
+  if(!P->rg)
     {
     for(k = 0 ; k != patterns->nPatterns ; ++k)
       if((distance = patterns->p[k].end - patterns->p[k].init) >= P->minimum)
@@ -388,30 +396,35 @@ int32_t main(int argc, char *argv[])
       patterns->nPatterns);
     }
 
+
   nIRPatterns = 0;
-  for(k = 0 ; k != patternsIR->nPatterns ; ++k)
-    if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
-      ++nIRPatterns;
-  if(P->verbose && patternsIR->nPatterns != 0)
-    fprintf(stderr, "Found %u inverted valid patterns from %u.\n", 
-    nIRPatterns, patternsIR->nPatterns);
+  if(!P->ir)
+    {
+    for(k = 0 ; k != patternsIR->nPatterns ; ++k)
+      if((distance = patternsIR->p[k].end-patternsIR->p[k].init) >= 
+      P->minimum)
+        ++nIRPatterns;
+    if(P->verbose && patternsIR->nPatterns != 0)
+      fprintf(stderr, "Found %u inverted valid patterns from %u.\n", 
+      nIRPatterns, patternsIR->nPatterns);
+    }
 
   if(nPatterns + nIRPatterns > 0)
     mult = 255 / (nPatterns + nIRPatterns);
   colorIdx = 0;
  
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  k = 0;
-  if(!P->ir)
+  k   = 0;
+  cip = 0;
+  if(!P->rg)
     {
-    cip = 0;
     for(k = 0 ; k != patterns->nPatterns ; ++k)
       if((distance = patterns->p[k].end-patterns->p[k].init)>= P->minimum)
         {
         if(P->verbose)
           fprintf(stderr, "Running valid pattern %u (id:%u) with size "
           "%"PRIu64"\n", ++cip, k+1, patterns->p[k].end-patterns->p[k].init);
-        fprintf(POS, "###TARGET\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", k+1,
+        fprintf(POS, "###TARGET\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", cip,
         patterns->p[k].init, patterns->p[k].end);
 
         Rect(PLOT, Paint->width, GetPoint(distance), Paint->cx + 
@@ -432,57 +445,59 @@ int32_t main(int argc, char *argv[])
           patternsLB->p[n].init), Paint->cx, Paint->cy + 
           GetPoint(patternsLB->p[n].init), GetRgbColor(colorIdx * mult));
 
-          fprintf(POS, "REFERENCE\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", k+1,
-          patternsLB->p[n].init, patternsLB->p[n].end);
+          fprintf(POS, "REFERENCE\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", 
+          cip, patternsLB->p[n].init, patternsLB->p[n].end);
+          }
+        ++colorIdx;
+        if(P->verbose)
+          fprintf(stderr, "-------------------------------------------------"
+          "-\n");
+        }
+    }
 
+  // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  pt  = cip;
+  cip = 0;
+  if(!P->ir)
+    {
+    for(k = 0 ; k < patternsIR->nPatterns ; ++k)
+      if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
+        {
+        if(P->verbose)
+          fprintf(stderr, "Running IR valid pattern %u (id:%u) with size "
+          "%"PRIu64"\n", ++cip, k+1, patternsIR->p[k].end - 
+          patternsIR->p[k].init);
+        fprintf(POS, "TARGET\t%u\t%"PRIu64"\t%"PRIu64"\t1-inverted\n", cip+pt,
+        patternsIR->p[k].init, patternsIR->p[k].end);
+
+        RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx + 
+        DEFAULT_SPACE + DEFAULT_WIDTH, Paint->cy + 
+        GetPoint(patternsIR->p[k].init), GetRgbColor(colorIdx * mult));
+ 
+        nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
+                       patternsIR->p[k].end);
+        revRef       = IRSequence(nameExt, P, REF); 
+        refModel     = LoadReference(revRef, P);
+        nameInf      = Compress(sRef, refModel, P);
+        nameFil      = FilterSequence(nameInf, P, winWeights);
+        nameSeg      = SegmentSequence(nameFil, P);
+        patternsLBIR = GetPatterns(nameSeg);
+
+        for(n = 0 ; n < patternsLBIR->nPatterns ; ++n)
+          {
+          Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
+          patternsLBIR->p[n].init), Paint->cx, Paint->cy + 
+          GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
+
+          fprintf(POS, "REFERENCE\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", cip
+          + pt, patternsLBIR->p[n].init, patternsLBIR->p[n].end);
           }
         ++colorIdx;
         if(P->verbose)
           fprintf(stderr, "--------------------------------------------------"
-          "-\n");
+          "\n");
         }
     }
-  pt = k;
-
-  // INVERTED REPEATS  - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-  cip = 0;
-  for(k = 0 ; k < patternsIR->nPatterns ; ++k)
-    if((distance=patternsIR->p[k].end-patternsIR->p[k].init) >= P->minimum)
-      {
-      if(P->verbose)
-        fprintf(stderr, "Running IR valid pattern %u (id:%u) with size "
-        "%"PRIu64"\n", ++cip, k+1, patternsIR->p[k].end - 
-        patternsIR->p[k].init);
-      fprintf(POS, "###TARGET\t%u\t%"PRIu64"\t%"PRIu64"\t1-inverted\n", k+pt,
-      patternsIR->p[k].init, patternsIR->p[k].end);
-
-      RectIR(PLOT, Paint->width, GetPoint(distance), Paint->cx + DEFAULT_SPACE 
-      + DEFAULT_WIDTH, Paint->cy + GetPoint(patternsIR->p[k].init), 
-      GetRgbColor(colorIdx * mult));
- 
-      nameExt      = ExtractSubSeq(sTar, P, patternsIR->p[k].init,
-                     patternsIR->p[k].end);
-      revRef       = IRSequence(nameExt, P, REF); 
-      refModel     = LoadReference(revRef, P);
-      nameInf      = Compress(sRef, refModel, P);
-      nameFil      = FilterSequence(nameInf, P, winWeights);
-      nameSeg      = SegmentSequence(nameFil, P);
-      patternsLBIR = GetPatterns(nameSeg);
-
-      for(n = 0 ; n < patternsLBIR->nPatterns ; ++n)
-        {
-        Rect(PLOT, Paint->width, GetPoint(patternsLBIR->p[n].end -
-        patternsLBIR->p[n].init), Paint->cx, Paint->cy + 
-        GetPoint(patternsLBIR->p[n].init), GetRgbColor(colorIdx * mult));
-
-        fprintf(POS, "REFERENCE\t%u\t%"PRIu64"\t%"PRIu64"\t0-regular\n", k+pt,
-        patternsLBIR->p[n].init, patternsLBIR->p[n].end);
-        }
-      ++colorIdx;
-      if(P->verbose)
-        fprintf(stderr, "---------------------------------------------------"
-        "\n");
-      }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   EndWinWeights(winWeights);
   Chromosome(PLOT, Paint->width, Paint->refSize, Paint->cx, Paint->cy);

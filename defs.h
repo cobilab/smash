@@ -24,6 +24,7 @@ typedef struct
   uint32_t  context;
   uint32_t  alpha;
   uint8_t   ir;
+  uint8_t   rg;
   uint32_t  hash;
   uint32_t  ratio;
   uint32_t  seed;
@@ -78,6 +79,7 @@ Parameters;
 #define DEFAULT_CONTEXT        20
 #define DEFAULT_ALPHA          1000
 #define DEFAULT_IR             0
+#define DEFAULT_RG             0
 #define DEFAULT_MAX_COUNT      65535
 #define DEFAULT_HASH_SIZE      29999999
 #define DEFAULT_SCALE          150
