@@ -130,7 +130,8 @@ Usage: smash &#60OPTIONS&#62... [FILE] [FILE]
  -t  &#60threshold&#62     threshold [0.0,2.0] (DEF: 1.5),
  -m  &#60mSize&#62         minimum block size (DEF: 1000000),
  
- -i                  show only inverted repeats,
+ -i                  do not show inversions,
+ -n                  do not show regulars,
  -r  &#60ratio&#62         image size ratio (MaxSeq/150),
  -a  &#60alpha&#62         alpha estimator (DEF: 1000),
  -s  &#60seed&#62          seed for random 'N',     
@@ -161,7 +162,8 @@ Only [refFile] and [TarFile] are mandatory.
 | -c &#60;context&#62;   | Size of the FCM (Markov) context order (interval [1;28]). Contexts above 14 will be handled with a hash-table, where the implementation is approximately linear in memory relatively to the size of the sequence. When the sequence is very fragmented, or the species are somehow distant, or the sequencing/assembly process has low quality this value show not be very high. |
 | -t &#60;threshold&#62; | It will be used to segment the high from the low regions of information content (interval [0;2]). For distant species this value might be slightly below 2 (such as 1.9). |
 | -m &#60;mSize&#62;     | Minimum size of the block considered as a valid patters after each segmentation process. Values below 1 Million for primate chromosomes might emerge excessive valid patterns. However for other purposes, such as gene scale analysis, this value should be set almost to 1. |
-| -i             | It will detect and show only the information map regarding to inversions. |
+| -i             | It will not show the information map regarding to inverted pattern regions. |
+| -n             | It will not show the information map regarding to regular pattern regions (normal regions). |
 | -r &#60;ratio&#62;     | Sets the ratio size of the image. Currently is fixed to 1000000 which is an estimated value to the medium of the primate chromosomes sizes relatively to the medium of the screen resolution. This parameter is not automatically adaptad since a fixed value will bring different size chromosomes to the same scale. Nevertheless, to use it in small sequences, namely bacterial genomes, this parameter might be adjusted. |
 | -a &#60;alpha&#62;       | Probabilities estimator. This value relates a linear interpolation between the maximum likelihood estimator and the uniform distribution. This also shows that when the total number of events is large, the estimator behaves as a maximum likelihood estimator. Default value is set to 1000. |
 | -s &#60;seed&#62;        | This is a parameter to the pseudo-random generation function. Different seed values ensure different generated values. |
