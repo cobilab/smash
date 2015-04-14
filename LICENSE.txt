@@ -1,6 +1,6 @@
-An alignment-free method to find and visualise genomic rearrangements
-Copyright (C) 2014 Diogo Pratas, Raquel M. Silva, Armando J. Pinho and 
-Paulo J. S. G. Ferreira.
+An alignment-free method to find and visualise rearrangements between
+pairs of DNA sequences. Copyright (C) 2014 Diogo Pratas, Raquel M. Silva, 
+Armando J. Pinho and Paulo J. S. G. Ferreira.
 
 The implementation of the method is free software; you can redistribute 
 it and/or modify it under the terms of the GNU General Public License
