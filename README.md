@@ -205,8 +205,7 @@ The first column reports if the regions are in the target or reference sequences
 
 On using this software/method please cite:
 
-Diogo Pratas, Raquel M. Silva, Armando J. Pinho, Paulo J. S. G. Ferreira. An alignment-free method to find and visualise rearrangements between pairs of DNA sequences. Scientific Reports, 2015. (Accepted)
-DOI: doi-to-appear
+Diogo Pratas, Raquel M. Silva, Armando J. Pinho, Paulo J. S. G. Ferreira. An alignment-free method to find and visualise rearrangements between pairs of DNA sequences. Sci. Rep. 5, 10203; doi: 10.1038/srep10203 (2015).
 
 ## ISSUES ##
 
