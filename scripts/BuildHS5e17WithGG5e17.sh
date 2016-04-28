@@ -10,4 +10,4 @@ zcat ggo_ref_gorGor3.1_chr17.fa.gz | grep -v ">" | tr -d -c "ACGTN" > GG17 ;
 rm -f SEP; for((x=1 ; x<1000000 ; ++x)); do print("N") >> SEP; done;
 cat HS5 SEP HS17 > HS;
 cat GG5 SEP GG17 > GG;
-./smash -v -s 1000000 -t 1.5 HS GG ;
+./SMASH -v -s 1000000 -t 1.5 HS GG ;
