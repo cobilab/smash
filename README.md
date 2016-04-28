@@ -1,10 +1,10 @@
 # SMASH #
 
-![ScreenShot](/top.png)
+![ScreenShot](imgs/top.png)
 
 **Smash is a completely alignment-free method to find and visualise rearrangements between pairs of DNA sequences**. The detection is based on **conditional exclusive compression**, namely using a **FCM**, also known as Markov model, of high context order (typically 20). The method has been approached with a **tool** (also called Smash). For visualization, Smash outputs a **SVG image**, with an **ideogram** output architecture, where the patterns are represented with several **HSV** values (only value varies). The following image, illustrating the information maps between human and chimpanzee for the several chromosomes, depicts an example: 
 
-![ScreenShot](/HC.png)
+![ScreenShot](imgs/HC.png)
 
 ## INSTALLATION ##
 
@@ -105,7 +105,7 @@ Run Smash.
 
 This step outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use option: -o ANYNAME.svg). The respective information map is the following (transformed in a png image and rotated 90 degrees to left):
 
-![ScreenShot](/HS20PA20.png)
+![ScreenShot](imgs/HS20PA20.png)
 
 ## USAGE ##
 
