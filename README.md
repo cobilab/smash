@@ -2,7 +2,7 @@
 
 ![ScreenShot](imgs/top.png)
 
-**Smash is a completely alignment-free method to find and visualise rearrangements between pairs of DNA sequences**. The detection is based on **conditional exclusive compression**, namely using a **FCM**, also known as Markov model, of high context order (typically 20). The method has been approached with a **tool** (also called Smash). For visualization, Smash outputs a **SVG image**, with an **ideogram** output architecture, where the patterns are represented with several **HSV** values (only value varies). The following image, illustrating the information maps between human and chimpanzee for the several chromosomes, depicts an example: 
+**SMASH is a completely alignment-free method to find and visualise rearrangements between pairs of DNA sequences**. The detection is based on **conditional exclusive compression**, namely using a **FCM**, also known as Markov model, of high context order (typically 20). The method has been approached with a **tool** (also called SMASH). For visualization, SMASH outputs a **SVG image**, with an **ideogram** output architecture, where the patterns are represented with several **HSV** values (only value varies). The following image, illustrating the information maps between human and chimpanzee for the several chromosomes, depicts an example: 
 
 ![ScreenShot](imgs/HC.png)
 
@@ -19,21 +19,24 @@ Download, install smash and resolve conflicts.
 #### Linux 
 <pre>
 sudo apt-get install cmake
-wget https://github.com/pratas/smash/archive/master.zip
-unzip master.zip
-cd smash-master
+git clone https://github.com/pratas/smash.git
+cd smash/src/
 cmake .
 make
+cp SMASH ../../
+cd ../../
 </pre>
 
 Alternatively, you can install (without cmake and only for linux) using
 
 <pre>
-wget https://github.com/pratas/smash/archive/master.zip
-unzip master.zip
-cd smash-master
-mv Makefile.nix Makefile
+sudo apt-get install cmake
+git clone https://github.com/pratas/smash.git
+cd smash/src/
+cp Makefile.nix Makefile
 make
+cp SMASH ../../
+cd ../../
 </pre>
 
 #### OS X
@@ -48,7 +51,7 @@ brew install wget
 brew install gcc48
 wget https://github.com/pratas/smash/archive/master.zip
 unzip master.zip
-cd smash-master
+cd smash-master/src/
 cmake .
 make
 </pre>
@@ -95,12 +98,12 @@ gzcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA
 
 ### Step 4 ###
 
-Run Smash.
+Run SMASH.
 
 ##### Linux and OS X
 
 <pre>
-./smash -v -c 20 -t 1.5 HS20 PA20
+./SMASH -v -c 20 -t 1.5 HS20 PA20
 </pre>
 
 This step outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use option: -o ANYNAME.svg). The respective information map is the following (transformed in a png image and rotated 90 degrees to left):
@@ -109,19 +112,19 @@ This step outputs a SVG image using the respective map under the name: HS20PA20.
 
 ## USAGE ##
 
-The Smash program have many options in the interface because there are a wide variety of parameters that can be defined by the user. However, for the detection of the arrangements only two are critical, namely context and threshold. Mathematical information about these parameters can be found in the paper.
+The SMASH program have many options in the interface because there are a wide variety of parameters that can be defined by the user. However, for the detection of the arrangements only two are critical, namely context and threshold. Mathematical information about these parameters can be found in the paper.
 
 To see the possible options type
 <pre>
-./smash
+./SMASH
 </pre>
 or
 <pre>
-./smash -h
+./SMASH -h
 </pre>
 These will print the following options:
 <pre>
-Usage: smash &#60OPTIONS&#62... [FILE] [FILE]      
+Usage: SMASH &#60OPTIONS&#62... [FILE] [FILE]      
 
  -h                  give this help,                 
  -V                  display version number,
@@ -150,7 +153,7 @@ Usage: smash &#60OPTIONS&#62... [FILE] [FILE]
  [tarFile]           target file.      
 </pre>
 
-By default, Smash has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width and/or ratio (scale).
+By default, SMASH has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width and/or ratio (scale).
 Only [refFile] and [TarFile] are mandatory.
 
 #### Options meaning
