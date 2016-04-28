@@ -284,7 +284,7 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, "SMASH %u.%u\n"
     "Copyright (C) 2014-2016 University of Aveiro.\nThis is Free software. \nYou "
     "may redistribute copies of it under the terms of the GNU General \n"
-    "Public License v2 <http://www.gnu.org/licenses/gpl.html>.\nThere is NO "
+    "Public License v3 <http://www.gnu.org/licenses/gpl.html>.\nThere is NO "
     "WARRANTY, to the extent permitted by law.\nAuthors: Diogo Pratas, Raquel "
     "M. Silva, Armando J. Pinho, Paulo J. S. G. Ferreira.\n", RELEASE, VERSION);
     return EXIT_SUCCESS;
