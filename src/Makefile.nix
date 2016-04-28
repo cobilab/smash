@@ -6,13 +6,13 @@ CFLAGS = -O3 -Wall $(CPLP) -DDRAND48 #-DPROGRESS
 #-----------------------------------------------------------------------------
 LIBS   = -lm
 DEPS   = defs.h
-PROGS  = $(BIN)/smash
+PROGS  = $(BIN)/SMASH
 OBJS   = mem.o context.o common.o filters.o reverse.o segment.o paint.o 
 all:
 	$(MAKE) progs
 progs: $(PROGS)
-$(BIN)/smash: smash.c $(DEPS) $(OBJS)
-	$(CC) $(CFLAGS) -o $(BIN)/smash smash.c $(OBJS) $(LIBS)
+$(BIN)/SMASH: smash.c $(DEPS) $(OBJS)
+	$(CC) $(CFLAGS) -o $(BIN)/SMASH smash.c $(OBJS) $(LIBS)
 mem.o: mem.c mem.h $(DEPS)
 	$(CC) -c $(CFLAGS) mem.c
 context.o: context.c context.h $(DEPS)

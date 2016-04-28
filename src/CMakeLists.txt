@@ -12,5 +12,5 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 SET(RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 SET(CMAKE_BUILD_TYPE Release)
 
-add_executable (smash smash.c mem.c common.c reverse.c filters.c segment.c context.c paint.c defs.h) 
+add_executable (SMASH smash.c mem.c common.c reverse.c filters.c segment.c context.c paint.c defs.h) 
 

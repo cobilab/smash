@@ -242,7 +242,7 @@ int32_t main(int argc, char *argv[])
   if((P->help = ArgsState(DEFAULT_HELP, p, argc, "-h")) == 1 || argc < 2)
     {
     fprintf(stderr, "                                                     \n");
-    fprintf(stderr, "Usage: smash <OPTIONS>... [FILE] [FILE]              \n");
+    fprintf(stderr, "Usage: SMASH <OPTIONS>... [FILE] [FILE]              \n");
     fprintf(stderr, "                                                     \n");
     fprintf(stderr, " -h                  give this help,                 \n");
     fprintf(stderr, " -V                  display version number,         \n");
@@ -281,8 +281,8 @@ int32_t main(int argc, char *argv[])
     }
 
   if(ArgsState(DEFAULT_VERSION, p, argc, "-V")){
-    fprintf(stderr, "Smash %u.%u\n"
-    "Copyright (C) 2014 University of Aveiro.\nThis is Free software. \nYou "
+    fprintf(stderr, "SMASH %u.%u\n"
+    "Copyright (C) 2014-2016 University of Aveiro.\nThis is Free software. \nYou "
     "may redistribute copies of it under the terms of the GNU General \n"
     "Public License v2 <http://www.gnu.org/licenses/gpl.html>.\nThere is NO "
     "WARRANTY, to the extent permitted by law.\nAuthors: Diogo Pratas, Raquel "
