@@ -1,4 +1,4 @@
-<p align="center"><img src="imgs/logo.png" alt="SMASH" width="240" height="240" border="0" /></p>
+<p align="center"><img src="imgs/logo.png" alt="SMASH" width="210" height="210" border="0" /></p>
 <br>
 
 <p align="justify">
