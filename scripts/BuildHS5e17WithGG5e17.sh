@@ -1,4 +1,11 @@
 #!/bin/bash
+sudo apt-get install cmake
+git clone https://github.com/pratas/smash.git
+cd smash/src/
+cmake .
+make
+cp SMASH ../../
+cd ../../
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38_chr5.fa.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38_chr17.fa.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Gorilla_gorilla/Assembled_chromosomes/seq/ggo_ref_gorGor3.1_chr5.fa.gz
