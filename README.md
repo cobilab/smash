@@ -1,16 +1,16 @@
-# SMASH #
+<p align="center"><img src="imgs/logo.png" alt="SMASH" width="264" height="264" border="0" /></p>
+<br>
 
-![ScreenShot](imgs/top.png)
-
-**SMASH is a completely alignment-free method to find and visualise rearrangements between pairs of DNA sequences**. The detection is based on **conditional exclusive compression**, namely using a **FCM**, also known as Markov model, of high context order (typically 20). The method has been approached with a **tool** (also called SMASH). For visualization, SMASH outputs a **SVG image**, with an **ideogram** output architecture, where the patterns are represented with several **HSV** values (only value varies). The following image, illustrating the information maps between human and chimpanzee for the several chromosomes, depicts an example: 
+<p align="justify">
+**SMASH is a completely alignment-free method to find and visualise rearrangements between pairs of DNA sequences**. The detection is based on **conditional exclusive compression**, namely using a **FCM**, also known as Markov model, of high context order (typically 20). The method has been approached with a **tool** (also called SMASH). For visualization, SMASH outputs a **SVG image**, with an **ideogram** output architecture, where the patterns are represented with several **HSV** values (only value varies). The following image, illustrating the information maps between human and chimpanzee for the several chromosomes, depicts an example: <p/>
 
 ![ScreenShot](imgs/HC.png)
 
 ## INSTALLATION ##
 
-We provide a binary for each 64 bits operating systems (Linux, OSX, Windows). However, for other purposes, such as source code compilation, use the following installation instructions.
+<p align="justify">We provide a binary for each 64 bits operating systems (Linux, OSX, Windows). However, for other purposes, such as source code compilation, use the following installation instructions.
 Cmake is needed for installation (http://www.cmake.org/). You can download it directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
-In the following instructions we show the procedure to install, compile and create the information map between human and orangutan chromosome 20:
+In the following instructions we show the procedure to install, compile and create the information map between human and orangutan chromosome 20:</p>
 
 ### STEP 1
 
@@ -70,7 +70,7 @@ sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/cc
 
 #### Windows
 
-In windows use cygwin (https://www.cygwin.com/) and make sure that it is included in the installation: cmake, make, zcat, unzip, wget, tr, grep (and any dependencies). If you install the complete cygwin packet then all these will be installed. After, all steps will be the same as in Linux.
+<p align="justify">In windows use cygwin (https://www.cygwin.com/) and make sure that it is included in the installation: cmake, make, zcat, unzip, wget, tr, grep (and any dependencies). If you install the complete cygwin packet then all these will be installed. After, all steps will be the same as in Linux.</p>
 
 ### Step 2 
 Download the sequences [the links might change over time].
@@ -106,13 +106,13 @@ Run SMASH.
 ./SMASH -v -c 20 -t 1.5 HS20 PA20
 </pre>
 
-This step outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use option: -o ANYNAME.svg). The respective information map is the following (transformed in a png image and rotated 90 degrees to left):
+<p align="justify">This step outputs a SVG image using the respective map under the name: HS20PA20.svg (for custom name use option: -o ANYNAME.svg). The respective information map is the following (transformed in a png image and rotated 90 degrees to left):</p>
 
 ![ScreenShot](imgs/HS20PA20.png)
 
 ## USAGE ##
 
-The SMASH program have many options in the interface because there are a wide variety of parameters that can be defined by the user. However, for the detection of the arrangements only two are critical, namely context and threshold. Mathematical information about these parameters can be found in the paper.
+<p align="justify">The SMASH program have many options in the interface because there are a wide variety of parameters that can be defined by the user. However, for the detection of the arrangements only two are critical, namely context and threshold. Mathematical information about these parameters can be found in the paper.</p>
 
 To see the possible options type
 <pre>
@@ -153,8 +153,8 @@ Usage: SMASH &#60OPTIONS&#62... [FILE] [FILE]
  [tarFile]           target file.      
 </pre>
 
-By default, SMASH has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width and/or ratio (scale).
-Only [refFile] and [TarFile] are mandatory.
+<p align="justify">By default, SMASH has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width and/or ratio (scale).
+Only [refFile] and [TarFile] are mandatory.</p>
 
 #### Options meaning
 
@@ -202,7 +202,7 @@ An example ca be seen below, where columns are separated by a tab (ascii code:9)
 |REFERENCE       |4      |24001180     |  24639235      | 0-regular |
 |REFERENCE       |4      |24697240     |  25754220      | 0-regular |
 
-The first column reports if the regions are in the target or reference sequences and the second column sets an id for each similar region. The third and fourth columns, repectively, indicate the beginning and the end of each similar region, while the last column reports the direction (if was inverted or regular).
+<p align="justify">The first column reports if the regions are in the target or reference sequences and the second column sets an id for each similar region. The third and fourth columns, repectively, indicate the beginning and the end of each similar region, while the last column reports the direction (if was inverted or regular).</p>
 
 ## CITATION ##
 
@@ -216,8 +216,8 @@ For any issue let us know at [issues link](https://github.com/pratas/smash/issue
 
 ## LICENSE ##
 
-GPL v2.
+GPL v3.
 
-For more information:
-<pre>http://www.gnu.org/licenses/gpl-2.0.html</pre>
+For more information see LICENSE file or visit
+<pre>http://www.gnu.org/licenses/gpl-3.0.html</pre>
 
