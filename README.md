@@ -6,17 +6,17 @@
 
 ![ScreenShot](imgs/HC.png)
 
-## INSTALLATION ##
+## 1. INSTALLATION ##
 
 <p align="justify">We provide a binary for each 64 bits operating systems (Linux, OSX, Windows). However, for other purposes, such as source code compilation, use the following installation instructions.
 Cmake is needed for installation (http://www.cmake.org/). You can download it directly from http://www.cmake.org/cmake/resources/software.html or use an appropriate packet manager.
 In the following instructions we show the procedure to install, compile and create the information map between human and orangutan chromosome 20:</p>
 
-### STEP 1
+### 1.1 STEP 1
 
 Download, install smash and resolve conflicts.
 
-#### Linux 
+#### 1.1.1 Linux 
 <pre>
 sudo apt-get install cmake
 git clone https://github.com/pratas/smash.git
@@ -39,7 +39,7 @@ cp SMASH ../../
 cd ../../
 </pre>
 
-#### OS X
+#### 1.1.2 OS X
 Install brew:
 <pre>
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
@@ -68,39 +68,39 @@ sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/gcc
 sudo ln -s /usr/local/bin/gcc-4.8 /usr/bin/cc
 </pre>
 
-#### Windows
+#### 1.1.3 Windows
 
 <p align="justify">In windows use cygwin (https://www.cygwin.com/) and make sure that it is included in the installation: cmake, make, zcat, unzip, wget, tr, grep (and any dependencies). If you install the complete cygwin packet then all these will be installed. After, all steps will be the same as in Linux.</p>
 
-### Step 2 
+### 1.2 Step 2 
 Download the sequences [the links might change over time].
 
-##### Linux and OS X
+##### 1.2.1 Linux and OS X
 <pre>
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38_chr20.fa.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Pongo_abelii/Assembled_chromosomes/seq/pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz
 </pre>
 
-### Step 3 
+### 1.3 Step 3 
 Unzip, exclude headers and filter content.
 
-##### Linux
+##### 1.3.1 Linux
 <pre>
 zcat hs_ref_GRCh38_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
 zcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA20
 </pre>
 
-##### OS X
+##### 1.3.2 OS X
 <pre>
 gzcat hs_ref_GRCh38_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > HS20
 gzcat pab_ref_P_pygmaeus_2.0.2_chr20.fa.gz | grep -v ">" | tr -d -c "ACGTN" > PA20
 </pre>
 
-### Step 4 ###
+### 1.4 Step 4 ###
 
 Run SMASH.
 
-##### Linux and OS X
+##### 1.4.1 Linux and OS X
 
 <pre>
 ./SMASH -v -c 20 -t 1.5 HS20 PA20
@@ -110,7 +110,7 @@ Run SMASH.
 
 ![ScreenShot](imgs/HS20PA20.png)
 
-## USAGE ##
+## 2 USAGE ##
 
 <p align="justify">The SMASH program have many options in the interface because there are a wide variety of parameters that can be defined by the user. However, for the detection of the arrangements only two are critical, namely context and threshold. Mathematical information about these parameters can be found in the paper.</p>
 
@@ -156,7 +156,7 @@ Usage: SMASH &#60OPTIONS&#62... [FILE] [FILE]
 <p align="justify">By default, SMASH has many parameters assigned in order to avoid the estimation, enabling only to set both reference and target files. However, these defaults are only estimated to detect rearrangements in primates. Therefore, for other purposes you might need to adjust context and threshold parameters. Moreover, for custom image maps you might also need to set other parameters, such as width and/or ratio (scale).
 Only [refFile] and [TarFile] are mandatory.</p>
 
-#### Options meaning
+#### 2.1 Options meaning
 
 | Parameters     | Meaning                                                                              |
 |----------------|:-------------------------------------------------------------------------------------|
@@ -181,7 +181,7 @@ Only [refFile] and [TarFile] are mandatory.</p>
 | [refFile]     | The reference filename. |
 | [tarFile]     | The target filename. |
 
-#### Positions file
+#### 2.2 Positions file
 
 A file will be created, reporting each rearrangement position, with the following characteristics: type, id, start position, end position, direction.
 
@@ -204,17 +204,17 @@ An example ca be seen below, where columns are separated by a tab (ascii code:9)
 
 <p align="justify">The first column reports if the regions are in the target or reference sequences and the second column sets an id for each similar region. The third and fourth columns, repectively, indicate the beginning and the end of each similar region, while the last column reports the direction (if was inverted or regular).</p>
 
-## CITATION ##
+## 3. CITATION ##
 
 On using this software/method please cite:
 
 Diogo Pratas, Raquel M. Silva, Armando J. Pinho, Paulo J. S. G. Ferreira. An alignment-free method to find and visualise rearrangements between pairs of DNA sequences. Sci. Rep. 5, 10203; doi: 10.1038/srep10203 (2015).
 
-## ISSUES ##
+## 4. ISSUES ##
 
 For any issue let us know at [issues link](https://github.com/pratas/smash/issues).
 
-## LICENSE ##
+## 5. LICENSE ##
 
 GPL v3.
 
