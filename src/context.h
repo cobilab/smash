@@ -60,7 +60,7 @@ CModel;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 void         FreeCModel          (CModel *);
-inline void  GetPModelIdx        (uint8_t *, CModel *);
+void         GetPModelIdx        (uint8_t *, CModel *);
 PModel       *CreatePModel       (uint32_t);
 void         ResetCModel         (CModel *);
 void         UpdateCModelCounter (CModel *, uint32_t);

@@ -245,7 +245,7 @@ void ResetCModel(CModel *M)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-inline void GetPModelIdx(uint8_t *p, CModel *M)
+void GetPModelIdx(uint8_t *p, CModel *M)
   {
   M->pModelIdx = ((M->pModelIdx-*(p-M->ctx)*M->multiplier)<<2)+*p;
   }

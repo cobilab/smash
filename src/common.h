@@ -45,7 +45,7 @@ char        *ArgsFiles       (char  *[], uint32_t, char   *, char *);
 void        FAccessWPerm     (char    *);
 void        PrintArgs        (void     );
 void        CmpInputError    (uint32_t );
-inline void CalcProgress     (uint64_t , uint64_t);
+void        CalcProgress     (uint64_t , uint64_t);
 char        *concatenate     (char *   , char *);
 Patterns    *GetPatterns     (char *);
 char        *ExtractSubSeq   (char *, Parameters *, uint64_t, uint64_t);
