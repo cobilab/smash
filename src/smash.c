@@ -250,24 +250,24 @@ int32_t main(int argc, char *argv[])
     fprintf(stderr, " -f                  force (be sure!),               \n");
     fprintf(stderr, "                                                     \n");
     fprintf(stderr, " -c  <context>       context order (DEF: %u),        \n", 
-    DEFAULT_CONTEXT);
+    (uint32_t) DEFAULT_CONTEXT);
     fprintf(stderr, " -t  <threshold>     threshold [0.0,2.0] (DEF: %.2g),\n",
     DEFAULT_THRESHOLD);
     fprintf(stderr, " -m  <mSize>         minimum block size (DEF: %u),   \n",
-    DEFAULT_MINIMUM);
+    (uint32_t) DEFAULT_MINIMUM);
     fprintf(stderr, "                                                     \n");
     fprintf(stderr, " -i                  do not show inversions,          \n");
     fprintf(stderr, " -n                  do not show regulars,            \n");
     fprintf(stderr, " -r  <ratio>         image size ratio (MaxSeq/%u),   \n",
-    DEFAULT_SCALE);
+    (uint32_t) DEFAULT_SCALE);
     fprintf(stderr, " -a  <alpha>         alpha estimator (DEF: %u),      \n",
-    DEFAULT_ALPHA);
+    (uint32_t) DEFAULT_ALPHA);
     fprintf(stderr, " -s  <seed>          seed for random 'N',            \n");
     fprintf(stderr, " -w  <wSize>         window size,                    \n");
     fprintf(stderr, " -wt <wType>         window type [0|1|2|3] (DEF: %u),\n",
-    DEFAULT_WIN_TYPE);
+    (uint32_t) DEFAULT_WIN_TYPE);
     fprintf(stderr, " -d  <dSize>         sub-sample (DEF: %u),           \n", 
-    DEFAULT_SAMPLE_RATIO);
+    (uint32_t) DEFAULT_SAMPLE_RATIO);
     fprintf(stderr, " -nd                 do not delete temporary files,  \n"); 
     fprintf(stderr, " -wi <width>         sequence width (DEF: %.2g),     \n",
     DEFAULT_WIDTH);
@@ -286,7 +286,8 @@ int32_t main(int argc, char *argv[])
     "may redistribute copies of it under the terms of the GNU General \n"
     "Public License v3 <http://www.gnu.org/licenses/gpl.html>.\nThere is NO "
     "WARRANTY, to the extent permitted by law.\nAuthors: Diogo Pratas, Raquel "
-    "M. Silva, Armando J. Pinho, Paulo J. S. G. Ferreira.\n", RELEASE, VERSION);
+    "M. Silva, Armando J. Pinho, Paulo J. S. G. Ferreira.\n", (uint32_t) RELEASE, 
+    (uint32_t) VERSION);
     return EXIT_SUCCESS;
     }
 
@@ -506,7 +507,7 @@ int32_t main(int argc, char *argv[])
   DEFAULT_WIDTH,
   Paint->cy);
   PrintFinal(PLOT);
-  if(!POS) fclose(POS);
+  fclose(POS);
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   if(P->del)
