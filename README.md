@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pratas/smash.svg?branch=master)](https://travis-ci.org/pratas/smash)
+[![Build Status](https://travis-ci.org/cobilab/smash.svg?branch=master)](https://travis-ci.org/cobilab/smash)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 <p align="center"><img src="imgs/logo.png" alt="SMASH" width="210" height="210" border="0" /></p>
