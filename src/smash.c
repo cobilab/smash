@@ -22,10 +22,11 @@
 //////////////////////////////////////////////////////////////////////////////
 // - - - - - - - - - - - - - - - C O M P R E S S O R - - - - - - - - - - - - -
 
-char *Compress(char *sTar, CModel *cModel, Parameters *P)
+char *Compress(char *sTar, CModel *cModel, Parameters *P, uint8_t inv_rep)
   {
   FILE      *Reader  = Fopen(sTar, "r");
-  char      *name    = concatenate(sTar, ".inf");
+  char *name = 
+    (inv_rep) ? concatenate(sTar, ".rev.inf") : concatenate(sTar, ".inf");
   FILE      *Writter = Fopen(name, "wb");
   uint32_t  k, idxPos, instance;
   uint64_t  bits = 0;
@@ -342,7 +343,7 @@ int32_t main(int argc, char *argv[])
   if(!P->rg)
     {
     refModel = LoadReference(sRef, P);
-    nameInf  = Compress(sTar, refModel, P);
+    nameInf  = Compress(sTar, refModel, P, 0);
     nameFil  = FilterSequence(nameInf, P, winWeights);
     nameSeg  = SegmentSequence(nameFil, P);   
     patterns = GetPatterns(nameSeg);
@@ -357,7 +358,7 @@ int32_t main(int argc, char *argv[])
       }
     refModelIR = LoadReference(revRef, P);
     if(P->del && !revRef) Unlink(revRef);
-    nameInfIR  = Compress(sTar, refModelIR, P);
+    nameInfIR  = Compress(sTar, refModelIR, P, 1);
     nameFilIR  = FilterSequence(nameInfIR, P, winWeights);
     nameSegIR  = SegmentSequence(nameFilIR, P);
     patternsIR = GetPatterns(nameSegIR);
@@ -436,7 +437,7 @@ int32_t main(int argc, char *argv[])
         nameExt    = ExtractSubSeq(sTar, P, patterns->p[k].init, 
                      patterns->p[k].end);
         refModel   = LoadReference(nameExt, P); 
-        nameInf    = Compress(sRef, refModel, P);
+        nameInf    = Compress(sRef, refModel, P, 0);
         nameFil    = FilterSequence(nameInf, P, winWeights);
         nameSeg    = SegmentSequence(nameFil, P);
         patternsLB = GetPatterns(nameSeg);
@@ -480,7 +481,7 @@ int32_t main(int argc, char *argv[])
                        patternsIR->p[k].end);
         revRef       = IRSequence(nameExt, P, REF); 
         refModel     = LoadReference(revRef, P);
-        nameInf      = Compress(sRef, refModel, P);
+        nameInf      = Compress(sRef, refModel, P, 0);
         nameFil      = FilterSequence(nameInf, P, winWeights);
         nameSeg      = SegmentSequence(nameFil, P);
         patternsLBIR = GetPatterns(nameSeg);
